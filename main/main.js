@@ -733,7 +733,7 @@
     function isWeekend(dateStr) {
         const d = parseDate(dateStr);
         const day = d.getDay();
-        return day === 0 || day === 6;
+        return day === 0; // Only Sundays are weekends now
     }
 
     function isDateValidForExam(dateStr) {
@@ -873,7 +873,7 @@
 
                 const dObj = parseDate(dateStr);
                 const dow = dObj.getDay();
-                if (dow === 0 || dow === 6) {
+                if (dow === 0) { // Only Sundays are weekends
                     cell.classList.add("weekend");
                 }
                 if (isDateInVacation(dateStr)) {
@@ -896,7 +896,7 @@
                     metaSpan.textContent = "Fin";
                 } else if (isDateInVacation(dateStr)) {
                     metaSpan.textContent = "Vacaciones";
-                } else if (dow === 0 || dow === 6) {
+                } else if (dow === 0) { // Only Sundays are weekends
                     metaSpan.textContent = "Fin de semana";
                 }
                 headerRow.appendChild(metaSpan);
