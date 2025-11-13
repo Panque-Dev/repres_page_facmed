@@ -16,6 +16,8 @@
     const CAL_END_DATE = "2026-06-30";
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE = "2026-01-04";
+    const VACATION_SS_START = "2026-03-29";
+    const VACATION_SS_END = "2026-04-05";
     const FORCED_REPROGRAM_CUTOFF = "2025-11-25";
     const SELECTION_DAY = "2025-12-02";
 
@@ -721,7 +723,8 @@
     }
 
     function isDateInVacation(dateStr) {
-        return dateStr >= VACATION_START_DATE && dateStr <= VACATION_END_DATE;
+        return (dateStr >= VACATION_START_DATE && dateStr <= VACATION_END_DATE) ||
+               (dateStr >= VACATION_SS_START && dateStr <= VACATION_SS_END);
     }
 
     function isWeekend(dateStr) {
