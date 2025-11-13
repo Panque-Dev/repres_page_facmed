@@ -16,7 +16,7 @@
     const CAL_END_DATE = "2026-06-30";
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE = "2026-01-04";
-    const FORCED_REPROGRAM_CUTOFF = "2025-11-13";
+    const FORCED_REPROGRAM_CUTOFF = "2025-11-25";
 
     const DAY_NAMES = ["L", "M", "X", "J", "V", "S", "D"];
     const MONTH_NAMES = [
