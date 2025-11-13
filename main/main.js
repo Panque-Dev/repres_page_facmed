@@ -18,7 +18,9 @@
     const VACATION_END_DATE = "2026-01-04";
     const VACATION_SS_START = "2026-03-29";
     const VACATION_SS_END = "2026-04-05";
-    const FORCED_REPROGRAM_CUTOFF = "2025-11-25";
+
+    // Fecha de paro / reprogramación obligatoria
+    const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY = "2025-12-02";
 
     const DAY_NAMES = ["L", "M", "X", "J", "V", "S", "D"];
@@ -577,7 +579,7 @@
                 officialTime: "11:00"
             },
 
-            // INTRODUCCIÓN A LA CIRUGÍA (fechas teóricas como referencia)
+            // INTRODUCCIÓN A LA CIRUGÍA
             {
                 id: "2-CIR-P1",
                 subject: "Introducción a la Cirugía",
@@ -730,7 +732,7 @@
     function isWeekend(dateStr) {
         const d = parseDate(dateStr);
         const day = d.getDay();
-        return day === 0; // Only Sundays are weekends now
+        return day === 0; // solo domingos
     }
 
     function isDateValidForExam(dateStr) {
@@ -871,7 +873,7 @@
 
                 const dObj = parseDate(dateStr);
                 const dow = dObj.getDay();
-                if (dow === 0) { // Only Sundays are weekends
+                if (dow === 0) {
                     cell.classList.add("weekend");
                 }
                 if (isDateInVacation(dateStr)) {
@@ -894,7 +896,7 @@
                     metaSpan.textContent = "Fin";
                 } else if (isDateInVacation(dateStr)) {
                     metaSpan.textContent = "Vacaciones";
-                } else if (dow === 0) { // Only Sundays are weekends
+                } else if (dow === 0) {
                     metaSpan.textContent = "Fin de semana";
                 }
                 headerRow.appendChild(metaSpan);
@@ -1059,6 +1061,14 @@
         const exams = EXAMS_BY_YEAR[currentYear] || [];
         exams.forEach(function (exam) {
             const stored = schedule[exam.id];
+
+            // Si nunca se ha movido (sigue en fecha oficial)
+            // y la fecha oficial es anterior al paro (cutoff),
+            // va al cuadro de "exámenes anteriores al paro".
+            const isOriginalBeforeParo = exam.officialDate < FORCED_REPROGRAM_CUTOFF;
+            const neverMoved =
+                !stored || stored === exam.officialDate;
+
             const scheduledDate = stored || exam.officialDate;
             const valid = isDateValidForExam(scheduledDate);
             const isOfficial = scheduledDate === exam.officialDate;
@@ -1077,7 +1087,13 @@
             const card = createExamCard(exam, scheduledDate, statusClass, highlightForced);
 
             const dayCell = document.querySelector('.day-cell[data-date="' + scheduledDate + '"]');
-            if (dayCell && isDateWithinCalendar(scheduledDate)) {
+
+            const placeInPending =
+                (isOriginalBeforeParo && neverMoved) ||
+                !dayCell ||
+                !isDateWithinCalendar(scheduledDate);
+
+            if (!placeInPending && dayCell && isDateWithinCalendar(scheduledDate)) {
                 const list = dayCell.querySelector(".exam-list");
                 if (list) list.appendChild(card);
             } else if (pendingList) {
@@ -1228,11 +1244,10 @@
                 date: humanDate,
                 count: mode.count,
                 month: monthName,
-                sortDate: mode.date // para ordenar del más viejo al más reciente
+                sortDate: mode.date
             });
         });
 
-        // Ordenar cronológicamente por fecha de la moda
         rows.sort(function (a, b) {
             if (a.sortDate < b.sortDate) return -1;
             if (a.sortDate > b.sortDate) return 1;
