@@ -356,6 +356,11 @@ body {
     background: linear-gradient(135deg, rgba(239, 246, 255, 0.9), rgba(219, 234, 254, 0.95));
 }
 
+.day-cell.selection-day {
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
 .day-cell.drop-target {
     border-color: rgba(79, 70, 229, 0.8);
     box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.4);

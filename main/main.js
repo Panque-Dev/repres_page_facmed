@@ -17,6 +17,7 @@
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE = "2026-01-04";
     const FORCED_REPROGRAM_CUTOFF = "2025-11-25";
+    const SELECTION_DAY = "2025-12-02";
 
     const DAY_NAMES = ["L", "M", "X", "J", "V", "S", "D"];
     const MONTH_NAMES = [
@@ -740,6 +741,7 @@
         if (!isDateWithinCalendar(dateStr)) return false;
         if (isWeekend(dateStr)) return false;
         if (isDateInVacation(dateStr)) return false;
+        if (dateStr === SELECTION_DAY) return false;
         return true;
     }
 
@@ -879,6 +881,9 @@
                 if (isDateInVacation(dateStr)) {
                     cell.classList.add("vacation");
                 }
+                if (dateStr === SELECTION_DAY) {
+                    cell.classList.add("selection-day");
+                }
 
                 const headerRow = document.createElement("div");
                 headerRow.className = "day-header";
@@ -896,6 +901,8 @@
                     metaSpan.textContent = "Fin";
                 } else if (isDateInVacation(dateStr)) {
                     metaSpan.textContent = "Vacaciones";
+                } else if (dateStr === SELECTION_DAY) {
+                    metaSpan.textContent = "Día de Selección de Sedes";
                 } else if (dow === 0) { // Only Sundays are weekends
                     metaSpan.textContent = "Fin de semana";
                 }
