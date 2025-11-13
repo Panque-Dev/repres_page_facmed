@@ -28,7 +28,10 @@ html,body{margin:0;padding:0;font-family:ui-sans-serif,system-ui,-apple-system,S
 .app-title-block h1{margin:0;font-weight:750;letter-spacing:.01em;color:#f8fbff;font-size:clamp(1.25rem,1.2rem + 0.6vw,1.6rem)}
 .app-subtitle{margin:0;font-size:.92rem;color:var(--muted)}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.toggle-inline{font-size:.86rem;color:#dfe7f3;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.toggle-inline input{accent-color:#60a5fa}
 
+/* Selector y leyenda */
 .group-selector{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .group-selector label{font-size:.9rem;color:var(--muted)}
 #group-input{width:106px;padding:9px 12px;text-align:center;border-radius:999px;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:#f0f6ff;font-size:.95rem;outline:none}
@@ -51,7 +54,7 @@ html,body{margin:0;padding:0;font-family:ui-sans-serif,system-ui,-apple-system,S
 .stats-ribbon-cards{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
 .stat-card{
     width:var(--day-cell-w);min-width:var(--day-cell-w);max-width:var(--day-cell-w);
-    border-radius:var(--radius-xl);background:rgba(255,255,255,.06);padding:10px 12px;box-shadow:0 6px 14px rgba(0,0,0,.35);
+    border-radius:var(--radius-xl);background:rgba(255,255,255,.05);padding:10px 12px;box-shadow:0 6px 14px rgba(0,0,0,.35);
     display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;
 }
 .stat-card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--subj-tint,transparent);z-index:0}
@@ -106,7 +109,8 @@ html,body{margin:0;padding:0;font-family:ui-sans-serif,system-ui,-apple-system,S
     position:relative;padding:10px 12px;border-radius:var(--radius-xl);
     font-size:.74rem; /* base más pequeña */
     cursor:grab;user-select:none;display:flex;flex-direction:column;gap:8px;color:#eef5ff;
-    background:rgba(255,255,255,.08);border:0;box-shadow:0 6px 14px rgba(0,0,0,.4);width:100%;overflow:hidden;
+    background:rgba(255,255,255,.04); /* más sutil para que se vea el tinte */
+    border:0;box-shadow:0 6px 14px rgba(0,0,0,.4);width:100%;overflow:hidden;
 }
 .exam-card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--subj-tint,transparent);z-index:0}
 .exam-card>*{position:relative;z-index:1}
@@ -120,9 +124,9 @@ html,body{margin:0;padding:0;font-family:ui-sans-serif,system-ui,-apple-system,S
 /* Encabezado de tarjeta */
 .exam-head2{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
 .exam-icon-vert{display:flex;align-items:center;justify-content:center}
-.exam-icon-vert img{width:48px;height:48px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));border-radius:16px}
+.exam-icon-vert img{width:48px;height:48px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));border-radius:18px}
 .exam-title{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
-.exam-sigla{font-weight:900;letter-spacing:.03em;font-size:1.06rem;line-height:1;cursor:help} /* sigla igual o un poco mayor */
+.exam-sigla{font-weight:900;letter-spacing:.03em;font-size:1.06rem;line-height:1;cursor:help}
 .exam-badge{font-size:.8rem;font-weight:800;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.28);line-height:1;cursor:help}
 
 /* Líneas */

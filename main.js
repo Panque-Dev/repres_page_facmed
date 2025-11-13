@@ -57,18 +57,19 @@
     let lastModeListByExam = {};
     let lastPrevNextByExam = {};
     let lastGroupsByExamDate = {};
+    let showSubjectWeeks = false;
 
     /* Utils */
-    function parseDate(s){ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
-    function formatDate(y,m,d){ return y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"); }
-    function formatHumanDate(s){ if(!s) return ""; const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; }
-    function formatHumanDateShort(s){ if(!s) return ""; const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); }
-    function isDateWithinCalendar(s){ return s>=CAL_START_DATE && s<=CAL_END_DATE; }
-    function isDateInVacation(s){ return (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END); }
-    function isWeekend(s){ return parseDate(s).getDay()===0; }
-    function isDateValidForExam(s){ if(!isDateWithinCalendar(s)) return false; if(isWeekend(s)) return false; if(isDateInVacation(s)) return false; if(s===SELECTION_DAY) return false; return true; }
-    function diffDays(aStr,bStr){ const a=parseDate(aStr), b=parseDate(bStr); return Math.round(Math.abs(b-a)/86400000); }
-    function hexToRgba(hex, a){ const h=hex.replace("#",""); const n=parseInt(h,16); const r=(n>>16)&255,g=(n>>8)&255,b=n&255; return `rgba(${r},${g},${b},${a})`; }
+    const parseDate = (s)=>{ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
+    const formatDate = (y,m,d)=> y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+    const formatHumanDate = (s)=>{ if(!s) return ""; const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; };
+    const formatHumanDateShort = (s)=>{ if(!s) return ""; const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
+    const isDateWithinCalendar = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
+    const isDateInVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END);
+    const isWeekend = (s)=> parseDate(s).getDay()===0;
+    const isDateValidForExam = (s)=> isDateWithinCalendar(s) && !isWeekend(s) && !isDateInVacation(s) && s!==SELECTION_DAY;
+    const diffDays = (aStr,bStr)=> Math.round(Math.abs(parseDate(bStr)-parseDate(aStr))/86400000);
+    const hexToRgba = (hex, a)=>{ const h=hex.replace("#",""); const n=parseInt(h,16); const r=(n>>16)&255,g=(n>>8)&255,b=n&255; return `rgba(${r},${g},${b},${a})`; };
 
     /* Muestreo 1x1 del ícono (primer píxel). Cacheado. */
     const sampledColorCache = new Map();
@@ -96,8 +97,8 @@
     }
 
     /* Storage */
-    function loadState(){ try{ const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return {groups:{}}; const p=JSON.parse(raw); if(!p.groups) p.groups={}; return p; }catch(e){ return {groups:{}}; } }
-    function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} }
+    const loadState = ()=>{ try{ const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return {groups:{}}; const p=JSON.parse(raw); if(!p.groups) p.groups={}; return p; }catch(e){ return {groups:{}}; } };
+    const saveState = (s)=>{ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} };
 
     /* Índices / cadenas */
     function buildExamIndices(){
@@ -224,7 +225,7 @@
         recomputeStatsAndGhosts();
     }
 
-    /* Tarjeta */
+    /* Helpers de siglas y tipo */
     function getSigla(subject){
         const s = SUBJECT_SIGLAS[subject];
         if (s) return s;
@@ -245,11 +246,45 @@
         }
     }
 
+    /* Distancias globales (entre cualquier materia) respecto a la moda del examen */
+    function computePrevNextGlobalDistances(baseDate, modeByExam, thisExamId){
+        let prevDist=null, nextDist=null;
+        Object.keys(modeByExam).forEach(id=>{
+            if(id===thisExamId) return;
+            const d=modeByExam[id].date;
+            if(d<baseDate){
+                const dd=diffDays(d, baseDate);
+                if(prevDist===null || dd<prevDist) prevDist=dd;
+            }else if(d>baseDate){
+                const dd=diffDays(baseDate, d);
+                if(nextDist===null || dd<nextDist) nextDist=dd;
+            }
+        });
+        return { prevDistance: prevDist, nextDistance: nextDist };
+    }
+
+    /* Semanas al siguiente examen de la misma materia */
+    function weeksToNextSameSubject(year, examId, modeByExam){
+        const exam=examIndex[examId]; if(!exam) return null;
+        const chain=(subjectChainsByYear[year]||{})[exam.subject] || [];
+        const idx=chain.indexOf(examId); if(idx===-1 || idx===chain.length-1) return null;
+        const nextId=chain[idx+1];
+        const nextExam=examIndex[nextId]; if(!nextExam) return null;
+        const from = (modeByExam[examId]?.date) || exam.officialDate;
+        const to   = (modeByExam[nextId]?.date) || nextExam.officialDate;
+        if(!from || !to) return null;
+        const days = diffDays(from, to);
+        return Math.round((days/7)*10)/10; /* 1 decimal */
+    }
+
+    /* Tarjeta */
     function createExamCard(exam, scheduledDate, statusClass, highlightForced){
         const sigla=getSigla(exam.subject);
         const badge=shortType(exam.type);
-        const prevNext=lastPrevNextByExam[exam.id] || { prevDistance:null, nextDistance:null };
-        const mode=lastModeByExam[exam.id];
+
+        const baseDate = (lastModeByExam[exam.id]?.date) || scheduledDate;
+        const global = computePrevNextGlobalDistances(baseDate, lastModeByExam, exam.id);
+        lastPrevNextByExam[exam.id] = global;
 
         const card=document.createElement("div");
         card.className="exam-card "+statusClass;
@@ -257,16 +292,16 @@
         card.draggable=true;
         card.dataset.examId=exam.id;
 
-        /* tinte del ícono: más translúcido (.08) */
+        /* tinte real del ícono (alpha un poco mayor .12) */
         const key = sigla.display.replace(/\s+/g,"");
         const fallbackHex = SUBJECT_COLORS[key] || "#4ecaff";
-        card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .08));
+        card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .12));
         const head=document.createElement("div"); head.className="exam-head2";
 
         const icon=document.createElement("div"); icon.className="exam-icon-vert";
         const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+(sigla.file)+".png";
         icon.appendChild(img);
-        sampleIconColor(img, .08, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
+        sampleIconColor(img, .12, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
 
         const titleBox=document.createElement("div"); titleBox.className="exam-title";
         const sigSpan=document.createElement("div"); sigSpan.className="exam-sigla"; sigSpan.textContent=sigla.display; sigSpan.title = exam.subject;
@@ -276,14 +311,19 @@
         head.appendChild(icon); head.appendChild(titleBox);
         card.appendChild(head);
 
-        /* Fechas y distancias abreviadas */
+        /* Fechas y distancias abreviadas (globales) */
         card.appendChild(lineStacked("última fecha aprobada:", formatHumanDateShort(scheduledDate)));
-        card.appendChild(lineStacked("sugerencia de reprogramación:", mode?formatHumanDateShort(mode.date):"—"));
+        card.appendChild(lineStacked("sugerencia de reprogramación:", lastModeByExam[exam.id]?formatHumanDateShort(lastModeByExam[exam.id].date):"—"));
 
-        const prevTxt = (prevNext.prevDistance!=null) ? `${prevNext.prevDistance} días atrás` : "—";
-        const nextTxt = (prevNext.nextDistance!=null) ? `${prevNext.nextDistance} días` : "—";
+        const prevTxt = (global.prevDistance!=null) ? `${global.prevDistance} días atrás` : "—";
+        const nextTxt = (global.nextDistance!=null) ? `${global.nextDistance} días` : "—";
         card.appendChild(line("Último departamental según votos:", prevTxt));
         card.appendChild(line("Próximo departamental según votos:", nextTxt));
+
+        if(showSubjectWeeks){
+            const w = weeksToNextSameSubject(currentYear, exam.id, lastModeByExam);
+            card.appendChild(line("Semanas para cubrir la siguiente unidad:", (w!=null? `${w} semanas` : "—")));
+        }
 
         card.addEventListener("dragstart", e=>{ e.dataTransfer.setData("text/plain", exam.id); e.dataTransfer.effectAllowed="move"; card.classList.add("dragging"); });
         card.addEventListener("dragend", ()=> card.classList.remove("dragging"));
@@ -353,32 +393,7 @@
         recomputeStatsAndGhosts();
     }
 
-    /* Distancias y fantasmas */
-    function computePrevNextDistances(year, exam, candidateDate, modeByExam){
-        const chains=subjectChainsByYear[year] || {};
-        const chain=chains[exam.subject] || [];
-        const result={ prevDistance:null, prevLabel:"", nextDistance:null, nextLabel:"" };
-        const idx=chain.indexOf(exam.id);
-        if(idx===-1) return result;
-
-        const prevId=idx>0? chain[idx-1] : null;
-        const nextId=idx<chain.length-1? chain[idx+1] : null;
-
-        if(prevId){
-            const prevExam=examIndex[prevId];
-            let prevDate=prevExam? prevExam.officialDate : null;
-            if(modeByExam[prevId]) prevDate=modeByExam[prevId].date;
-            if(prevDate){ result.prevDistance=diffDays(prevDate, candidateDate); result.prevLabel=prevExam? prevExam.type : "anterior"; }
-        }
-        if(nextId){
-            const nextExam=examIndex[nextId];
-            let nextDate=nextExam? nextExam.officialDate : null;
-            if(modeByExam[nextId]) nextDate=modeByExam[nextId].date;
-            if(nextDate){ result.nextDistance=diffDays(candidateDate, nextDate); result.nextLabel=nextExam? nextExam.type : "siguiente"; }
-        }
-        return result;
-    }
-
+    /* Fantasmas y ribbon */
     function renderGhosts(year, modeByExam){
         document.querySelectorAll(".ghost-date").forEach(el=> el.remove());
         Object.keys(modeByExam).forEach(examId=>{
@@ -386,9 +401,6 @@
             const dateStr=mode.date;
             const cell=document.querySelector('.day-cell[data-date="'+dateStr+'"]');
             if(!cell) return;
-
-            const prevNext=computePrevNextDistances(year, exam, dateStr, modeByExam);
-            lastPrevNextByExam[examId]=prevNext;
 
             const sigla=getSigla(exam.subject);
             const voters=(lastGroupsByExamDate[examId] && lastGroupsByExamDate[examId][dateStr]) ? lastGroupsByExamDate[examId][dateStr] : [];
@@ -404,7 +416,6 @@
         });
     }
 
-    /* Ribbon Próximos */
     function renderStatsRibbon(year, modeByExam, modeListByExam){
         const wrap=document.getElementById("stats-ribbon"); if(!wrap) return;
         wrap.innerHTML="";
@@ -420,12 +431,11 @@
 
             const key=sigla.display.replace(/\s+/g,"");
             const fallbackHex=SUBJECT_COLORS[key] || "#4ecaff";
-            card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .07)); /* un poco más translúcido */
-
+            card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .09));
             const icon=document.createElement("div"); icon.className="stat-icon-top";
             const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+sigla.file+".png";
             icon.appendChild(img);
-            sampleIconColor(img, .07, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
+            sampleIconColor(img, .09, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
             card.appendChild(icon);
 
             const top=document.createElement("div"); top.className="stat-top";
@@ -459,7 +469,7 @@
         });
     }
 
-    /* Cómputo modas y distancias */
+    /* Cómputo de modas y distancias (globales) */
     function recomputeStatsAndGhosts(){
         const statsYearSelect=document.getElementById("stats-year");
         const yearValue=statsYearSelect? Number(statsYearSelect.value) : currentYear || 1;
@@ -501,6 +511,7 @@
 
         renderGhosts(year, modeByExam);
         renderStatsRibbon(year, modeByExam, modeListByExam);
+        renderCurrentGroup(); /* re-render para recalcular líneas con nuevas modas */
     }
 
     /* Controles */
@@ -514,12 +525,23 @@
         const select=document.getElementById("stats-year"); if(!select) return;
         select.addEventListener("change", ()=> recomputeStatsAndGhosts());
     }
+    function wireWeeksToggle(){
+        const cb=document.getElementById("toggle-subject-weeks");
+        if(!cb) return;
+        const s=loadState(); showSubjectWeeks = !!(s.showSubjectWeeks);
+        cb.checked = showSubjectWeeks;
+        cb.addEventListener("change", ()=>{
+            showSubjectWeeks = cb.checked;
+            const st=loadState(); st.showSubjectWeeks = showSubjectWeeks; saveState(st);
+            renderCurrentGroup();
+        });
+    }
     function onResize(){
         let t=null;
         window.addEventListener("resize", ()=>{ if(t) clearTimeout(t); t=setTimeout(syncExternalCardWidth, 120); });
     }
 
-    /* Datos (idénticos a la versión previa funcional) */
+    /* Datos */
     const EXAMS_BY_YEAR = {
         1: [
             { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
@@ -635,6 +657,7 @@
         buildCalendars();
         wireGroupSelector();
         wireStatsControls();
+        wireWeeksToggle();
         onResize();
 
         const input=document.getElementById("group-input");
