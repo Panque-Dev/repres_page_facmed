@@ -1094,7 +1094,7 @@
         if (warningsEl) {
             if (forcedMessages.length) {
                 warningsEl.innerHTML =
-                    "<strong>Departamentales con reprogramación obligatoria (fecha oficial anterior al 13/11/2025):</strong><br>" +
+                    "<strong>Departamentales con reprogramación obligatoria (fecha oficial anterior al 25/11/2025):</strong><br>" +
                     forcedMessages.map(function (t) {
                         return "• " + t;
                     }).join("<br>");
