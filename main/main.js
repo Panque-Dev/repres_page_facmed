@@ -17,6 +17,7 @@
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE = "2026-01-04";
     const FORCED_REPROGRAM_CUTOFF = "2025-11-25";
+    const SELECTION_DAY = "2025-12-02";
 
     const DAY_NAMES = ["L", "M", "X", "J", "V", "S", "D"];
     const MONTH_NAMES = [
@@ -733,6 +734,7 @@
         if (!isDateWithinCalendar(dateStr)) return false;
         if (isWeekend(dateStr)) return false;
         if (isDateInVacation(dateStr)) return false;
+        if (dateStr === SELECTION_DAY) return false;
         return true;
     }
 
