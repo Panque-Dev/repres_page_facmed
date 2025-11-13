@@ -1225,16 +1225,25 @@
 
         exams.forEach(function (exam) {
             const mode = modeByExam[exam.id];
-            if (!mode) return;
-            const humanDate = formatHumanDate(mode.date);
-            const monthIdx = parseDate(mode.date).getMonth();
-            const monthName = MONTH_NAMES[monthIdx];
+            let humanDate = "";
+            let count = 0;
+            let monthName = "";
+            if (mode) {
+                humanDate = formatHumanDate(mode.date);
+                count = mode.count;
+                const monthIdx = parseDate(mode.date).getMonth();
+                monthName = MONTH_NAMES[monthIdx];
+            } else {
+                humanDate = "Sin datos";
+                count = 0;
+                monthName = "";
+            }
 
             rows.push({
                 subject: exam.subject,
                 type: exam.type,
                 date: humanDate,
-                count: mode.count,
+                count: count,
                 month: monthName
             });
         });
@@ -1263,7 +1272,7 @@
             tr.appendChild(tdDate);
 
             const tdCount = document.createElement("td");
-            tdCount.textContent = String(row.count);
+            tdCount.textContent = row.count ? String(row.count) : "";
             tr.appendChild(tdCount);
 
             const tdMonth = document.createElement("td");
