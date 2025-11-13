@@ -724,7 +724,7 @@
 
     function isDateInVacation(dateStr) {
         return (dateStr >= VACATION_START_DATE && dateStr <= VACATION_END_DATE) ||
-               (dateStr >= VACATION_SS_START && dateStr <= VACATION_SS_END);
+            (dateStr >= VACATION_SS_START && dateStr <= VACATION_SS_END);
     }
 
     function isWeekend(dateStr) {
@@ -1227,11 +1227,15 @@
                 type: exam.type,
                 date: humanDate,
                 count: mode.count,
-                month: monthName
+                month: monthName,
+                sortDate: mode.date // para ordenar del más viejo al más reciente
             });
         });
 
+        // Ordenar cronológicamente por fecha de la moda
         rows.sort(function (a, b) {
+            if (a.sortDate < b.sortDate) return -1;
+            if (a.sortDate > b.sortDate) return 1;
             if (a.subject < b.subject) return -1;
             if (a.subject > b.subject) return 1;
             if (a.type < b.type) return -1;
