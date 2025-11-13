@@ -292,7 +292,7 @@
         card.draggable=true;
         card.dataset.examId=exam.id;
 
-        /* tinte real del ícono (alpha un poco mayor .12) */
+        /* tinte del ícono (primer píxel) */
         const key = sigla.display.replace(/\s+/g,"");
         const fallbackHex = SUBJECT_COLORS[key] || "#4ecaff";
         card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .12));
@@ -405,7 +405,16 @@
             const sigla=getSigla(exam.subject);
             const voters=(lastGroupsByExamDate[examId] && lastGroupsByExamDate[examId][dateStr]) ? lastGroupsByExamDate[examId][dateStr] : [];
 
-            const ghost=document.createElement("div"); ghost.className="ghost-date"; ghost.dataset.examId=examId; ghost.dataset.date=dateStr;
+            const ghost=document.createElement("div");
+            ghost.className="ghost-date";
+            ghost.dataset.examId=examId;
+            ghost.dataset.date=dateStr;
+
+            /* opacidad dinámica: 0.7 / #grupos, con tope 0.7 */
+            const groupsCount = voters.length;
+            const alpha = Math.min(0.7, groupsCount > 0 ? (0.7 / groupsCount) : 0.7);
+            ghost.style.opacity = alpha.toFixed(3);
+
             const lines=[
                 `${sigla.display} – ${shortType(exam.type).badge}`,
                 "este está siendo el día más votado para el examen por toda la generación, según el grupo:",
@@ -541,7 +550,7 @@
         window.addEventListener("resize", ()=>{ if(t) clearTimeout(t); t=setTimeout(syncExternalCardWidth, 120); });
     }
 
-    /* Datos */
+    /* Datos (idénticos) */
     const EXAMS_BY_YEAR = {
         1: [
             { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
