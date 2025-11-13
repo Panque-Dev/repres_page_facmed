@@ -963,7 +963,7 @@
 
         if (!groupNumber || isNaN(groupNumber)) {
             currentGroupId = null;
-            status.textContent = "Escribe un grupo entre 1101–1170 o 2201–2270";
+            status.textContent = "Escribe un grupo entre 1101–1185 o 2201–2265";
             return;
         }
 
@@ -1013,8 +1013,8 @@
         const metaEl = document.createElement("div");
         metaEl.className = "exam-meta";
         metaEl.textContent =
-            "Actual: " + formatHumanDate(scheduledDate) +
-            " · Oficial: " + formatHumanDate(exam.officialDate) +
+            "Reprogramación: " + formatHumanDate(scheduledDate) +
+            "   Original: " + formatHumanDate(exam.officialDate) +
             " " + (exam.officialTime || "");
         card.appendChild(metaEl);
 
