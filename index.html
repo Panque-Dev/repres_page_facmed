@@ -8,72 +8,34 @@
 </head>
 <body>
 <div class="app">
-    <!-- HEADER: UNA SOLA CINTA -->
     <header class="app-header single-ribbon">
         <div class="ribbon ribbon-header">
             <div class="header-inner">
                 <div class="app-title-block">
                     <h1>Reprogramación de departamentales</h1>
-                    <p class="app-subtitle">
-                        Arrastra los exámenes sobre el calendario continuo Noviembre 2025 – Junio 2026
-                    </p>
+                    <p class="app-subtitle">Arrastra los exámenes sobre el calendario continuo Noviembre 2025 – Junio 2026</p>
                 </div>
-
                 <div class="header-right">
                     <div class="group-selector">
                         <label for="group-input">Grupo</label>
                         <input id="group-input" type="number" min="1101" max="2270" step="1" inputmode="numeric" />
                         <span id="group-status" class="group-status"></span>
                     </div>
-
                     <div class="legend">
-              <span class="legend-item">
-                <span class="legend-swatch status-original"></span>
-                Oficial intacta
-              </span>
-                        <span class="legend-item">
-                <span class="legend-swatch status-valid"></span>
-                Reprogramada válida
-              </span>
-                        <span class="legend-item">
-                <span class="legend-swatch status-invalid"></span>
-                Fecha inválida
-              </span>
-                        <span class="legend-item">
-                <span class="ghost-swatch"></span>
-                Fecha fantasma
-              </span>
+                        <span class="legend-item"><span class="legend-swatch status-original"></span>Oficial intacta</span>
+                        <span class="legend-item"><span class="legend-swatch status-valid"></span>Reprogramada válida</span>
+                        <span class="legend-item"><span class="legend-swatch status-invalid"></span>Fecha inválida</span>
+                        <span class="legend-item"><span class="ghost-swatch"></span>Fecha fantasma</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="app-main">
-        <section class="main-panel">
-            <div class="panel-bar panel-bar-top"></div>
-            <div class="panel-bar panel-bar-middle"></div>
-
-            <div id="warnings" class="warnings"></div>
-
-            <section id="pending-exams" class="pending-exams">
-                <div class="pending-exams-header">
-                    <h2>Exámenes anteriores al Paro</h2>
-                </div>
-                <p class="pending-hint">
-                    Los departamentales en esta caja están programados antes de noviembre.
-                    Arrastra estas tarjetas a un día libre del calendario.
-                </p>
-                <div id="pending-exams-list" class="pending-exams-list"></div>
-            </section>
-
-            <div id="calendar" class="calendar"></div>
-        </section>
-
-        <!-- SIDEBAR en cintas -->
-        <aside class="sidebar ribbons">
-            <div class="ribbon">
-                <h2>Exámenes departamentales</h2>
+    <section class="stats-ribbon-wrap">
+        <div class="ribbon ribbon-stats">
+            <div class="stats-ribbon-header">
+                <h2>Próximos departamentales (modas)</h2>
                 <div class="stats-controls">
                     <label for="stats-year">Año</label>
                     <select id="stats-year">
@@ -81,28 +43,26 @@
                         <option value="2">Segundo</option>
                     </select>
                 </div>
-                <div class="stats-summary">
-                    <p id="stats-summary-text"></p>
-                </div>
             </div>
+            <div id="stats-ribbon" class="stats-ribbon-cards" aria-live="polite"></div>
+        </div>
+    </section>
 
-            <div class="ribbon">
-                <div class="stats-table-wrapper">
-                    <table id="stats-table">
-                        <thead>
-                        <tr>
-                            <th>Asignatura</th>
-                            <th>Examen</th>
-                            <th>Moda</th>
-                            <th>Votos</th>
-                            <th>Mes</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+    <main class="app-main">
+        <section class="main-panel">
+            <div class="panel-bar panel-bar-top"></div>
+            <div class="panel-bar panel-bar-middle"></div>
+
+            <section id="pending-exams" class="pending-exams">
+                <div class="pending-exams-header">
+                    <h2>Exámenes anteriores al Paro</h2>
                 </div>
-            </div>
-        </aside>
+                <p class="pending-hint">Los departamentales en esta caja están programados antes de noviembre. Arrastra estas tarjetas a un día libre del calendario.</p>
+                <div id="pending-exams-list" class="pending-exams-list"></div>
+            </section>
+
+            <div id="calendar" class="calendar"></div>
+        </section>
     </main>
 </div>
 
