@@ -1,50 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Reprogramación de departamentales</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="main.css" />
 </head>
 <body>
 <div class="app">
-    <!-- HEADER con cintas -->
-    <header class="app-header ribbons">
-        <div class="ribbon">
-            <div class="app-title-block">
-                <h1>Reprogramación de departamentales</h1>
-                <p class="app-subtitle">
-                    Arrastra los exámenes sobre el calendario continuo Noviembre 2025 – Junio 2026
-                </p>
-            </div>
-        </div>
-
-        <div class="ribbon">
-            <div class="header-right">
-                <div class="group-selector">
-                    <label for="group-input">Grupo</label>
-                    <input id="group-input" type="number" min="1101" max="2270" step="1" inputmode="numeric" />
-                    <span id="group-status" class="group-status"></span>
+    <!-- HEADER: UNA SOLA CINTA -->
+    <header class="app-header single-ribbon">
+        <div class="ribbon ribbon-header">
+            <div class="header-inner">
+                <div class="app-title-block">
+                    <h1>Reprogramación de departamentales</h1>
+                    <p class="app-subtitle">
+                        Arrastra los exámenes sobre el calendario continuo Noviembre 2025 – Junio 2026
+                    </p>
                 </div>
 
-                <div class="legend">
-                    <span class="legend-item">
-                        <span class="legend-swatch status-original"></span>
-                        Oficial intacta
-                    </span>
-                    <span class="legend-item">
-                        <span class="legend-swatch status-valid"></span>
-                        Reprogramada válida
-                    </span>
-                    <span class="legend-item">
-                        <span class="legend-swatch status-invalid"></span>
-                        Fecha inválida
-                    </span>
-                    <span class="legend-item">
-                        <span class="ghost-swatch"></span>
-                        Fecha fantasma
-                    </span>
+                <div class="header-right">
+                    <div class="group-selector">
+                        <label for="group-input">Grupo</label>
+                        <input id="group-input" type="number" min="1101" max="2270" step="1" inputmode="numeric" />
+                        <span id="group-status" class="group-status"></span>
+                    </div>
+
+                    <div class="legend">
+              <span class="legend-item">
+                <span class="legend-swatch status-original"></span>
+                Oficial intacta
+              </span>
+                        <span class="legend-item">
+                <span class="legend-swatch status-valid"></span>
+                Reprogramada válida
+              </span>
+                        <span class="legend-item">
+                <span class="legend-swatch status-invalid"></span>
+                Fecha inválida
+              </span>
+                        <span class="legend-item">
+                <span class="ghost-swatch"></span>
+                Fecha fantasma
+              </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,7 +70,7 @@
             <div id="calendar" class="calendar"></div>
         </section>
 
-        <!-- SIDEBAR como cintas apiladas -->
+        <!-- SIDEBAR en cintas -->
         <aside class="sidebar ribbons">
             <div class="ribbon">
                 <h2>Exámenes departamentales</h2>
@@ -82,7 +81,6 @@
                         <option value="2">Segundo</option>
                     </select>
                 </div>
-
                 <div class="stats-summary">
                     <p id="stats-summary-text"></p>
                 </div>
@@ -116,8 +114,8 @@
         <p>2025 - Derechos reservados</p>
     </div>
     <div class="footer-logos">
-        <img src="/img/logo-unam.png" alt="Logo UNAM">
-        <img src="/img/logo_facmed.png" alt="Logo FacMed">
+        <img src="/img/logo-unam.png" alt="Logo UNAM" />
+        <img src="/img/logo_facmed.png" alt="Logo FacMed" />
     </div>
 </footer>
 </body>
