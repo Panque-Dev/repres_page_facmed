@@ -17,7 +17,6 @@
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE = "2026-01-04";
     const FORCED_REPROGRAM_CUTOFF = "2025-11-25";
-    const SELECTION_DAY = "2025-12-02";
 
     const DAY_NAMES = ["L", "M", "X", "J", "V", "S", "D"];
     const MONTH_NAMES = [
@@ -228,13 +227,6 @@
             },
 
             // INFORMÁTICA BIOMÉDICA I
-            {
-                id: "1-INF1-P1",
-                subject: "Informática Biomédica I",
-                type: "Primer parcial",
-                officialDate: "2026-02-13",
-                officialTime: "09:00"
-            },
             {
                 id: "1-INF1-P2",
                 subject: "Informática Biomédica I",
@@ -741,7 +733,6 @@
         if (!isDateWithinCalendar(dateStr)) return false;
         if (isWeekend(dateStr)) return false;
         if (isDateInVacation(dateStr)) return false;
-        if (dateStr === SELECTION_DAY) return false;
         return true;
     }
 
@@ -881,9 +872,6 @@
                 if (isDateInVacation(dateStr)) {
                     cell.classList.add("vacation");
                 }
-                if (dateStr === SELECTION_DAY) {
-                    cell.classList.add("selection-day");
-                }
 
                 const headerRow = document.createElement("div");
                 headerRow.className = "day-header";
@@ -901,8 +889,6 @@
                     metaSpan.textContent = "Fin";
                 } else if (isDateInVacation(dateStr)) {
                     metaSpan.textContent = "Vacaciones";
-                } else if (dateStr === SELECTION_DAY) {
-                    metaSpan.textContent = "Día de Selección de Sedes";
                 } else if (dow === 0) { // Only Sundays are weekends
                     metaSpan.textContent = "Fin de semana";
                 }
@@ -1225,25 +1211,16 @@
 
         exams.forEach(function (exam) {
             const mode = modeByExam[exam.id];
-            let humanDate = "";
-            let count = 0;
-            let monthName = "";
-            if (mode) {
-                humanDate = formatHumanDate(mode.date);
-                count = mode.count;
-                const monthIdx = parseDate(mode.date).getMonth();
-                monthName = MONTH_NAMES[monthIdx];
-            } else {
-                humanDate = "Sin datos";
-                count = 0;
-                monthName = "";
-            }
+            if (!mode) return;
+            const humanDate = formatHumanDate(mode.date);
+            const monthIdx = parseDate(mode.date).getMonth();
+            const monthName = MONTH_NAMES[monthIdx];
 
             rows.push({
                 subject: exam.subject,
                 type: exam.type,
                 date: humanDate,
-                count: count,
+                count: mode.count,
                 month: monthName
             });
         });
@@ -1272,7 +1249,7 @@
             tr.appendChild(tdDate);
 
             const tdCount = document.createElement("td");
-            tdCount.textContent = row.count ? String(row.count) : "";
+            tdCount.textContent = String(row.count);
             tr.appendChild(tdCount);
 
             const tdMonth = document.createElement("td");
