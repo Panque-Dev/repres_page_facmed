@@ -127,6 +127,25 @@
 
     const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
 
+    // ===== Orden "más próximo → más lejano" (futuro primero; luego pasado por cercanía) =====
+    function startOfToday(){
+        const now=new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+    function proximityKey(dateStr){
+        const d=parseDate(dateStr), t0=startOfToday();
+        const delta=d - t0;                    // ms desde hoy
+        const bucket = delta >= 0 ? 0 : 1;     // 0 = futuro, 1 = pasado
+        const dist   = Math.abs(delta);        // magnitud de cercanía
+        return { bucket, dist, tie: dateStr };
+    }
+    function compareByProximity(aDate, bDate){
+        const a=proximityKey(aDate), b=proximityKey(bDate);
+        if(a.bucket!==b.bucket) return a.bucket - b.bucket;   // futuro antes que pasado
+        if(a.dist!==b.dist)     return a.dist - b.dist;       // más cercano primero
+        return a.tie.localeCompare(b.tie);                    // desempate estable
+    }
+
     /* =============== Catálogos =============== */
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -237,7 +256,6 @@
             { id: "2-INMU-O2", subject: "Inmunología", type: "Segundo ordinario", officialDate: "2026-05-25", officialTime: "08:00" },
             { id: "2-INMU-EX", subject: "Inmunología", type: "Extraordinario", officialDate: "2026-06-01", officialTime: "11:00" },
 
-            { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: "2025-09-27", officialTime: "08:00" },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: "2025-11-26", officialTime: "15:00" },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: "2025-12-02", officialTime: "08:00" },
             { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08", officialTime: "13:00" },
@@ -734,8 +752,8 @@
         if(wrap) wrap.innerHTML="";
         const items=Object.keys(modeByExam).map(id=>({ exam: examIdToObj[id], mode: modeByExam[id], list: modeListByExam[id]||[] }));
 
-        // Orden fijo por fecha (noviembre → junio)
-        items.sort((a,b)=> a.mode.date.localeCompare(b.mode.date));
+        // Orden: más próximo → más lejano (futuro primero; luego pasado por cercanía)
+        items.sort((a,b)=> compareByProximity(a.mode.date, b.mode.date));
 
         if(!wrap || !empty) return;
         if(items.length===0){ empty.style.display="block"; return; }
