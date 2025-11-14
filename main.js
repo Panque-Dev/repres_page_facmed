@@ -285,7 +285,7 @@
             { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-6", officialTime: "8:00" },
             { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "8:00" },
             { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" }
+            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" },
 
             /* ===== Promo ===== */
             { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
