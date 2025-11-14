@@ -7,41 +7,39 @@
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-<!-- Banner superior de advertencia móvil -->
 <div id="mobile-warning" class="top-banner" role="alert" aria-live="polite">
     <span class="top-banner-text">NO SE RECOMIENDA USAR ESTA APLICACIÓN EN TELÉFONOS MÓVILES POR QUE SE PUEDEN DEFORMAR EL CONTENIDO DE CADA CAJA</span>
     <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
 </div>
 
 <div class="app">
-    <div id="print-header" class="print-header">
-        <h1>Propuesta de reprogramación de departamentales</h1>
-        <p class="print-subtitle">Calendario continuo Noviembre 2025 – Junio 2026</p>
-        <div class="print-meta">
-            <span id="print-group"></span>
-            <span id="print-captured-at"></span>
-        </div>
-    </div>
-
     <header class="app-header single-ribbon">
         <div class="ribbon ribbon-header">
             <div class="header-inner">
                 <div class="app-title-block">
                     <h1>Formato para la Reprogramación de Departamentales</h1>
-                    <p class="app-subtitle">Arrastra los exámenes sobre el calendario continuo Noviembre 2025 – Junio 2026</p>
+                    <p class="app-subtitle">Utiliza esta página para crear rápidamente tus propuestas arrastrando los examenes sobre el calendario</p>
                 </div>
+
                 <div class="header-right">
                     <div class="group-selector">
                         <label for="group-input">Grupo</label>
-                        <input id="group-input" type="number" min="1101" max="2270" step="1" inputmode="numeric" />
+                        <input id="group-input" type="number" min="1101" max="2275" step="1" inputmode="numeric" />
                         <span id="group-status" class="group-status"></span>
+                        <!-- aviso permanente bajo el campo -->
+                        <div id="group-hint" class="group-hint">
+                            Ingresa tu grupo de primero 11## o de segundo 22##
+                            o Escribe 0000 o RESULTADOS para ver solo los resultados.
+                        </div>
                     </div>
+
                     <div class="legend">
                         <span class="legend-item"><span class="legend-swatch status-original"></span>Oficial intacta</span>
                         <span class="legend-item"><span class="legend-swatch status-valid"></span>Reprogramada válida</span>
                         <span class="legend-item"><span class="legend-swatch status-invalid"></span>Fecha inválida</span>
                         <span class="legend-item"><span class="ghost-swatch"></span>Fecha fantasma</span>
                     </div>
+
                     <div class="header-actions">
                         <label class="toggle-inline" title="Agrega una 4ª fila con semanas hasta el siguiente examen de la misma materia">
                             <input id="toggle-subject-weeks" type="checkbox" />
@@ -66,6 +64,7 @@
                     </select>
                 </div>
             </div>
+            <div id="stats-empty" class="stats-empty">Aún no hay datos suficientes para calcular modas.</div>
             <div id="stats-ribbon" class="stats-ribbon-cards" aria-live="polite"></div>
         </div>
     </section>
@@ -79,7 +78,7 @@
                 <div class="pending-exams-header">
                     <h2>Exámenes anteriores al Paro</h2>
                 </div>
-                <p class="pending-hint">Los departamentales en esta caja estuvieron programados antes de noviembre. Arrastra estas tarjetas a un día libre del calendario.</p>
+                <p class="pending-hint">Arrastra estas tarjetas a un día libre del calendario.</p>
                 <div id="pending-exams-list" class="pending-exams-list"></div>
             </section>
 
@@ -88,17 +87,17 @@
     </main>
 </div>
 
-<script src="main.js"></script>
-
 <footer class="app-footer">
     <div class="footer-text">
         <p>Hecho por @mauricioisbl y panquepy</p>
         <p>2025 - Derechos más o menos reservados</p>
     </div>
     <div class="footer-logos">
-        <img src="/img/logo-unam.png" alt="Logo UNAM" />
-        <img src="/img/logo_facmed.png" alt="Logo FacMed" />
+        <img src="img/logo-unam.png" alt="Logo UNAM" />
+        <img src="img/logo_facmed.png" alt="Logo FacMed" />
     </div>
 </footer>
+
+<script defer src="main.js"></script>
 </body>
 </html>

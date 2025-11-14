@@ -1,0 +1,8 @@
+{
+  "name": "repres_page_facmed",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^6.3.0"
+  }
+}

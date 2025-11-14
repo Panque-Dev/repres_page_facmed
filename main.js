@@ -1,18 +1,13 @@
-(function () {
+(function(){
     "use strict";
 
-    /* =================== Config y Constantes =================== */
-
-    const STORAGE_KEY = "deptScheduler.v9";               // bump por cambios
-    const CSV_DB_KEY  = "deptScheduler.csvDB.v2";         // respaldo si no hay OPFS
-
-    const YEAR1_RANGE = { min: 1101, max: 1170 };
-    const YEAR2_RANGE = { min: 2201, max: 2270 };
+    /* ================= CONFIG ================= */
+    const YEAR1_RANGE = { min: 1101, max: 1188 };   // PRIMERO
+    const YEAR2_RANGE = { min: 2201, max: 2275 };   // SEGUNDO
 
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    // Periodos escolares
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
@@ -21,25 +16,26 @@
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
 
-    // Fantasmas
-    const MAX_GHOSTS_PER_EXAM = 3;
-    const MAX_ALPHA_MAIN = 0.5;
-    const MAX_ALPHA_ALT  = 0.5;
-    const MIN_ALPHA_CAP_WHEN_FEW = 0.2;
+    // versión de estado
+    const STORAGE_KEY   = "deptScheduler.state.v6_remote";
+    const SNAPSHOT_KEY  = (year)=>`deptScheduler.snapshot.year${year}`;
 
-    // ======= RESTRICCIONES FOURNIER (visible y con aviso) =======
+    // Fantasmas
+    const MAX_GHOSTS_PER_EXAM      = 3;
+    const MAX_ALPHA_MAIN           = 0.5;
+    const MAX_ALPHA_ALT            = 0.5;
+    const MIN_ALPHA_CAP_WHEN_FEW   = 0.2;
+
+    /* ======= Restricciones Fournier (visibles en calendario) ======= */
     const FOURNIER_RESTRICTIONS = {
-        // Nov 2025
         "2025-11-24": { kind: "blocked" },
 
-        // Dic 2025
         "2025-12-01": { kind: "blocked" },
         "2025-12-02": { kind: "blocked" },
         "2025-12-03": { kind: "blocked" },
         "2025-12-04": { kind: "blocked" },
         "2025-12-08": { kind: "blocked" },
 
-        // Ene 2026
         "2026-01-06": { kind: "blocked" },
         "2026-01-07": { kind: "blocked" },
         "2026-01-13": { kind: "blocked" },
@@ -54,7 +50,6 @@
         "2026-01-28": { kind: "blocked" },
         "2026-01-30": { kind: "blocked" },
 
-        // Feb 2026
         "2026-02-03": { kind: "blocked" },
         "2026-02-04": { kind: "blocked" },
         "2026-02-05": { kind: "blocked" },
@@ -69,8 +64,11 @@
         "2026-02-20": { kind: "blocked" },
         "2026-02-23": { kind: "blocked" },
         "2026-02-24": { kind: "blocked" },
+        "2026-02-25": { kind: "free" },
+        "2026-02-26": { kind: "free" },
+        "2026-02-27": { kind: "free" },
+        "2026-02-28": { kind: "free" },
 
-        // Mar 2026
         "2026-03-02": { kind: "blocked" },
         "2026-03-04": { kind: "partial_until", freeUntil: "16:00" },
         "2026-03-05": { kind: "blocked" },
@@ -87,38 +85,65 @@
         "2026-03-24": { kind: "blocked" },
         "2026-03-25": { kind: "blocked" },
         "2026-03-26": { kind: "blocked" },
-        "2026-03-27": { kind: "blocked" }
+        "2026-03-27": { kind: "blocked" },
+        "2026-03-30": { kind: "vac" },
+        "2026-03-31": { kind: "vac" }
     };
 
     const FOURNIER_REASON_TEXT =
         "Estos son los motivos por los que el Fournier está ocupado:\n\n" +
         "-aplicación de exámenes de otros grados escolares incluyendo certificaciones o exámenes profesionales.";
 
-    /* =================== Utilidades =================== */
+    /* =============== Estado global UI =============== */
+    let currentGroupId = null;     // string con el grupo en modo edición
+    let currentYear    = 1;        // 1 o 2
+    let showSubjectWeeks = false;
+    let resultsMode = false;       // true cuando grupo === "0000" o "RESULTADOS"
 
-    const parseDate = (s)=>{ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
-    const formatDate = (y,m,d)=> y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
-    const formatHumanDate = (s)=>{ if(!s) return ""; const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; };
-    const formatHumanDateShort = (s)=>{ if(!s) return ""; const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
-    const diffDays = (aStr,bStr)=> Math.round(Math.abs(parseDate(bStr)-parseDate(aStr))/86400000);
-    const hexToRgba = (hex, a)=>{ const h=hex.replace("#",""); const n=parseInt(h,16); const r=(n>>16)&255,g=(n>>8)&255,b=n&255; return `rgba(${r},${g},${b},${a})`; };
+    // agregados para distancias y fantasmas
+    let lastModeByExamAll = {};
+    let lastModeListByExamAll = {};
+    let lastTotalsByExamAll = {};
+    let lastModeListByExamOthers = {};
+    let lastTotalsByExamOthers = {};
+    let lastGroupsByExamDateOthers = {};
 
-    const isDateWithinCalendar = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
-    const isDateInVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END);
-    const isWeekend = (s)=> parseDate(s).getDay()===0; // domingo
-    const isDateValidForExam = (s)=> isDateWithinCalendar(s) && !isWeekend(s) && !isDateInVacation(s) && s!==SELECTION_DAY;
+    /* =============== Utilidades =============== */
+    const $id = (s)=> document.getElementById(s);
+    const safeToggle = (el, show)=>{ if(!el) return; el.classList[show? "remove":"add"]("hide"); };
 
-    function getFournierRestriction(dateStr){ return FOURNIER_RESTRICTIONS[dateStr] || null; }
-    function getExamTime(exam){
-        return (exam && typeof exam.officialTime==="string" && exam.officialTime.length>=5)
-            ? exam.officialTime.slice(0,5) : "08:00";
+    const parseDate   = (s)=>{ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
+    const formatDate  = (y,m,d)=> y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+    const formatHuman = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; };
+    const formatShort = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
+    const diffDays    = (a,b)=> Math.round(Math.abs(parseDate(b)-parseDate(a))/86400000);
+    const hexToRgba   = (hex, a)=>{ const h=hex.replace("#",""); const n=parseInt(h,16); const r=(n>>16)&255,g=(n>>8)&255,b=n&255; return `rgba(${r},${g},${b},${a})`; };
+
+    const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
+    const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
+    const isSunday = (s)=> parseDate(s).getDay()===0;
+    const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && s!==SELECTION_DAY;
+    const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
+
+    const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
+
+    // === proximidad temporal para ordenar modas ===
+    function startOfToday(){ const now=new Date(); return new Date(now.getFullYear(), now.getMonth(), now.getDate()); }
+    function proximityKey(dateStr){
+        const d=parseDate(dateStr), t0=startOfToday();
+        const delta=d - t0; const bucket = delta >= 0 ? 0 : 1; const dist = Math.abs(delta);
+        return { bucket, dist, tie: dateStr };
+    }
+    function compareByProximity(aDate, bDate){
+        const a=proximityKey(aDate), b=proximityKey(bDate);
+        if(a.bucket!==b.bucket) return a.bucket - b.bucket;
+        if(a.dist!==b.dist) return a.dist - b.dist;
+        return a.tie.localeCompare(b.tie);
     }
 
-    /* =================== Diccionarios UI =================== */
-
+    /* =============== Catálogos =============== */
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-
     const EXAM_ORDER = ["Primer parcial","Segundo parcial","Tercer parcial","Cuarto parcial","Primer ordinario","Segundo ordinario","Extraordinario"];
 
     const SUBJECT_SIGLAS = {
@@ -132,7 +157,6 @@
         "Introducción a la Salud Mental": { display: "ISM", file: "ISM" },
         "Informática Biomédica I": { display: "IB1", file: "IB1" },
         "Informática Biomédica II": { display: "IB2", file: "IB2" },
-
         "Fisiología": { display: "FIS", file: "FIS" },
         "Farmacología": { display: "FAR", file: "FAR" },
         "Inmunología": { display: "INM", file: "INM" },
@@ -140,914 +164,15 @@
         "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
         "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
     };
-
     const SUBJECT_COLORS = {
         ANA:"#A8003D", BQM:"#831438", HIS:"#e11d48", EMB:"#E48090", SPC:"#831438", ISM:"#641C74",
         IBC1:"#22d3ee", IBC2:"#06b6d4", IB1:"#00b4d8", IB2:"#00a896",
         FIS:"#60a5fa", FAR:"#f59e0b", INM:"#22c55e", MyP:"#fb7185", ICR:"#38bdf8", PCV:"#14b8a6"
     };
 
-    /* =================== Índices y estado =================== */
-
-    const examIndex = {};
-    const subjectChainsByYear = { 1:{}, 2:{} };
-    const examNameIndex = {1:{}, 2:{}};
-
-    let currentGroupId = null;
-    let currentYear = 1;
-
-    // caches de modas
-    let lastModeByExamAll = {};
-    let lastModeListByExamAll = {};
-    let lastTotalsByExamAll = {};
-    let lastModeByExamOthers = {};
-    let lastModeListByExamOthers = {};
-    let lastTotalsByExamOthers = {};
-    let lastGroupsByExamDateOthers = {};
-    let showSubjectWeeks = false;
-
-    function buildExamIndices(){
-        [1,2].forEach(year=>{
-            const exams=EXAMS_BY_YEAR[year];
-            const bySubject={};
-            exams.forEach(exam=>{
-                examIndex[exam.id]=exam;
-                (bySubject[exam.subject] ||= []).push(exam);
-                const key = `${exam.subject} — ${exam.type}`.trim();
-                examNameIndex[year][key] = exam.id;
-            });
-            const chains={};
-            Object.keys(bySubject).forEach(sub=>{
-                const list=bySubject[sub].slice().sort((a,b)=>{
-                    const ia=EXAM_ORDER.indexOf(a.type), ib=EXAM_ORDER.indexOf(b.type);
-                    return (ia-ib) || a.officialDate.localeCompare(b.officialDate);
-                });
-                chains[sub]=list.map(e=>e.id);
-            });
-            subjectChainsByYear[year]=chains;
-        });
-    }
-
-    /* =================== Storage =================== */
-
-    function loadState(){
-        try{
-            const raw=localStorage.getItem(STORAGE_KEY);
-            if(!raw) return {groups:{}, showSubjectWeeks:false, hideMobileBanner:false};
-            const s=JSON.parse(raw);
-            if(!s.groups) s.groups={};
-            if(typeof s.showSubjectWeeks!=="boolean") s.showSubjectWeeks=false;
-            if(typeof s.hideMobileBanner!=="boolean") s.hideMobileBanner=false;
-            return s;
-        }catch(e){
-            return {groups:{}, showSubjectWeeks:false, hideMobileBanner:false};
-        }
-    }
-    function saveState(s){
-        try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){}
-    }
-
-    /* ====== CSV/OPFS: “base de datos” ====== */
-
-    const hasOPFS = () => !!(navigator && navigator.storage && navigator.storage.getDirectory);
-
-    async function opfsDirGrupos(createIfMissing){
-        const root = await navigator.storage.getDirectory();
-        try{
-            return await root.getDirectoryHandle("grupos", { create: !!createIfMissing });
-        }catch(e){
-            if(createIfMissing) throw e;
-            return null;
-        }
-    }
-
-    function ddmmyyyyToIso(s){
-        const [d,m,y]=s.trim().split("/");
-        if(!d||!m||!y) return null;
-        return `${y}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`;
-    }
-
-    function parseCsvSimple(csvText){
-        const lines = csvText.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-        if(!lines.length) return [];
-        const rows=[];
-        for(let i=1;i<lines.length;i++){
-            const line = lines[i];
-            let name="", datePart="";
-            if(line.startsWith('"')){
-                const end = line.indexOf('",');
-                if(end>=0){ name = line.slice(1,end).replace(/""/g,'"'); datePart = line.slice(end+2).trim(); }
-                else { continue; }
-            }else{
-                const idx = line.indexOf(",");
-                if(idx>=0){ name=line.slice(0,idx).trim(); datePart=line.slice(idx+1).trim(); }
-                else { continue; }
-            }
-            rows.push({ name, date: ddmmyyyyToIso(datePart) });
-        }
-        return rows;
-    }
-
-    async function opfsWriteCsv(groupId, csvText){
-        const dir = await opfsDirGrupos(true);
-        const fileHandle = await dir.getFileHandle(`${groupId}.csv`, { create: true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(csvText);
-        await writable.close();
-        // Nota: se guarda silenciosamente en OPFS en /grupos/ sin notificación
-    }
-
-    async function opfsReadAllGroups(){
-        const result = {};
-        const dir = await opfsDirGrupos(false);
-        if(!dir) return result;
-        for await (const [name, handle] of dir.entries()){
-            if(handle.kind !== "file") continue;
-            if(!/\.csv$/i.test(name)) continue;
-            const groupId = name.replace(/\.csv$/i,"");
-            try{
-                const file = await handle.getFile();
-                const text = await file.text();
-                const rows = parseCsvSimple(text);
-                if(!rows.length) continue;
-
-                // Deducir año por rango de grupo
-                let year = null;
-                const gnum = parseInt(groupId,10);
-                if(!isNaN(gnum)){
-                    if(gnum>=YEAR1_RANGE.min && gnum<=YEAR1_RANGE.max) year=1;
-                    else if(gnum>=YEAR2_RANGE.min && gnum<=YEAR2_RANGE.max) year=2;
-                }
-                // Construir propuestas
-                const proposals = {};
-                rows.forEach(r=>{
-                    const id = (year && examNameIndex[year][r.name]) || examNameIndex[1][r.name] || examNameIndex[2][r.name];
-                    if(id && r.date) proposals[id]=r.date;
-                });
-                if(Object.keys(proposals).length){
-                    result[groupId] = { year: year || 1, proposals };
-                }
-            }catch(e){ /* ignora archivos corruptos */ }
-        }
-        return result;
-    }
-
-    // Respaldo localStorage cuando no hay OPFS
-    function loadCsvDB(){ try{ return JSON.parse(localStorage.getItem(CSV_DB_KEY)||"{}"); }catch(e){return {};} }
-    function saveCsvDB(db){ try{ localStorage.setItem(CSV_DB_KEY, JSON.stringify(db)); }catch(e){} }
-
-    async function persistCsvDatabaseEntry(groupId, csvText, map){
-        if(hasOPFS()){
-            try{
-                await opfsWriteCsv(groupId, csvText);
-            }catch(e){
-                const db=loadCsvDB(); db[groupId]={proposals:map,csv:csvText,updatedAt:new Date().toISOString()}; saveCsvDB(db);
-            }
-        }else{
-            const db=loadCsvDB(); db[groupId]={proposals:map,csv:csvText,updatedAt:new Date().toISOString()}; saveCsvDB(db);
-        }
-    }
-
-    // IMPORTANTE: ahora NO sobreescribe el grupo activo, así puedes mover libremente;
-    // sí actualiza a los demás grupos para fantasmas/estadísticas.
-    async function importCsvDBToState(options){
-        const { excludeGroupId=null } = options || {};
-        const state=loadState();
-        let source = {};
-
-        if(hasOPFS()){
-            try{ source = await opfsReadAllGroups(); }catch(e){ source = {}; }
-        }
-        const db = loadCsvDB();
-        Object.keys(db).forEach(gid=>{
-            if(source[gid]) return;
-            if(db[gid] && db[gid].proposals){ source[gid] = { year: state.groups[gid]?.year || 1, proposals: db[gid].proposals }; }
-        });
-
-        Object.keys(source).forEach(gid=>{
-            const entry = source[gid];
-            if(!state.groups[gid]){
-                state.groups[gid] = { year: entry.year || 1, approved:{}, proposals:{} };
-            }
-            state.groups[gid].year = entry.year || state.groups[gid].year || 1;
-
-            if(String(gid) === String(excludeGroupId)){
-                // no tocamos sus propuestas locales
-            }else{
-                // reflejamos CSV como verdad para fantasmas/estadísticas de otros grupos
-                state.groups[gid].proposals = Object.assign({}, entry.proposals);
-            }
-        });
-        saveState(state);
-    }
-
-    function createInitialGroupEntry(groupId, year){
-        const approved = {};
-        const proposals = {};
-        const exams=EXAMS_BY_YEAR[year]||[];
-        exams.forEach(ex=>{
-            approved[ex.id]=ex.officialDate;
-            proposals[ex.id]=ex.officialDate;
-        });
-        return { year, approved, proposals };
-    }
-    function ensureGroupInitialized(groupId, year){
-        const state=loadState();
-        if(!state.groups[groupId]){ state.groups[groupId]=createInitialGroupEntry(groupId, year); saveState(state); }
-        else if(!state.groups[groupId].year){ state.groups[groupId].year=year; saveState(state); }
-        else if(!state.groups[groupId].approved || !state.groups[groupId].proposals){
-            const exams=EXAMS_BY_YEAR[year]||[];
-            const approved = state.groups[groupId].approved || {};
-            const proposals = state.groups[groupId].proposals || {};
-            exams.forEach(ex=>{
-                if(!approved[ex.id]) approved[ex.id]=ex.officialDate;
-                if(!proposals[ex.id]) proposals[ex.id]=ex.officialDate;
-            });
-            state.groups[groupId].approved = approved;
-            state.groups[groupId].proposals = proposals;
-            delete state.groups[groupId].exams;
-            saveState(state);
-        }
-    }
-
-    /* =================== Calendario =================== */
-
-    function getMonthList(){
-        const list=[]; const start=parseDate(CAL_START_DATE), end=parseDate(CAL_END_DATE);
-        let c=new Date(start.getFullYear(), start.getMonth(), 1);
-        while(c<=end){ list.push({year:c.getFullYear(), month:c.getMonth()}); c.setMonth(c.getMonth()+1); }
-        return list;
-    }
-
-    function buildCalendars(){
-        const calendar=document.getElementById("calendar");
-        calendar.innerHTML="";
-        getMonthList().forEach(({year,month})=>{
-            const monthSection=document.createElement("section"); monthSection.className="month";
-            const header=document.createElement("header"); header.className="month-header";
-            const title=document.createElement("h3"); title.textContent=MONTH_NAMES[month]+" "+year; header.appendChild(title);
-            const meta=document.createElement("span"); meta.textContent="Calendario continuo"; header.appendChild(meta);
-            monthSection.appendChild(header);
-
-            const grid=document.createElement("div"); grid.className="month-grid";
-            DAY_NAMES.forEach(label=>{ const cell=document.createElement("div"); cell.className="day-name"; cell.textContent=label; grid.appendChild(cell); });
-
-            const firstDayJs=new Date(year,month,1).getDay();
-            const startIndex=(firstDayJs+6)%7;
-            for(let i=0;i<startIndex;i++){ const empty=document.createElement("div"); empty.className="day-cell empty"; grid.appendChild(empty); }
-
-            const daysInMonth=new Date(year,month+1,0).getDate();
-            for(let day=1; day<=daysInMonth; day++){
-                const dateStr=formatDate(year, month+1, day);
-                const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=dateStr;
-
-                const dow=parseDate(dateStr).getDay();
-                if(dow===0) cell.classList.add("weekend");
-                if(isDateInVacation(dateStr)) cell.classList.add("vacation");
-
-                // Restricciones Fournier: mismo color que vacaciones y leyenda visible
-                const fr = getFournierRestriction(dateStr);
-                if(fr && fr.kind === "blocked"){ cell.classList.add("vacation"); }
-
-                const headerRow=document.createElement("div"); headerRow.className="day-header";
-                const numSpan=document.createElement("span"); numSpan.className="day-number"; numSpan.textContent=String(day);
-                const metaSpan=document.createElement("span"); metaSpan.className="day-meta";
-
-                if(dateStr===CAL_START_DATE) metaSpan.textContent="Inicio";
-                else if(dateStr===CAL_END_DATE) metaSpan.textContent="Fin";
-                else if(fr && fr.kind === "blocked") metaSpan.textContent="Fournier ocupado";
-                else if(fr && fr.kind === "partial_after") metaSpan.textContent=("Fournier desde " + (fr.freeFrom || "15:00"));
-                else if(fr && fr.kind === "partial_until") metaSpan.textContent=("Fournier hasta " + (fr.freeUntil || "16:00"));
-                else if(isDateInVacation(dateStr)) metaSpan.textContent="Vacaciones";
-                else if(dow===0) metaSpan.textContent="Fin de semana";
-
-                headerRow.appendChild(numSpan); headerRow.appendChild(metaSpan);
-                cell.appendChild(headerRow);
-
-                const ghostLayer=document.createElement("div"); ghostLayer.className="ghost-date"; cell.appendChild(ghostLayer);
-                const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
-                grid.appendChild(cell);
-            }
-
-            monthSection.appendChild(grid);
-            calendar.appendChild(monthSection);
-        });
-        wireDropTargets();
-        syncExternalCardWidth();
-    }
-
-    function wireDropTargets(){
-        document.querySelectorAll(".day-cell").forEach(cell=>{
-            cell.addEventListener("dragover", e=>{ e.preventDefault(); cell.classList.add("drop-target"); });
-            cell.addEventListener("dragleave", ()=> cell.classList.remove("drop-target"));
-            cell.addEventListener("drop", e=>{
-                e.preventDefault(); cell.classList.remove("drop-target");
-                const examId=e.dataTransfer.getData("text/plain");
-                const dateStr=cell.dataset.date;
-                if(examId && dateStr) moveExamToDate(examId, dateStr);
-            });
-        });
-    }
-
-    function syncExternalCardWidth(){
-        const sample=document.querySelector(".month .month-grid .day-cell:not(.empty)");
-        if(!sample) return;
-        const cs=getComputedStyle(sample);
-        const w=Math.max(150, Math.round(sample.clientWidth - (parseFloat(cs.paddingLeft)||0) - (parseFloat(cs.paddingRight)||0)));
-        document.documentElement.style.setProperty("--day-cell-w", w + "px");
-    }
-
-    /* =================== UI helpers =================== */
-
-    const sampledColorCache = new Map();
-    function sampleIconColorAt(imgEl, x, y, alpha, fallbackHex, apply){
-        const key = imgEl.getAttribute("src") + `@${x},${y},a${alpha}`;
-        if(sampledColorCache.has(key)){ apply(sampledColorCache.get(key)); return; }
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = imgEl.src;
-        if (img.complete) { compute(); } else { img.addEventListener("load", compute); }
-        function compute(){
-            try{
-                const c = document.createElement("canvas");
-                c.width = img.naturalWidth || 42; c.height = img.naturalHeight || 42;
-                const ctx = c.getContext("2d");
-                ctx.drawImage(img, 0, 0);
-                const sx = Math.min(Math.max(0, x), c.width - 1);
-                const sy = Math.min(Math.max(0, y), c.height - 1);
-                const d = ctx.getImageData(sx, sy, 1, 1).data;
-                const rgba = `rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
-                sampledColorCache.set(key, rgba);
-                apply(rgba);
-            }catch(e){
-                apply(hexToRgba(fallbackHex, alpha));
-            }
-        }
-    }
-    function sampleIconColor(imgEl, alpha, fallbackHex, apply){
-        const key = imgEl.getAttribute("src") + `@avg,a${alpha}`;
-        if(sampledColorCache.has(key)){ apply(sampledColorCache.get(key)); return; }
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = imgEl.src;
-        if (img.complete) { compute(); } else { img.addEventListener("load", compute); }
-        function compute(){
-            try{
-                const c = document.createElement("canvas");
-                c.width = 1; c.height = 1;
-                const ctx = c.getContext("2d");
-                ctx.drawImage(img, 0, 0, 10, 10);
-                const d = ctx.getImageData(0, 0, 10, 10).data;
-                const rgba = `rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
-                sampledColorCache.set(key, rgba);
-                apply(rgba);
-            }catch(e){
-                apply(hexToRgba(fallbackHex, alpha));
-            }
-        }
-    }
-
-    function getSigla(subject){
-        const s = SUBJECT_SIGLAS[subject];
-        if (s) return s;
-        const base = subject.replace(/[^A-Za-zÁÉÍÓÚÜÑ ]/g,"").trim();
-        const display = base.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase();
-        return { display, file: display };
-    }
-    function shortType(examType){
-        switch (examType) {
-            case "Primer parcial": return { badge: "PAR 1", meaning: "Parcial 1" };
-            case "Segundo parcial": return { badge: "PAR 2", meaning: "Parcial 2" };
-            case "Tercer parcial": return { badge: "PAR 3", meaning: "Parcial 3" };
-            case "Cuarto parcial": return { badge: "PAR 4", meaning: "Parcial 4" };
-            case "Primer ordinario": return { badge: "ORD 1", meaning: "Ordinario (final) 1" };
-            case "Segundo ordinario": return { badge: "ORD 2", meaning: "Ordinario (final) 2" };
-            case "Extraordinario": return { badge: "EXT 1", meaning: "Extraordinario" };
-            default: return { badge: examType, meaning: examType };
-        }
-    }
-
-    /* =================== Cálculos =================== */
-
-    function computePrevNextGlobalDistances(baseDate, modeByExam, thisExamId){
-        let prevDist=null, nextDist=null;
-        Object.keys(modeByExam).forEach(id=>{
-            if(id===thisExamId) return;
-            const d=modeByExam[id].date;
-            if(d<baseDate){
-                const dd=diffDays(d, baseDate);
-                if(prevDist===null || dd<prevDist) prevDist=dd;
-            }else if(d>baseDate){
-                const dd=diffDays(baseDate, d);
-                if(nextDist===null || dd<nextDist) nextDist=dd;
-            }
-        });
-        return { prevDistance: prevDist, nextDistance: nextDist };
-    }
-
-    function weeksToNextSameSubject(year, examId, proposalsMap){
-        const exam=examIndex[examId]; if(!exam) return null;
-        const chain=(subjectChainsByYear[year]||{})[exam.subject] || [];
-        const idx=chain.indexOf(examId); if(idx===-1 || idx===chain.length-1) return null;
-        const nextId=chain[idx+1];
-        const nextExam=examIndex[nextId]; if(!nextExam) return null;
-        const from = (proposalsMap[examId]) || exam.officialDate;
-        const to   = (proposalsMap[nextId]) || nextExam.officialDate;
-        if(!from || !to) return null;
-        const days = diffDays(from, to);
-        return Math.round((days/7)*10)/10;
-    }
-
-    /* =================== Componentes UI =================== */
-
-    function line(labelText, valueText){
-        const row=document.createElement("div"); row.className="exam-line";
-        const label=document.createElement("span"); label.className="line-label"; label.textContent=labelText;
-        const value=document.createElement("span"); value.className="line-value"; value.textContent=valueText;
-        row.appendChild(label); row.appendChild(value); return row;
-    }
-    function lineStacked(labelText, valueText){
-        const row=document.createElement("div"); row.className="exam-line stacked";
-        const label=document.createElement("span"); label.className="line-label"; label.textContent=labelText;
-        const value=document.createElement("span"); value.className="line-value"; value.textContent=valueText;
-        row.appendChild(label); row.appendChild(value); return row;
-    }
-    function lineUpperGroups(groups){
-        const text = (groups && groups.length)
-            ? groups.slice(0,5).sort((a,b)=>a-b).join(", ") + (groups.length>5 ? "  +" + (groups.length-5) : "")
-            : "—";
-        const row=line("ESTA ES UNA FECHA VOTADA POR:", text);
-        row.classList.add("upper");
-        return row;
-    }
-
-    function createExamCard(exam, viewDate, statusClass, highlightForced, options={}){
-        const { approvedDate, suggestionDate, isOwn } = options;
-        const sigla=getSigla(exam.subject);
-        const badge=shortType(exam.type);
-
-        const baseDate = suggestionDate || viewDate;
-        const global = computePrevNextGlobalDistances(baseDate, lastModeByExamAll, exam.id);
-
-        const card=document.createElement("div");
-        card.className="exam-card "+statusClass;
-        if(highlightForced) card.classList.add("forced");
-        if(isOwn) card.classList.add("own-proposal-solid");
-        card.draggable=true;
-        card.dataset.examId=exam.id;
-
-        const strip=document.createElement("div");
-        strip.className="exam-status-strip";
-        card.appendChild(strip);
-
-        const key = sigla.display.replace(/\s+/g,"");
-        const fallbackHex = SUBJECT_COLORS[key] || "#4ecaff";
-
-        const head=document.createElement("div"); head.className="exam-head2";
-        const icon=document.createElement("div"); icon.className="exam-icon-vert";
-        const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+(sigla.file)+".png";
-        icon.appendChild(img);
-        card.appendChild(head);
-        head.appendChild(icon);
-
-        const titleBox=document.createElement("div"); titleBox.className="exam-title";
-        const sigSpan=document.createElement("div"); sigSpan.className="exam-sigla"; sigSpan.textContent=sigla.display; sigSpan.title = exam.subject;
-        const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title = badge.meaning;
-        titleBox.appendChild(sigSpan); titleBox.appendChild(badgeEl);
-        head.appendChild(titleBox);
-
-        if(!isOwn){
-            sampleIconColor(img, .5, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
-        }else{
-            sampleIconColorAt(img, 20, 20, 1, fallbackHex, (rgba)=>{ card.style.setProperty("--own-solid", rgba); });
-        }
-
-        const appText = approvedDate  ? formatHumanDateShort(approvedDate)   : formatHumanDateShort(exam.officialDate);
-        const sugText = suggestionDate ? formatHumanDateShort(suggestionDate) : formatHumanDateShort(viewDate);
-        card.appendChild(lineStacked("última fecha aprobada:", appText));
-        card.appendChild(lineStacked("sugerencia de reprogramación:", sugText));
-
-        const prevTxt = (global.prevDistance!=null) ? `${global.prevDistance} días atrás` : "—";
-        const nextTxt = (global.nextDistance!=null) ? `${global.nextDistance} días` : "—";
-        card.appendChild(line("Último departamental según votos:", prevTxt));
-        card.appendChild(line("Próximo departamental según votos:", nextTxt));
-
-        if(showSubjectWeeks && currentGroupId){
-            const s = loadState();
-            const proposalsMap = (s.groups[currentGroupId] && s.groups[currentGroupId].proposals) || {};
-            const w = weeksToNextSameSubject(currentYear, exam.id, proposalsMap);
-            card.appendChild(line("Semanas para cubrir la siguiente unidad:", (w!=null? `${w} semanas` : "—")));
-        }
-
-        card.addEventListener("dragstart", e=>{ e.dataTransfer.setData("text/plain", exam.id); e.dataTransfer.effectAllowed="move"; card.classList.add("dragging"); });
-        card.addEventListener("dragend", ()=> card.classList.remove("dragging"));
-
-        return card;
-    }
-
-    function createGhostCardFull(exam, dateStr, groups, alpha){
-        const sigla=getSigla(exam.subject);
-        const badge=shortType(exam.type);
-
-        const card=document.createElement("div");
-        card.className="exam-card is-ghost ghost-min";
-        card.draggable=false;
-        card.style.setProperty("--ghost-alpha", alpha.toFixed(3));
-
-        const head=document.createElement("div"); head.className="exam-head2";
-        const icon=document.createElement("div"); icon.className="exam-icon-vert";
-        const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+(sigla.file)+".png";
-        icon.appendChild(img);
-        head.appendChild(icon);
-
-        const titleBox=document.createElement("div"); titleBox.className="exam-title";
-        const sigSpan=document.createElement("div"); sigSpan.className="exam-sigla"; sigSpan.textContent=sigla.display; sigSpan.title = exam.subject;
-        const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title = badge.meaning;
-        titleBox.appendChild(sigSpan); titleBox.appendChild(badgeEl);
-        head.appendChild(titleBox);
-        card.appendChild(head);
-
-        const key = sigla.display.replace(/\s+/g,"");
-        const fallbackHex = SUBJECT_COLORS[key] || "#4ecaff";
-        sampleIconColor(img, 0.5, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
-
-        card.appendChild(lineStacked("PROPUESTA:", formatHumanDate(dateStr)));
-        card.appendChild(lineUpperGroups(groups));
-
-        const strip=document.createElement("div"); strip.className="exam-status-strip"; strip.style.display="none";
-        card.appendChild(strip);
-
-        return card;
-    }
-
-    /* =================== Render por grupo =================== */
-
-    function renderCurrentGroup(){
-        if(!currentGroupId || !currentYear) return;
-        const state=loadState();
-        const group=state.groups[currentGroupId];
-        if(!group) return;
-
-        const approved = group.approved || {};
-        const proposals = group.proposals || {};
-
-        document.querySelectorAll(".exam-list").forEach(list=> list.innerHTML="");
-        const pendingList=document.getElementById("pending-exams-list"); if(pendingList) pendingList.innerHTML="";
-
-        const exams=EXAMS_BY_YEAR[currentYear] || [];
-        exams.forEach(exam=>{
-            const approvedDate = approved[exam.id] || exam.officialDate;
-            const suggestionDate = proposals[exam.id] || exam.officialDate;
-
-            const valid = isDateValidForExam(suggestionDate);
-            const isOriginal = suggestionDate===approvedDate;
-            let statusClass=""; if(!valid) statusClass="status-invalid"; else if(isOriginal) statusClass="status-original"; else statusClass="status-valid";
-            const highlightForced=(exam.officialDate < FORCED_REPROGRAM_CUTOFF) && !valid;
-
-            const card=createExamCard(exam, suggestionDate, statusClass, highlightForced, { approvedDate, suggestionDate, isOwn:true });
-
-            const dayCell=document.querySelector('.day-cell[data-date="'+suggestionDate+'"]');
-            const isOriginalBeforeParo = exam.officialDate < FORCED_REPROGRAM_CUTOFF;
-            const placeInPending = isOriginalBeforeParo && (suggestionDate === exam.officialDate);
-
-            if(!placeInPending && dayCell && isDateWithinCalendar(suggestionDate)){
-                const list=dayCell.querySelector(".exam-list"); if(list) list.appendChild(card);
-            }else if(pendingList){ pendingList.appendChild(card); }
-        });
-    }
-
-    function moveExamToDate(examId, dateStr){
-        if(!currentGroupId || !currentYear) return;
-
-        if(!isDateWithinCalendar(dateStr)){
-            alert("La fecha está fuera del rango noviembre 2025–junio 2026.");
-            return;
-        }
-
-        const exam = examIndex[examId];
-        const restriction = getFournierRestriction(dateStr);
-
-        if(restriction && exam){
-            const hora = getExamTime(exam);
-            if(restriction.kind === "blocked"){
-                alert("El Auditorio Fournier estará ocupado ese día.\n\n" + FOURNIER_REASON_TEXT);
-                return; // bloqueado
-            }
-            if(restriction.kind === "partial_after"){
-                const libreDesde = restriction.freeFrom || "15:00";
-                alert("Ese día solo se puede después de las " + libreDesde + " horas. El examen está programado a las " + hora + ".");
-                // permite continuar
-            }
-            if(restriction.kind === "partial_until"){
-                const hasta = restriction.freeUntil || "16:00";
-                alert("Ese día solo se puede hasta las " + hasta + " horas. El examen está programado a las " + hora + ".");
-                // permite continuar
-            }
-        }
-
-        if(!isDateValidForExam(dateStr)){
-            alert("Esa fecha es inválida (fin de semana o periodo vacacional).");
-            return;
-        }
-
-        const state=loadState();
-        ensureGroupInitialized(currentGroupId, currentYear);
-        const group = state.groups[currentGroupId];
-
-        group.proposals = group.proposals || {};
-        group.proposals[examId]=dateStr;
-
-        saveState(state);
-        renderCurrentGroup();
-
-        // Recalcula modas/fantasmas sin pisar lo local del grupo actual
-        recomputeStatsAndGhosts();
-    }
-
-    /* =================== Fantasmas, estadísticas y modas =================== */
-
-    function renderGhosts(modeByExamOthers, totalsByExamOthers, groupsByExamDateOthers){
-        document.querySelectorAll(".ghost-date").forEach(layer=> layer.innerHTML="");
-
-        Object.keys(modeByExamOthers).forEach(examId=>{
-            const exam = examIndex[examId];
-            if(!exam) return;
-
-            const list = (lastModeListByExamOthers[examId] || []).slice(0, MAX_GHOSTS_PER_EXAM);
-
-            list.forEach((opt, idx)=>{
-                const dateStr=opt.date;
-                const cell=document.querySelector('.day-cell[data-date="'+dateStr+'"]');
-                if(!cell) return;
-                const layer = cell.querySelector(".ghost-date");
-                if(!layer) return;
-
-                const total = totalsByExamOthers[examId] || 0;
-                const share = total>0 ? (opt.count/total) : 0;
-                const cap = (idx===0 ? MAX_ALPHA_MAIN : MAX_ALPHA_ALT);
-                let alpha = Math.min(cap, Math.max(0, cap * share));
-
-                if(opt.count <= 3){ alpha = Math.min(alpha, MIN_ALPHA_CAP_WHEN_FEW); }
-
-                const groups=(groupsByExamDateOthers[examId] && groupsByExamDateOthers[examId][dateStr])
-                    ? groupsByExamDateOthers[examId][dateStr] : [];
-
-                const ghostCard = createGhostCardFull(exam, dateStr, groups, alpha);
-                layer.appendChild(ghostCard);
-            });
-        });
-    }
-
-    function renderStatsRibbon(modeByExam, modeListByExam, groupsByExamDate){
-        const wrap=document.getElementById("stats-ribbon"); if(!wrap) return;
-        wrap.innerHTML="";
-        const items=Object.keys(modeByExam).map(examId=>{
-            const exam=examIndex[examId]; const mode=modeByExam[examId];
-            return { exam, mode, list: modeListByExam[examId] || [] };
-        }).sort((a,b)=> a.mode.date.localeCompare(b.mode.date));
-
-        items.forEach(({exam,mode,list})=>{
-            const sigla=getSigla(exam.subject);
-            const badge=shortType(exam.type);
-            const card=document.createElement("div"); card.className="stat-card";
-
-            const key=sigla.display.replace(/\s+/g,"");
-            const fallbackHex=SUBJECT_COLORS[key] || "#4ecaff";
-            card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .5));
-            const icon=document.createElement("div"); icon.className="stat-icon-top";
-            const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+sigla.file+".png";
-            icon.appendChild(img);
-            sampleIconColor(img, .5, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
-            card.appendChild(icon);
-
-            const top=document.createElement("div"); top.className="stat-top";
-            const code=document.createElement("div"); code.className="stat-code"; code.textContent=sigla.display; code.title=exam.subject;
-            const badgeEl=document.createElement("div"); badgeEl.className="stat-badge"; badgeEl.textContent=badge.badge; badgeEl.title = badge.meaning;
-            top.appendChild(code); top.appendChild(badgeEl); card.appendChild(top);
-
-            const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHumanDate(mode.date);
-            const sub=document.createElement("div"); sub.className="stat-sub";
-            sub.textContent="votado por "+mode.count+" grupos";
-            const voters=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][mode.date]) ? groupsByExamDate[exam.id][mode.date] : [];
-            if(voters.length){ sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", "); }
-            card.appendChild(date); card.appendChild(sub);
-
-            if(list.length>1){
-                const alt=document.createElement("div"); alt.className="stat-alt";
-                const det=document.createElement("details");
-                const sum=document.createElement("summary"); sum.textContent="ver 2a y 3a moda";
-                det.appendChild(sum);
-                const ul=document.createElement("ul");
-                list.slice(1,3).forEach((opt,idx)=>{
-                    const g=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][opt.date]) ? groupsByExamDate[exam.id][opt.date] : [];
-                    const li=document.createElement("li");
-                    li.textContent=(idx===0?"2a":"3a")+": "+formatHumanDate(opt.date)+" — "+opt.count+" votos";
-                    if(g.length) li.title="Grupos: "+g.sort((a,b)=>a-b).join(", ");
-                    ul.appendChild(li);
-                });
-                det.appendChild(ul); alt.appendChild(det); card.appendChild(alt);
-            }
-            wrap.appendChild(card);
-        });
-    }
-
-    async function recomputeStatsAndGhosts(){
-        // Importa desde OPFS/LocalStorage pero SIN pisar al grupo actual
-        await importCsvDBToState({ excludeGroupId: currentGroupId || null });
-
-        const statsYearSelect=document.getElementById("stats-year");
-        const yearValue=statsYearSelect? Number(statsYearSelect.value) : currentYear || 1;
-        const year=yearValue || 1;
-
-        const state=loadState();
-        const allEntries = Object.entries(state.groups || {}).filter(([_,g])=> g && g.year===year);
-
-        const otherEntries = currentGroupId
-            ? allEntries.filter(([gid,_])=> String(gid) !== String(currentGroupId))
-            : allEntries.slice();
-
-        function aggregateFrom(entries){
-            const exams=EXAMS_BY_YEAR[year] || [];
-            const examIds=exams.map(e=>e.id);
-            const countsByExamAndDate={}; examIds.forEach(id=> countsByExamAndDate[id]={});
-            const groupsByExamAndDate={}; examIds.forEach(id=> groupsByExamAndDate[id]={});
-            const totalsByExam={}; examIds.forEach(id=> totalsByExam[id]=0);
-
-            entries.forEach(([gid,g])=>{
-                const map=g.proposals || {};
-                examIds.forEach(examId=>{
-                    const dateStr=map[examId];
-                    if(!dateStr) return;
-                    if(!isDateWithinCalendar(dateStr)) return;
-                    (countsByExamAndDate[examId][dateStr] ||= 0);
-                    countsByExamAndDate[examId][dateStr] += 1;
-                    totalsByExam[examId] += 1;
-                    (groupsByExamAndDate[examId][dateStr] ||= []);
-                    groupsByExamAndDate[examId][dateStr].push(gid);
-                });
-            });
-
-            const modeByExam={}; const modeListByExam={};
-            Object.keys(countsByExamAndDate).forEach(examId=>{
-                const dateMap=countsByExamAndDate[examId];
-                const list=Object.keys(dateMap).map(d=>({date:d, count:dateMap[d]}));
-                list.sort((a,b)=> b.count - a.count || a.date.localeCompare(b.date));
-                if(list.length){ modeByExam[examId]=list[0]; modeListByExam[examId]=list; }
-            });
-
-            return {modeByExam, modeListByExam, totalsByExam, groupsByExamAndDate};
-        }
-
-        const allAgg = aggregateFrom(allEntries);
-        lastModeByExamAll        = allAgg.modeByExam;
-        lastModeListByExamAll    = allAgg.modeListByExam;
-        lastTotalsByExamAll      = allAgg.totalsByExam;
-
-        const otherAgg = aggregateFrom(otherEntries);
-        lastModeByExamOthers     = otherAgg.modeByExam;
-        lastModeListByExamOthers = otherAgg.modeListByExam;
-        lastTotalsByExamOthers   = otherAgg.totalsByExam;
-        lastGroupsByExamDateOthers = otherAgg.groupsByExamAndDate;
-
-        renderGhosts(lastModeByExamOthers, lastTotalsByExamOthers, lastGroupsByExamDateOthers);
-        renderStatsRibbon(lastModeByExamAll, lastModeListByExamAll, allAgg.groupsByExamAndDate);
-        renderCurrentGroup();
-    }
-
-    /* =================== CSV: generar =================== */
-
-    function buildCsvForGroup(groupId){
-        const state=loadState();
-        const group=state.groups[groupId];
-        if(!group) return { csv:"", map:{} };
-
-        const exams=EXAMS_BY_YEAR[group.year] || [];
-        const proposals = group.proposals || {};
-        const rows=[];
-        const map={};
-
-        exams.forEach(ex=>{
-            const date = proposals[ex.id] || ex.officialDate;
-            const examName = `${ex.subject} — ${ex.type}`;
-            rows.push({ name: examName, date });
-            map[ex.id] = date;
-        });
-
-        const header = "examen,fecha";
-        const body = rows.map(r=>{
-            const p=r.date.split("-");
-            const pretty = `${p[2]}/${p[1]}/${p[0]}`;
-            return `"${r.name.replace(/"/g,'""')}",${pretty}`;
-        }).join("\n");
-        const csv = header + "\n" + body;
-        return { csv, map };
-    }
-
-    /* =================== Controles =================== */
-
-    function wireGroupSelector(){
-        const input=document.getElementById("group-input"); if(!input) return;
-        input.addEventListener("change", ()=> setCurrentGroup(parseInt(input.value,10)));
-        input.addEventListener("blur",   ()=> setCurrentGroup(parseInt(input.value,10)));
-        input.addEventListener("keydown", e=>{ if(e.key==="Enter") setCurrentGroup(parseInt(input.value,10)); });
-    }
-    function wireStatsControls(){
-        const select=document.getElementById("stats-year"); if(!select) return;
-        select.addEventListener("change", ()=> recomputeStatsAndGhosts());
-    }
-    function wireWeeksToggle(){
-        const cb=document.getElementById("toggle-subject-weeks");
-        if(!cb) return;
-        const s=loadState(); showSubjectWeeks = !!(s.showSubjectWeeks);
-        cb.checked = showSubjectWeeks;
-        cb.addEventListener("change", ()=>{
-            showSubjectWeeks = cb.checked;
-            const st=loadState(); st.showSubjectWeeks = showSubjectWeeks; saveState(st);
-            renderCurrentGroup();
-        });
-    }
-
-    function wireCaptureButton(){
-        const btn=document.getElementById("capture-btn"); if(!btn) return;
-        btn.addEventListener("click", async ()=>{
-            if(!currentGroupId){
-                alert("Primero ingresa tu grupo para generar la captura.\n\nLa importancia de poner el grupo es porque este será registrado en la captura en PDF.");
-                const input=document.getElementById("group-input");
-                if(input) input.focus();
-                return;
-            }
-
-            // Genera y persiste CSV “interno” en /grupos/ (OPFS) sin avisos al usuario
-            const { csv, map } = buildCsvForGroup(currentGroupId);
-            await persistCsvDatabaseEntry(currentGroupId, csv, map);
-
-            // Encabezado de impresión
-            const groupSpan=document.getElementById("print-group");
-            if(groupSpan){
-                const yearLabel=currentYear===1?"Primer año":"Segundo año";
-                groupSpan.textContent="Grupo: "+currentGroupId+" · "+yearLabel;
-            }
-            const capturedSpan=document.getElementById("print-captured-at");
-            if(capturedSpan){
-                const now=new Date();
-                const f=now.toLocaleString("es-MX",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-                capturedSpan.textContent="Capturado el "+f;
-            }
-
-            // Reimporta para que la “BD” refleje lo capturado
-            await importCsvDBToState({ excludeGroupId: null });
-            renderCurrentGroup();
-            recomputeStatsAndGhosts();
-
-            // Lanzar impresión (PDF)
-            window.print();
-        });
-    }
-
-    function onResize(){
-        let t=null;
-        window.addEventListener("resize", ()=>{ if(t) clearTimeout(t); t=setTimeout(syncExternalCardWidth, 120); });
-    }
-
-    async function setCurrentGroup(groupNumber){
-        const status=document.getElementById("group-status");
-        const statsYearSelect=document.getElementById("stats-year");
-        if(!groupNumber || isNaN(groupNumber)){
-            currentGroupId=null; status.textContent="Escribe un grupo entre 1101–1170 o 2201–2270"; return;
-        }
-        let year=null;
-        if(groupNumber>=YEAR1_RANGE.min && groupNumber<=YEAR1_RANGE.max) year=1;
-        else if(groupNumber>=YEAR2_RANGE.min && groupNumber<=YEAR2_RANGE.max) year=2;
-        else { currentGroupId=null; status.textContent="Grupo fuera de rango (solo 1101–1170 y 2201–2270)"; return; }
-
-        currentGroupId=String(groupNumber);
-        currentYear=year;
-        status.textContent=year===1?"Primer año":"Segundo año";
-        if(statsYearSelect) statsYearSelect.value=String(year);
-
-        ensureGroupInitialized(currentGroupId, currentYear);
-
-        // Importa “BD” sin pisar al grupo activo
-        await importCsvDBToState({ excludeGroupId: currentGroupId });
-
-        renderCurrentGroup();
-        recomputeStatsAndGhosts();
-    }
-
-    function wireMobileBanner(){
-        const banner = document.getElementById("mobile-warning");
-        const closeBtn = document.getElementById("mobile-warning-close");
-        const state = loadState();
-        if(state.hideMobileBanner && banner){ banner.style.display="none"; }
-        if(closeBtn){
-            closeBtn.addEventListener("click", ()=>{
-                if(banner) banner.style.display="none";
-                const s=loadState(); s.hideMobileBanner = true; saveState(s);
-            });
-        }
-    }
-
-    /* =================== Datos (mock) =================== */
+    const examIdToObj = {};
+    const subjectChains = {1:{},2:{}};
+    const examLabelIndex = {1:{},2:{}};
 
     const EXAMS_BY_YEAR = {
         1: [
@@ -1136,36 +261,685 @@
             { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial", officialDate: "2026-04-25", officialTime: "08:00" },
             { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "14:00" },
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario", officialDate: "2026-05-26", officialTime: "13:00" },
-            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario", officialDate: "2026-06-08", officialTime: "11:00" },
-
-            { id: "2-CIR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial", officialDate: "2026-01-10", officialTime: "08:00" },
-            { id: "2-CIR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial", officialDate: "2026-04-11", officialTime: "08:00" },
-            { id: "2-CIR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-28", officialTime: "13:00" },
-            { id: "2-CIR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario", officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-CIR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario", officialDate: "2026-05-29", officialTime: "08:00" },
-
-            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
-            { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
-            { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-02", officialTime: "08:00" },
-            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
-            { id: "2-MICRO-EX", subject: "Microbiología y Parasitología", type: "Extraordinario", officialDate: "2026-05-30", officialTime: "08:00" }
+            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario", officialDate: "2026-06-08", officialTime: "11:00" }
         ]
     };
 
-    /* =================== Init =================== */
+    function buildIndices(){
+        [1,2].forEach(year=>{
+            const bySubject={};
+            EXAMS_BY_YEAR[year].forEach(ex=>{
+                examIdToObj[ex.id]=ex;
+                (bySubject[ex.subject] ||= []).push(ex);
+                examLabelIndex[year][ex.id] = `${ex.subject} — ${ex.type}`;
+            });
+            Object.keys(bySubject).forEach(sub=>{
+                bySubject[sub].sort((a,b)=>{
+                    return EXAM_ORDER.indexOf(a.type)-EXAM_ORDER.indexOf(b.type) || a.officialDate.localeCompare(b.officialDate);
+                });
+                subjectChains[year][sub]=bySubject[sub].map(e=>e.id);
+            });
+        });
+    }
 
-    document.addEventListener("DOMContentLoaded", async function () {
-        buildExamIndices();
+    /* ===== Color desde ícono ===== */
+    const sampledCache = new Map();
+    function sampleIcon(imgEl, alpha, fallback, apply){
+        const key=imgEl.src+"@avg@"+alpha;
+        if(sampledCache.has(key)) return apply(sampledCache.get(key));
+        const img=new Image(); img.crossOrigin="anonymous"; img.src=imgEl.src;
+        const compute=()=>{
+            try{
+                const c=document.createElement("canvas"); c.width=1; c.height=1;
+                const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,10,10);
+                const d=ctx.getImageData(0,0,10,10).data;
+                const rgba=`rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
+                sampledCache.set(key, rgba); apply(rgba);
+            }catch{ apply(hexToRgba(fallback, alpha)); }
+        };
+        if(img.complete) compute(); else img.addEventListener("load", compute);
+    }
+    function sampleIconAt(imgEl, x, y, alpha, fallback, apply){
+        const key=imgEl.src+`@${x},${y}@${alpha}`;
+        if(sampledCache.has(key)) return apply(sampledCache.get(key));
+        const img=new Image(); img.crossOrigin="anonymous"; img.src=imgEl.src;
+        const compute=()=>{
+            try{
+                const c=document.createElement("canvas"); c.width=img.naturalWidth||42; c.height=img.naturalHeight||42;
+                const ctx=c.getContext("2d"); ctx.drawImage(img,0,0);
+                const d=ctx.getImageData(Math.min(x,c.width-1),Math.min(y,c.height-1),1,1).data;
+                const rgba=`rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
+                sampledCache.set(key, rgba); apply(rgba);
+            }catch{ apply(hexToRgba(fallback, alpha)); }
+        };
+        if(img.complete) compute(); else img.addEventListener("load", compute);
+    }
+
+    function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
+    function shortType(t){
+        switch(t){
+            case "Primer parcial": return {badge:"PAR 1", meaning:"Parcial 1"};
+            case "Segundo parcial": return {badge:"PAR 2", meaning:"Parcial 2"};
+            case "Tercer parcial": return {badge:"PAR 3", meaning:"Parcial 3"};
+            case "Cuarto parcial": return {badge:"PAR 4", meaning:"Parcial 4"};
+            case "Primer ordinario": return {badge:"ORD 1", meaning:"Ordinario 1"};
+            case "Segundo ordinario": return {badge:"ORD 2", meaning:"Ordinario 2"};
+            case "Extraordinario": return {badge:"EXT 1", meaning:"Extraordinario"};
+            default: return {badge:t, meaning:t};
+        }
+    }
+
+    /* ===== UI helpers ===== */
+    function line(label, value){
+        const row=document.createElement("div"); row.className="exam-line";
+        const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
+        const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
+        row.appendChild(l); row.appendChild(v); return row;
+    }
+    function lineStacked(label, value){
+        const row=document.createElement("div"); row.className="exam-line stacked";
+        const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
+        const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
+        row.appendChild(l); row.appendChild(v); return row;
+    }
+    function lineUpperGroups(groups){
+        const text = (groups && groups.length)
+            ? groups.slice(0,5).sort((a,b)=>a-b).join(", ") + (groups.length>5 ? "  +" + (groups.length-5) : "")
+            : "—";
+        const row=line("ESTA ES UNA FECHA VOTADA POR:", text);
+        row.classList.add("upper");
+        return row;
+    }
+
+    function createExamCard(exam, viewDate, statusClass, forced, opts={}){
+        const { approvedDate, suggestionDate, isOwn } = opts;
+        const sig=getSigla(exam.subject); const badge=shortType(exam.type);
+        const card=document.createElement("div"); card.className="exam-card "+statusClass; card.draggable=true; card.dataset.examId=exam.id;
+        if(forced) card.classList.add("forced");
+        if(isOwn) card.classList.add("own-proposal-solid");
+
+        const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
+
+        const head=document.createElement("div"); head.className="exam-head2";
+        const icon=document.createElement("div"); icon.className="exam-icon-vert";
+        const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png";
+        icon.appendChild(img); head.appendChild(icon);
+
+        const title=document.createElement("div"); title.className="exam-title";
+        const sigla=document.createElement("div"); sigla.className="exam-sigla"; sigla.textContent=sig.display; sigla.title=exam.subject;
+        const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
+        title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
+
+        const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
+        if(!isOwn) sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
+        else sampleIconAt(img,20,20,1,fallback,(rgba)=>card.style.setProperty("--own-solid",rgba));
+
+        const appText = approvedDate ? formatShort(approvedDate) : formatShort(exam.officialDate);
+        const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(viewDate);
+        card.appendChild(lineStacked("última fecha aprobada:", appText));
+        card.appendChild(lineStacked("sugerencia de reprogramación:", sugText));
+
+        const baseDate = suggestionDate || viewDate;
+        const distPrev = nearestBefore(baseDate, exam.id);
+        const distNext = nearestAfter(baseDate, exam.id);
+        card.appendChild(line("Último departamental según votos:", distPrev!=null? `${distPrev} días atrás`:"—"));
+        card.appendChild(line("Próximo departamental según votos:", distNext!=null? `${distNext} días`:"—"));
+
+        if(showSubjectWeeks && currentGroupId){
+            const s=loadState(); const map=(s.groups[currentGroupId] && s.groups[currentGroupId].proposals)||{};
+            const w=weeksToNextSame(currentYear, exam.id, map);
+            card.appendChild(line("Semanas para cubrir la siguiente unidad:", (w!=null? `${w} semanas`:"—")));
+        }
+
+        card.addEventListener("dragstart", e=>{ e.dataTransfer.setData("text/plain", exam.id); e.dataTransfer.effectAllowed="move"; card.classList.add("dragging"); });
+        card.addEventListener("dragend", ()=> card.classList.remove("dragging"));
+
+        return card;
+    }
+
+    function createGhostCard(exam, dateStr, groups, alpha){
+        const sig=getSigla(exam.subject); const badge=shortType(exam.type);
+        const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
+        card.style.setProperty("--ghost-alpha", alpha.toFixed(3));
+
+        const head=document.createElement("div"); head.className="exam-head2";
+        const icon=document.createElement("div"); icon.className="exam-icon-vert";
+        const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png";
+        icon.appendChild(img); head.appendChild(icon);
+
+        const title=document.createElement("div"); title.className="exam-title";
+        const sigla=document.createElement("div"); sigla.className="exam-sigla"; sigla.textContent=sig.display; sigla.title=exam.subject;
+        const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
+        title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
+
+        const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
+        sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
+
+        card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
+        card.appendChild(lineUpperGroups(groups));
+
+        const strip=document.createElement("div"); strip.className="exam-status-strip"; strip.style.display="none";
+        card.appendChild(strip);
+        return card;
+    }
+
+    /* ===== Cálculos ===== */
+    function nearestBefore(base, thisExamId){
+        let best=null;
+        Object.keys(lastModeByExamAll).forEach(id=>{
+            if(id===thisExamId) return;
+            const d=lastModeByExamAll[id].date;
+            if(d<base){ const dd=diffDays(d,base); if(best==null||dd<best) best=dd; }
+        });
+        return best;
+    }
+    function nearestAfter(base, thisExamId){
+        let best=null;
+        Object.keys(lastModeByExamAll).forEach(id=>{
+            if(id===thisExamId) return;
+            const d=lastModeByExamAll[id].date;
+            if(d>base){ const dd=diffDays(base,d); if(best==null||dd<best) best=dd; }
+        });
+        return best;
+    }
+    function weeksToNextSame(year, examId, proposalsMap){
+        const ex=examIdToObj[examId]; if(!ex) return null;
+        const chain=(subjectChains[year]||{})[ex.subject]||[];
+        const idx=chain.indexOf(examId); if(idx===-1||idx===chain.length-1) return null;
+        const nextId=chain[idx+1]; const next=examIdToObj[nextId]; if(!next) return null;
+        const from=proposalsMap[examId]||ex.officialDate; const to=proposalsMap[nextId]||next.officialDate;
+        return Math.round((diffDays(from,to)/7)*10)/10;
+    }
+
+    /* ===== Calendario ===== */
+    function monthList(){
+        const out=[]; const s=parseDate(CAL_START_DATE), e=parseDate(CAL_END_DATE);
+        let c=new Date(s.getFullYear(), s.getMonth(), 1);
+        while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
+        return out;
+    }
+    function buildCalendars(){
+        const root=$id("calendar"); root.innerHTML="";
+        monthList().forEach(({y,m})=>{
+            const sec=document.createElement("section"); sec.className="month";
+            const h=document.createElement("header"); h.className="month-header";
+            const t=document.createElement("h3"); t.textContent=MONTH_NAMES[m]+" "+y; h.appendChild(t); sec.appendChild(h);
+
+            const grid=document.createElement("div"); grid.className="month-grid";
+            DAY_NAMES.forEach(d=>{ const dn=document.createElement("div"); dn.className="day-name"; dn.textContent=d; grid.appendChild(dn); });
+
+            const startIndex=((new Date(y,m,1)).getDay()+6)%7;
+            for(let i=0;i<startIndex;i++){ const e=document.createElement("div"); e.className="day-cell empty"; grid.appendChild(e); }
+
+            const last=new Date(y,m+1,0).getDate();
+            for(let d=1; d<=last; d++){
+                const ds=formatDate(y,m+1,d);
+                const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
+                const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
+                if(isVacation(ds)) cell.classList.add("vacation");
+                const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
+
+                const hdr=document.createElement("div"); hdr.className="day-header";
+                const n=document.createElement("span"); n.className="day-number"; n.textContent=String(d);
+                const meta=document.createElement("span"); meta.className="day-meta";
+                if(ds===CAL_START_DATE) meta.textContent="Inicio";
+                else if(ds===CAL_END_DATE) meta.textContent="Fin";
+                else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
+                else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
+                else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
+                else if(isVacation(ds)) meta.textContent="Vacaciones";
+                else if(dow===0) meta.textContent="Fin de semana";
+                hdr.appendChild(n); hdr.appendChild(meta); cell.appendChild(hdr);
+
+                const ghost=document.createElement("div"); ghost.className="ghost-date"; cell.appendChild(ghost);
+                const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
+
+                cell.addEventListener("dragover", e=>{ if(resultsMode) return; e.preventDefault(); cell.classList.add("drop-target"); });
+                cell.addEventListener("dragleave", ()=> cell.classList.remove("drop-target"));
+                cell.addEventListener("drop", e=>{
+                    if(resultsMode) return;
+                    e.preventDefault(); cell.classList.remove("drop-target");
+                    const examId=e.dataTransfer.getData("text/plain");
+                    const dateStr=cell.dataset.date;
+                    if(examId && dateStr) moveExamToDate(examId, dateStr);
+                });
+
+                grid.appendChild(cell);
+            }
+            sec.appendChild(grid); root.appendChild(sec);
+        });
+        syncCardWidth();
+    }
+    function syncCardWidth(){
+        const sample=document.querySelector(".month .month-grid .day-cell:not(.empty)");
+        if(!sample) return;
+        const cs=getComputedStyle(sample);
+        const w=Math.max(150, Math.round(sample.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0)));
+        document.documentElement.style.setProperty("--day-cell-w", w+"px");
+    }
+
+    /* ===== Mostrar/ocultar cuando no hay grupo ===== */
+    function toggleEmptyState(){
+        const instructions = $id("instructions-pane");
+        const mainPanel    = document.querySelector(".main-panel");
+        const statsWrap    = document.querySelector(".stats-ribbon-wrap");
+
+        const showMain = !!(currentGroupId || resultsMode);
+
+        // solo aplica cambios si existen los nodos (no revienta si faltan)
+        safeToggle(instructions, !showMain);
+        safeToggle(mainPanel, showMain);
+        safeToggle(statsWrap, showMain);
+    }
+
+    /* ===== Grupo actual ===== */
+    function loadState(){
+        try{
+            const raw=localStorage.getItem(STORAGE_KEY);
+            if(!raw) return {groups:{}, showSubjectWeeks:false, hideMobileBanner:false};
+            const s=JSON.parse(raw);
+            if(!s.groups) s.groups={};
+            if(typeof s.showSubjectWeeks!=="boolean") s.showSubjectWeeks=false;
+            if(typeof s.hideMobileBanner!=="boolean") s.hideMobileBanner=false;
+            return s;
+        }catch{ return {groups:{}, showSubjectWeeks:false, hideMobileBanner:false}; }
+    }
+    function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch{} }
+
+    function ensureGroup(groupId, year){
+        const s=loadState();
+        if(!s.groups[groupId]){
+            const approved={}; const proposals={};
+            (EXAMS_BY_YEAR[year]||[]).forEach(ex=>{ approved[ex.id]=ex.officialDate; proposals[ex.id]=ex.officialDate; });
+            s.groups[groupId]={year, approved, proposals};
+            saveState(s);
+        }
+    }
+
+    function renderCurrentGroup(){
+        const pending=$id("pending-exams-list"); if(pending) pending.innerHTML="";
+        document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="");
+
+        if(resultsMode || !currentGroupId){ return; }
+
+        const exams=EXAMS_BY_YEAR[currentYear]||[];
+        const s=loadState();
+        const g = currentGroupId ? s.groups[currentGroupId] : null;
+        const approvedMap = g?.approved || {};
+        const proposalsMap = g?.proposals || {};
+
+        exams.forEach(ex=>{
+            const approvedDate=approvedMap[ex.id] || ex.officialDate;
+            const suggestionDate=proposalsMap[ex.id] || ex.officialDate;
+            const valid=isValidDate(suggestionDate);
+            const isOriginal = suggestionDate===approvedDate;
+            let status=""; if(!valid) status="status-invalid"; else if(isOriginal) status="status-original"; else status="status-valid";
+            const forced = (ex.officialDate < FORCED_REPROGRAM_CUTOFF) && !valid;
+            const card=createExamCard(ex, suggestionDate, status, forced, {approvedDate, suggestionDate, isOwn: !!currentGroupId});
+
+            const dayCell=document.querySelector('.day-cell[data-date="'+suggestionDate+'"]');
+            const isOriginalBefore = ex.officialDate < FORCED_REPROGRAM_CUTOFF;
+            const placeInPending = isOriginalBefore && (suggestionDate===ex.officialDate);
+
+            if(currentGroupId && !placeInPending && dayCell && isWithin(suggestionDate)){
+                dayCell.querySelector(".exam-list").appendChild(card);
+            }else if(pending){
+                pending.appendChild(card);
+            }
+        });
+    }
+
+    function moveExamToDate(examId, dateStr){
+        if(resultsMode) return;
+        if(!currentGroupId) return alert("Primero ingresa tu grupo.\n\nLa importancia de poner el grupo es porque este será registrado en la captura en PDF.");
+        if(!isWithin(dateStr)) return alert("La fecha está fuera del rango noviembre 2025–junio 2026.");
+
+        const ex=examIdToObj[examId]; const fr=getRestriction(dateStr);
+        if(fr){
+            if(fr.kind==="blocked"){
+                alert("El Auditorio Fournier estará ocupado ese día.\n\n"+FOURNIER_REASON_TEXT);
+                return;
+            }
+            if(fr.kind==="partial_after"){
+                alert("Ese día solo se puede después de las "+(fr.freeFrom||"15:00")+". El examen está programado a las "+(ex?.officialTime||"08:00")+".");
+            }
+            if(fr.kind==="partial_until"){
+                alert("Ese día solo se puede hasta las "+(fr.freeUntil||"16:00")+". El examen está programado a las "+(ex?.officialTime||"08:00")+".");
+            }
+        }
+        if(!isValidDate(dateStr)) return alert("Esa fecha es inválida (fin de semana o periodo vacacional).");
+
+        const s=loadState(); ensureGroup(String(currentGroupId), currentYear);
+        s.groups[currentGroupId].proposals ||= {};
+        s.groups[currentGroupId].proposals[examId]=dateStr;
+        saveState(s);
+
+        renderCurrentGroup();
+        recomputeAgg(); // refresca fantasmas al vuelo
+    }
+
+    /* ===== API remota (Functions) ===== */
+    async function apiSaveProposals(group_id, year, proposals, csvText){
+        const res = await fetch("/api/save", {
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify({ group_id:Number(group_id), year:Number(year), proposals, csv: csvText||null })
+        });
+        if(!res.ok){
+            const t = await res.text().catch(()=>res.statusText);
+            throw new Error("Error al guardar en el servidor: "+t);
+        }
+        return res.json();
+    }
+    async function apiGetGroup(group_id, year){
+        const url = `/api/get?group_id=${encodeURIComponent(group_id)}&year=${encodeURIComponent(year)}`;
+        const res = await fetch(url);
+        if(res.status===404) return null;
+        if(!res.ok) throw new Error("Error al leer del servidor");
+        return res.json();
+    }
+    async function apiListYear(year){
+        const res = await fetch(`/api/list?year=${encodeURIComponent(year)}`);
+        if(!res.ok) throw new Error("Error al listar propuestas");
+        return res.json();
+    }
+
+    /* ===== Mezcla remoto + local para fantasmas ===== */
+    function mergeRemoteWithLocal(remoteGroups, year){
+        const s=loadState();
+        const map = Object.create(null);
+        // remoto manda
+        (remoteGroups||[]).forEach(g=>{
+            map[String(g.group_id)] = { group_id:String(g.group_id), year:g.year, proposals:g.proposals||{} };
+        });
+        // locales que no existan en remoto
+        Object.entries(s.groups||{}).forEach(([gid, g])=>{
+            if(g.year!==year) return;
+            if(!map[gid]){
+                map[gid] = { group_id:String(gid), year:g.year, proposals:g.proposals||{} };
+            }
+        });
+        return Object.values(map);
+    }
+
+    /* ===== Agregados / fantasmas ===== */
+    function foldAgg(rows){
+        const totalsByExam={};
+        const cntByExamDate={};
+        const groupsByExamDate={};
+        rows.forEach(r=>{
+            if(!isWithin(r.date)) return;
+            (totalsByExam[r.exam_id] ||= 0); totalsByExam[r.exam_id]+=1;
+            (cntByExamDate[r.exam_id] ||= {}); (cntByExamDate[r.exam_id][r.date] ||= 0);
+            cntByExamDate[r.exam_id][r.date]+=1;
+            (groupsByExamDate[r.exam_id] ||= {}); (groupsByExamDate[r.exam_id][r.date] ||= []);
+            groupsByExamDate[r.exam_id][r.date].push(r.group_id);
+        });
+        const modeByExam={}; const modeListByExam={};
+        Object.keys(cntByExamDate).forEach(id=>{
+            const dm=cntByExamDate[id];
+            const list=Object.keys(dm).map(d=>({date:d,count:dm[d]})).sort((a,b)=> b.count-a.count || a.date.localeCompare(b.date));
+            if(list.length){ modeByExam[id]=list[0]; modeListByExam[id]=list; }
+        });
+        return { totalsByExam, modeByExam, modeListByExam, groupsByExamDate };
+    }
+
+    async function recomputeAgg(){
+        // 1) remoto (si hay), con snapshot local
+        let payload = null;
+        try{
+            payload = await apiListYear(currentYear);
+            localStorage.setItem(SNAPSHOT_KEY(currentYear), JSON.stringify(payload));
+        }catch(e){
+            const raw = localStorage.getItem(SNAPSHOT_KEY(currentYear));
+            payload = raw ? JSON.parse(raw) : { groups: [] };
+            console.warn("Usando snapshot local para fantasmas:", e?.message||e);
+        }
+
+        // 2) mezclar con grupos locales para que se vean al instante
+        const allGroups = mergeRemoteWithLocal((payload && payload.groups) || [], currentYear);
+
+        // 3) armar filas
+        const rowsAll = [];
+        const rowsOthers = [];
+        allGroups.forEach(g=>{
+            const gid = String(g.group_id);
+            Object.entries(g.proposals||{}).forEach(([exam_id, date])=>{
+                rowsAll.push({ exam_id, date, group_id: gid });
+                if(!resultsMode && String(currentGroupId||"")===gid) return; // excluye al propio salvo en resultados
+                rowsOthers.push({ exam_id, date, group_id: gid });
+            });
+        });
+
+        // 4) plegar
+        const all = foldAgg(rowsAll);
+        const others = foldAgg(rowsOthers);
+
+        lastModeByExamAll     = all.modeByExam;
+        lastModeListByExamAll = all.modeListByExam;
+        lastTotalsByExamAll   = all.totalsByExam;
+
+        lastModeListByExamOthers = others.modeListByExam;
+        lastTotalsByExamOthers   = others.totalsByExam;
+        lastGroupsByExamDateOthers = others.groupsByExamDate;
+
+        // 5) pintar
+        renderGhosts();
+        renderStats(all.modeByExam, all.modeListByExam, all.groupsByExamDate);
+        renderCurrentGroup();
+    }
+
+    function renderGhosts(){
+        document.querySelectorAll(".ghost-date").forEach(l=> l.innerHTML="");
+        if(!currentGroupId && !resultsMode) return;
+
+        Object.keys(lastModeListByExamOthers).forEach(examId=>{
+            const exam=examIdToObj[examId]; if(!exam) return;
+            const list=(lastModeListByExamOthers[examId]||[]).slice(0,MAX_GHOSTS_PER_EXAM);
+            list.forEach((opt,idx)=>{
+                const cell=document.querySelector('.day-cell[data-date="'+opt.date+'"]'); if(!cell) return;
+                const total=lastTotalsByExamOthers[examId]||0;
+                const share=total>0 ? opt.count/total : 0;
+                const cap=(idx===0?MAX_ALPHA_MAIN:MAX_ALPHA_ALT);
+                let alpha=Math.min(cap, Math.max(0, cap*share));
+                if(opt.count<=3) alpha=Math.min(alpha, MIN_ALPHA_CAP_WHEN_FEW);
+                const groups=(lastGroupsByExamDateOthers[examId] && lastGroupsByExamDateOthers[examId][opt.date]) ? lastGroupsByExamDateOthers[examId][opt.date] : [];
+                const ghost=createGhostCard(exam, opt.date, groups, alpha);
+                cell.querySelector(".ghost-date").appendChild(ghost);
+            });
+        });
+    }
+
+    function renderStats(modeByExam, modeListByExam, groupsByExamDate){
+        const wrap=$id("stats-ribbon"), empty=$id("stats-empty");
+        if(wrap) wrap.innerHTML="";
+        const items=Object.keys(modeByExam).map(id=>({ exam: examIdToObj[id], mode: modeByExam[id], list: modeListByExam[id]||[] }));
+
+        // ordenar por cercanía temporal
+        items.sort((a,b)=> compareByProximity(a.mode.date, b.mode.date));
+
+        if(!wrap || !empty) return;
+        if(items.length===0){ empty.style.display="block"; return; }
+        empty.style.display="none";
+        items.forEach(({exam,mode,list})=>{
+            const sig=getSigla(exam.subject); const badge=shortType(exam.type);
+            const card=document.createElement("div"); card.className="stat-card";
+            const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
+            card.style.setProperty("--subj-tint", hexToRgba(fallback,.5));
+
+            const icon=document.createElement("div"); icon.className="stat-icon-top";
+            const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png"; icon.appendChild(img);
+            sampleIcon(img,.5,fallback,(rgba)=> card.style.setProperty("--subj-tint", rgba));
+            card.appendChild(icon);
+
+            const top=document.createElement("div"); top.className="stat-top";
+            const code=document.createElement("div"); code.className="stat-code"; code.textContent=sig.display; code.title=exam.subject;
+            const badgeEl=document.createElement("div"); badgeEl.className="stat-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
+            top.appendChild(code); top.appendChild(badgeEl); card.appendChild(top);
+
+            const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHuman(mode.date);
+            const sub=document.createElement("div"); sub.className="stat-sub";
+            const voters=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][mode.date]) ? groupsByExamDate[exam.id][mode.date] : [];
+            sub.textContent="votado por "+mode.count+" grupos"; if(g.length) sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", ");
+            card.appendChild(date); card.appendChild(sub);
+
+            if(list.length>1){
+                const det=document.createElement("details"); const sum=document.createElement("summary");
+                sum.textContent="ver 2a y 3a moda"; det.appendChild(sum);
+                const ul=document.createElement("ul");
+                list.slice(1,3).forEach((o,i)=>{
+                    const g=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][o.date]) ? groupsByExamDate[exam.id][o.date] : [];
+                    const li=document.createElement("li"); li.textContent=(i===0?"2a":"3a")+": "+formatHuman(o.date)+" — "+o.count+" votos";
+                    if(g.length) li.title="Grupos: "+g.sort((a,b)=>a-b).join(", ");
+                    ul.appendChild(li);
+                });
+                det.appendChild(ul); card.appendChild(det);
+            }
+            wrap.appendChild(card);
+        });
+    }
+
+    /* ===== Captura ===== */
+    function proposalsMapFor(groupId){
+        const s=loadState(); const g=s.groups[groupId]; if(!g) return {};
+        const exams=EXAMS_BY_YEAR[g.year]||[]; const out={};
+        exams.forEach(ex=>{ out[ex.id]=(g.proposals && g.proposals[ex.id]) || ex.officialDate; });
+        return out;
+    }
+    function buildCSV(year, proposalsMap){
+        let csv="examen,fecha\n";
+        Object.keys(proposalsMap).forEach(exam_id=>{
+            const label = (examLabelIndex[year] && examLabelIndex[year][exam_id]) || exam_id;
+            csv += `"${label.replace(/"/g,'""')}",${proposalsMap[exam_id]}\n`;
+        });
+        return csv;
+    }
+
+    async function onCapture(){
+        try{
+            if(resultsMode || !currentGroupId){
+                window.print();
+                return;
+            }
+            const map=proposalsMapFor(currentGroupId);
+            const csv=buildCSV(currentYear, map);
+            await apiSaveProposals(currentGroupId, currentYear, map, csv);
+            try { await recomputeAgg(); } catch {}
+        }catch(e){
+            console.warn("No se pudo guardar en servidor, se imprime de todos modos:", e?.message||e);
+        } finally {
+            window.print();
+        }
+    }
+
+    /* ===== Entradas / control ===== */
+    function parseGroupValue(raw){
+        if(raw==null) return { kind:"empty" };
+        const txt = String(raw).trim();
+        if(txt==="") return { kind:"empty" };
+        if(/^0+$/.test(txt) || /^resultados$/i.test(txt)){
+            return { kind:"results" };
+        }
+        const n = Number(txt);
+        if(Number.isInteger(n)) return { kind:"number", value:n };
+        return { kind:"invalid" };
+    }
+
+    async function setCurrentGroupFromInput(raw){
+        const parsed = parseGroupValue(raw);
+        const status=$id("group-status");
+        const statsYear=$id("stats-year");
+
+        const setStatus=(msg)=>{ if(status) status.textContent=msg; };
+
+        if(parsed.kind==="empty"){
+            resultsMode=false; currentGroupId=null;
+            setStatus("Escribe tu grupo para comenzar");
+            toggleEmptyState();
+            return;
+        }
+
+        if(parsed.kind==="results"){
+            resultsMode=true; currentGroupId=null;
+            setStatus("Resultados generales (solo lectura)");
+            toggleEmptyState();
+            await recomputeAgg();
+            return;
+        }
+
+        if(parsed.kind!=="number"){
+            resultsMode=false; currentGroupId=null;
+            setStatus(`Escribe un grupo entre ${YEAR1_RANGE.min}–${YEAR1_RANGE.max} o ${YEAR2_RANGE.min}–${YEAR2_RANGE.max}`);
+            toggleEmptyState();
+            return;
+        }
+
+        const groupNumber = parsed.value;
+        let year=null;
+        if(groupNumber>=YEAR1_RANGE.min && groupNumber<=YEAR1_RANGE.max) year=1;
+        else if(groupNumber>=YEAR2_RANGE.min && groupNumber<=YEAR2_RANGE.max) year=2;
+
+        if(!year){
+            resultsMode=false; currentGroupId=null;
+            setStatus(`Grupo fuera de rango (solo ${YEAR1_RANGE.min}–${YEAR1_RANGE.max} y ${YEAR2_RANGE.min}–${YEAR2_RANGE.max})`);
+            toggleEmptyState();
+            return;
+        }
+
+        resultsMode=false;
+        currentGroupId=String(groupNumber);
+        currentYear=year;
+        setStatus(year===1?"Primer año":"Segundo año");
+        if(statsYear) statsYear.value=String(year);
+
+        ensureGroup(currentGroupId, currentYear);
+
+        try{
+            const remote = await apiGetGroup(currentGroupId, currentYear);
+            if(remote && remote.proposals){
+                const s=loadState(); s.groups[currentGroupId].proposals = remote.proposals; saveState(s);
+            }
+        }catch(e){ console.warn(e); }
+
+        toggleEmptyState();
+        renderCurrentGroup();
+        await recomputeAgg();
+    }
+
+    function wire(){
+        $id("capture-btn")?.addEventListener("click", onCapture);
+        $id("stats-year")?.addEventListener("change", async (e)=>{
+            currentYear = Number(e.target.value)||1;
+            if(!resultsMode && !currentGroupId){ return; }
+            await recomputeAgg();
+            renderCurrentGroup();
+        });
+
+        const cb=$id("toggle-subject-weeks");
+        const st=loadState(); showSubjectWeeks=!!st.showSubjectWeeks; if(cb) cb.checked=showSubjectWeeks;
+        cb?.addEventListener("change", ()=>{ showSubjectWeeks=cb.checked; const s=loadState(); s.showSubjectWeeks=showSubjectWeeks; saveState(s); renderCurrentGroup(); });
+
+        const input=$id("group-input");
+        const applyInput = debounce(()=> setCurrentGroupFromInput(input.value), 120);
+        input?.addEventListener("input", applyInput);
+        input?.addEventListener("change", ()=> setCurrentGroupFromInput(input.value));
+        input?.addEventListener("blur", ()=> setCurrentGroupFromInput(input.value));
+        input?.addEventListener("keydown", e=>{
+            if(e.key==="Enter"){
+                e.preventDefault();
+                setCurrentGroupFromInput(input.value);
+                input.blur(); // fuerza salida del campo para evitar “cursor parpadeando”
+            }
+        });
+
+        window.addEventListener("resize", ()=>{ clearTimeout(window.__r); window.__r=setTimeout(syncCardWidth,120); });
+    }
+
+    /* ===== Inicio ===== */
+    document.addEventListener("DOMContentLoaded", async ()=>{
+        buildIndices();
         buildCalendars();
-        wireGroupSelector();
-        wireStatsControls();
-        wireWeeksToggle();
-        wireCaptureButton();
-        wireMobileBanner();
-        onResize();
-
-        const input=document.getElementById("group-input");
-        if (input) { input.value = String(YEAR1_RANGE.min); await setCurrentGroup(YEAR1_RANGE.min); }
-        else { await recomputeStatsAndGhosts(); }
+        wire();
+        toggleEmptyState(); // tolerante si falta instructions-pane
     });
 })();
