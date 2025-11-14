@@ -183,8 +183,8 @@
         "Farmacología": { display: "FAR", file: "FAR" },
         "Inmunología": { display: "INM", file: "INM" },
         "Microbiología y Parasitología": { display: "MyP", file: "MyP" },
-        "Introducción a la Cirugía Teórico": { display: "ICR", file: "ICR" },
-        "Introducción a la Cirugía Práctico": { display: "ICR", file: "ICR" },
+        "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
+        "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
         "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
     };
     const SUBJECT_COLORS = {
@@ -287,12 +287,23 @@
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
             { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
 
-            /* ===== Intro Cirugía ===== */
-            { id: "2-ICR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial",   officialDate: "2025-01-12", officialTime: "8:00" },
-            { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-6", officialTime: "8:00" },
-            { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "8:00" },
-            { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" },
+            /* ===== Intro Cirugía (fechas oficiales) ===== */
+            { id: "2-ICR-P1-TEO", subject: "Introducción a la Cirugía", type: "PAR 1 (TEO)", officialDate: "2026-01-10", officialTime: "08:00" },
+            { id: "2-ICR-P1-PRA", subject: "Introducción a la Cirugía", type: "PAR 1 (PRA)", officialDate: "2026-01-12", officialTime: "08:00",
+                multiStart: "2026-01-12", multiEnd: "2026-01-16" },
+
+            { id: "2-ICR-P2-TEO", subject: "Introducción a la Cirugía", type: "PAR 2 (TEO)", officialDate: "2026-04-11", officialTime: "08:00" },
+            { id: "2-ICR-P2-PRA", subject: "Introducción a la Cirugía", type: "PAR 2 (PRA)", officialDate: "2026-04-06", officialTime: "08:00",
+                multiStart: "2026-04-06", multiEnd: "2026-04-10" },
+
+            { id: "2-ICR-O1-PRA", subject: "Introducción a la Cirugía", type: "ORD 1 (PRA)", officialDate: "2026-04-27", officialTime: "13:00" },
+            { id: "2-ICR-O1-TEO", subject: "Introducción a la Cirugía", type: "ORD 1 (TEO)", officialDate: "2026-04-28", officialTime: "13:00" },
+
+            { id: "2-ICR-O2-PRA", subject: "Introducción a la Cirugía", type: "ORD 2 (PRA)", officialDate: "2026-05-21", officialTime: "12:00" },
+            { id: "2-ICR-O2-TEO", subject: "Introducción a la Cirugía", type: "ORD 2 (TEO)", officialDate: "2026-05-21", officialTime: "12:00" },
+
+            { id: "2-ICR-EX-TEO", subject: "Introducción a la Cirugía", type: "EXT 1 (TEO)", officialDate: "2026-05-29", officialTime: "08:00" },
+            { id: "2-ICR-EX-PRA", subject: "Introducción a la Cirugía", type: "EXT 1 (PRA)", officialDate: "2026-05-29", officialTime: "08:00" },
 
             /* ===== Promo ===== */
             { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
