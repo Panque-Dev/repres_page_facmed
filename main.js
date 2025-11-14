@@ -2,8 +2,8 @@
     "use strict";
 
     /* ================= CONFIG ================= */
-    const YEAR1_RANGE = { min: 1101, max: 1188 };   // PRIMERO
-    const YEAR2_RANGE = { min: 2201, max: 2275 };   // SEGUNDO
+    const YEAR1_RANGE = { min: 1101, max: 1182 };   // PRIMERO (actualizado)
+    const YEAR2_RANGE = { min: 2201, max: 2265 };   // SEGUNDO (actualizado)
 
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
@@ -780,7 +780,7 @@
             const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHuman(mode.date);
             const sub=document.createElement("div"); sub.className="stat-sub";
             const voters=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][mode.date]) ? groupsByExamDate[exam.id][mode.date] : [];
-            sub.textContent="votado por "+mode.count+" grupos"; if(g.length) sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", ");
+            sub.textContent="votado por "+mode.count+" grupos"; if(voters.length) sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", ");
             card.appendChild(date); card.appendChild(sub);
 
             if(list.length>1){
@@ -815,9 +815,40 @@
         return csv;
     }
 
+    function buildPerPagePrintHeaders(){
+        // Grupo | Fecha | Hora en cada página (una por mes)
+        const now = new Date();
+        const dateText = now.toLocaleDateString('es-MX', { year:'numeric', month:'2-digit', day:'2-digit' });
+        const timeText = now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', hour12:false });
+        const groupText = resultsMode ? "RESULTADOS" : (currentGroupId ? `Grupo ${currentGroupId}` : "Grupo —");
+
+        document.querySelectorAll(".month").forEach(sec=>{
+            let ph = sec.querySelector(".print-header");
+            if(!ph){
+                ph = document.createElement("div");
+                ph.className = "print-header";
+                sec.insertBefore(ph, sec.firstChild);
+            }
+            ph.innerHTML =
+                `<h1>Formato para la Reprogramación de Departamentales</h1>`+
+                `<div class="print-subtitle">Calendario continuo Noviembre 2025 – Junio 2026</div>`+
+                `<div class="print-meta">${groupText} | ${dateText} | ${timeText}</div>`;
+        });
+    }
+    function cleanupPerPagePrintHeaders(){
+        document.querySelectorAll(".month .print-header").forEach(ph=> ph.remove());
+    }
+
     async function onCapture(){
+        // Siempre ponemos encabezado por página antes de imprimir
+        const removeAfter = ()=>{
+            cleanupPerPagePrintHeaders();
+            window.removeEventListener("afterprint", removeAfter);
+        };
+        window.addEventListener("afterprint", removeAfter);
         try{
             if(resultsMode || !currentGroupId){
+                buildPerPagePrintHeaders();
                 window.print();
                 return;
             }
@@ -828,6 +859,7 @@
         }catch(e){
             console.warn("No se pudo guardar en servidor, se imprime de todos modos:", e?.message||e);
         } finally {
+            buildPerPagePrintHeaders();
             window.print();
         }
     }
