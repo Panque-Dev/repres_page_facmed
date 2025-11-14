@@ -2,8 +2,8 @@
     "use strict";
 
     /* ================= CONFIG ================= */
-    const YEAR1_RANGE = { min: 1101, max: 1182 };   // PRIMERO (actualizado)
-    const YEAR2_RANGE = { min: 2201, max: 2265 };   // SEGUNDO (actualizado)
+    const YEAR1_RANGE = { min: 1101, max: 1182 };
+    const YEAR2_RANGE = { min: 2201, max: 2265 };
 
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
@@ -13,15 +13,14 @@
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
-    // PARO (bloqueo con formato de vacaciones)
+    // PARO
     const STRIKE_START_DATE   = "2025-11-01";
-    const STRIKE_END_DATE     = "2025-11-18"; // termina el 18
+    const STRIKE_END_DATE     = "2025-11-18";
 
-    // CLASES SIN EVALUACIÓN (bloquea exámenes, SIN fondo azul)
+    // CLASES SIN EVALUACIÓN
     const NOEVAL_START_DATE   = "2025-11-19";
     const NOEVAL_END_DATE     = "2025-11-22";
 
-    // Etiquetas especiales puntuales
     const SPECIAL_DAY_LABELS = {
         "2025-11-17": "Día de la Revolución"
     };
@@ -29,17 +28,16 @@
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
 
-    // versión de estado
     const STORAGE_KEY   = "deptScheduler.state.v6_remote";
     const SNAPSHOT_KEY  = (year)=>`deptScheduler.snapshot.year${year}`;
 
-    // Fantasmas (más translúcidos)
+    // Fantasmas
     const MAX_GHOSTS_PER_EXAM      = 3;
     const MAX_ALPHA_MAIN           = 0.38;
     const MAX_ALPHA_ALT            = 0.26;
     const MIN_ALPHA_CAP_WHEN_FEW   = 0.18;
 
-    /* ======= Restricciones Fournier (visibles en calendario) ======= */
+    /* ======= Restricciones Fournier ======= */
     const FOURNIER_RESTRICTIONS = {
         "2025-11-24": { kind: "blocked" },
 
@@ -108,12 +106,12 @@
         "-aplicación de exámenes de otros grados escolares incluyendo certificaciones o exámenes profesionales.";
 
     /* =============== Estado global UI =============== */
-    let currentGroupId = null;     // string con el grupo en modo edición
-    let currentYear    = 1;        // 1 o 2
+    let currentGroupId = null;
+    let currentYear    = 1;
     let showSubjectWeeks = false;
-    let resultsMode = false;       // true cuando se ven resultados por año
+    let resultsMode = false;
 
-    // agregados para distancias y fantasmas (agregados globales de otros grupos)
+    // agregados para distancias y fantasmas
     let lastModeByExamAll = {};
     let lastModeListByExamAll = {};
     let lastTotalsByExamAll = {};
@@ -142,7 +140,6 @@
 
     const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
 
-    // ===== Orden "más próximo → más lejano" =====
     function startOfToday(){
         const now=new Date();
         return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -150,7 +147,7 @@
     function proximityKey(dateStr){
         const d=parseDate(dateStr), t0=startOfToday();
         const delta=d - t0;
-        const bucket = delta >= 0 ? 0 : 1;     // 0 = futuro, 1 = pasado
+        const bucket = delta >= 0 ? 0 : 1;
         const dist   = Math.abs(delta);
         return { bucket, dist, tie: dateStr };
     }
@@ -274,13 +271,7 @@
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: "2025-11-26", officialTime: "15:00" },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: "2025-12-02", officialTime: "08:00" },
             { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08", officialTime: "13:00" },
-            { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" },
-
-            { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial", officialDate: "2025-12-11", officialTime: "09:00" },
-            { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial", officialDate: "2026-04-25", officialTime: "08:00" },
-            { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "14:00" },
-            { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario", officialDate: "2026-05-26", officialTime: "13:00" },
-            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario", officialDate: "2026-06-08", officialTime: "11:00" }
+            { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" }
         ]
     };
 
@@ -398,7 +389,6 @@
         card.appendChild(lineStacked("última fecha aprobada:", appText));
         card.appendChild(lineStacked("sugerencia de reprogramación:", sugText));
 
-        // Distancias SOLO con exámenes del mismo grupo (en modo edición)
         const baseDate = suggestionDate || viewDate;
         const distPrev = groupProposals ? nearestBeforeOwn(baseDate, exam.id, groupProposals) : null;
         const distNext = groupProposals ? nearestAfterOwn(baseDate, exam.id, groupProposals) : null;
@@ -412,6 +402,38 @@
 
         card.addEventListener("dragstart", e=>{ e.dataTransfer.setData("text/plain", exam.id); e.dataTransfer.effectAllowed="move"; card.classList.add("dragging"); });
         card.addEventListener("dragend", ()=> card.classList.remove("dragging"));
+
+        return card;
+    }
+
+    /* ===== NUEVO: ficha completa de ganador en resultados ===== */
+    function createResultCard(exam, opts={}){
+        const { approvedDate, suggestionDate, prev, next } = opts;
+        const sig=getSigla(exam.subject); const badge=shortType(exam.type);
+
+        const card=document.createElement("div");
+        card.className="exam-card status-valid"; // ficha sólida, no opaca
+        card.draggable=false; card.dataset.examId=exam.id;
+
+        const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
+
+        const head=document.createElement("div"); head.className="exam-head2";
+        const icon=document.createElement("div"); icon.className="exam-icon-vert";
+        const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png";
+        icon.appendChild(img); head.appendChild(icon);
+
+        const title=document.createElement("div"); title.className="exam-title";
+        const sigla=document.createElement("div"); sigla.className="exam-sigla"; sigla.textContent=sig.display; sigla.title=exam.subject;
+        const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
+        title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
+
+        const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
+        sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
+
+        card.appendChild(lineStacked("fecha original:", formatShort(approvedDate || exam.officialDate)));
+        card.appendChild(lineStacked("propuesta ganadora:", formatShort(suggestionDate || exam.officialDate)));
+        card.appendChild(line("último examen:", prev!=null? `${prev} días atrás`:"—"));
+        card.appendChild(line("próximo examen:", next!=null? `${next} días`:"—"));
 
         return card;
     }
@@ -443,8 +465,6 @@
     }
 
     /* ===== Cálculos de distancias ===== */
-
-    // (agregado de todos) — para stats/otros usos
     function nearestBefore(base, thisExamId){
         let best=null;
         Object.keys(lastModeByExamAll).forEach(id=>{
@@ -464,7 +484,7 @@
         return best;
     }
 
-    // ====== Distancias SOLO con fechas del MISMO GRUPO ======
+    // SOLO MISMO GRUPO (modo edición)
     function dateForExamInGroup(examId, proposalsMap){
         const ex = examIdToObj[examId];
         if(!ex) return null;
@@ -534,7 +554,7 @@
                 const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
                 const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
                 if(isVacation(ds)) cell.classList.add("vacation");
-                if(isStrike(ds))   cell.classList.add("vacation"); // Paro con mismo estilo
+                if(isStrike(ds))   cell.classList.add("vacation");
                 const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
 
                 const hdr=document.createElement("div"); hdr.className="day-header";
@@ -696,7 +716,7 @@
         saveState(s);
 
         renderCurrentGroup();
-        recomputeAgg(); // refresca fantasmas al vuelo
+        recomputeAgg();
     }
 
     /* ===== API remota (Functions) ===== */
@@ -741,7 +761,7 @@
         return Object.values(map);
     }
 
-    /* ===== Agregados / fantasmas ===== */
+    /* ===== Agregados / fantasmas y resultados ===== */
     function foldAgg(rows){
         const totalsByExam={};
         const cntByExamDate={};
@@ -761,6 +781,31 @@
             if(list.length){ modeByExam[id]=list[0]; modeListByExam[id]=list; }
         });
         return { totalsByExam, modeByExam, modeListByExam, groupsByExamDate };
+    }
+
+    // Pinta ganadores (fichas sólidas) en calendario SOLO en resultados
+    function renderResultsWinners(modeByExam){
+        // limpiar contenedores de fichas
+        document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="");
+        if(!resultsMode) return;
+
+        const winners = Object.keys(modeByExam).map(id=>({
+            exam: examIdToObj[id],
+            date: modeByExam[id].date
+        })).filter(x=> x.exam && isWithin(x.date));
+
+        winners.forEach(({exam, date})=>{
+            const cell = document.querySelector('.day-cell[data-date="'+date+'"]');
+            if(!cell) return;
+            const prev = nearestBefore(date, exam.id);
+            const next = nearestAfter(date, exam.id);
+            const card = createResultCard(exam, {
+                approvedDate: exam.officialDate,
+                suggestionDate: date,
+                prev, next
+            });
+            cell.querySelector(".exam-list").appendChild(card);
+        });
     }
 
     async function recomputeAgg(){
@@ -799,6 +844,8 @@
         lastGroupsByExamDateOthers = others.groupsByExamDate;
 
         renderGhosts();
+        // NUEVO: fichas ganadoras sólidas en calendario (solo resultados)
+        renderResultsWinners(all.modeByExam);
         renderStats(all.modeByExam, all.modeListByExam, all.groupsByExamDate);
         renderCurrentGroup();
     }
@@ -824,10 +871,8 @@
         });
     }
 
-    // ===== helpers para resultados: distancias entre modas, excluyendo misma materia
+    // Distancias entre modas para ribbon (se mantiene)
     function prevNextDistancesByMode(items){
-        // items: [{exam, mode: {date,count}, voters:[...] }]
-        // Mapa para búsqueda rápida
         const arr = items.map(x=>({
             id: x.exam.id,
             subj: x.exam.subject,
@@ -860,6 +905,7 @@
         return distMap;
     }
 
+    /* ===== Propuestas más repetidas: FICHAS en resultados con mismo ancho ===== */
     function renderStats(modeByExam, modeListByExam, groupsByExamDate){
         const wrap=$id("stats-ribbon"), empty=$id("stats-empty");
         if(wrap) wrap.innerHTML="";
@@ -870,74 +916,96 @@
             voters: (groupsByExamDate[id] && groupsByExamDate[id][modeByExam[id].date]) ? groupsByExamDate[id][modeByExam[id].date] : []
         })).filter(x=> !!x.exam);
 
-        // Orden: más próximo → más lejano
-        items.sort((a,b)=> compareByProximity(a.mode.date, b.mode.date));
+        // Orden cronológico estricto
+        function compareChrono(a,b){
+            if(a.mode.date!==b.mode.date) return a.mode.date.localeCompare(b.mode.date);
+            const sa=a.exam.subject, sb=b.exam.subject;
+            if(sa!==sb) return sa.localeCompare(sb, "es");
+            return EXAM_ORDER.indexOf(a.exam.type) - EXAM_ORDER.indexOf(b.exam.type);
+        }
+        items.sort(compareChrono);
 
-        // Distancias entre modas, excluyendo misma materia (solo se usa/visualiza en resultados)
         const distancesById = prevNextDistancesByMode(items);
 
         if(!wrap || !empty) return;
         if(items.length===0){ empty.style.display="block"; return; }
         empty.style.display="none";
         items.forEach(({exam,mode,list,voters})=>{
-            const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-            const card=document.createElement("div"); card.className="stat-card";
-            const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
-            card.style.setProperty("--subj-tint", hexToRgba(fallback,.5));
-
-            const icon=document.createElement("div"); icon.className="stat-icon-top";
-            const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png"; icon.appendChild(img);
-            sampleIcon(img,.5,fallback,(rgba)=> card.style.setProperty("--subj-tint", rgba));
-            card.appendChild(icon);
-
-            const top=document.createElement("div"); top.className="stat-top";
-            const code=document.createElement("div"); code.className="stat-code"; code.textContent=sig.display; code.title=exam.subject;
-            const badgeEl=document.createElement("div"); badgeEl.className="stat-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
-            top.appendChild(code); top.appendChild(badgeEl); card.appendChild(top);
-
-            const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHuman(mode.date);
-            card.appendChild(date);
-
-            // Subtexto: conteo y (en resultados) lista completa de grupos
-            const sub=document.createElement("div"); sub.className="stat-sub";
-            sub.textContent="votado por "+mode.count+" grupos";
-            card.appendChild(sub);
-
             if(resultsMode){
-                // Mostrar TODOS los grupos que votaron esa moda
-                const listDiv = document.createElement("div");
-                listDiv.className = "stat-groups";
-                const groupsText = voters && voters.length ? voters.sort((a,b)=>a-b).join(", ") : "—";
-                listDiv.textContent = "Grupos: " + groupsText;
-                card.appendChild(listDiv);
-
-                // Distancias entre departamentales (modas), excluyendo misma materia
+                // ficha completa tipo examen
                 const d = distancesById[exam.id] || {prev:null,next:null};
-                const distWrap = document.createElement("div");
-                distWrap.className = "stat-dists";
-                const prevTxt = d.prev!=null ? `${d.prev} días atrás` : "—";
-                const nextTxt = d.next!=null ? `${d.next} días` : "—";
-                const l1 = document.createElement("div"); l1.className="stat-dist-line"; l1.textContent = "Último depa distinto: " + prevTxt;
-                const l2 = document.createElement("div"); l2.className="stat-dist-line"; l2.textContent = "Próximo depa distinto: " + nextTxt;
-                distWrap.appendChild(l1); distWrap.appendChild(l2);
-                card.appendChild(distWrap);
-            } else {
-                // En modo edición mantenemos la UI previa (opcionalmente 2a/3a moda)
+                const card = createResultCard(exam, {
+                    approvedDate: exam.officialDate,
+                    suggestionDate: mode.date,
+                    prev: d.prev,
+                    next: d.next
+                });
+
+                // ver 2a y 3a moda dentro de la ficha
+                if(list.length>1){
+                    const det=document.createElement("details");
+                    const sum=document.createElement("summary");
+                    sum.textContent="ver 2a y 3a moda";
+                    det.appendChild(sum);
+                    const ul=document.createElement("ul");
+                    list.slice(1,3).forEach((o,i)=>{
+                        const li=document.createElement("li");
+                        li.textContent=(i===0?"2a":"3a")+": "+formatHuman(o.date)+" — "+o.count+" votos";
+                        ul.appendChild(li);
+                    });
+                    det.appendChild(ul);
+                    card.appendChild(det);
+                }
+
+                // NUEVO: envolver en 'stat-card' para heredar el MISMO ancho de la barra
+                const shell=document.createElement("div");
+                shell.className="stat-card";   // usa la misma rejilla y ancho que el resto
+                shell.style.background="transparent";
+                shell.style.boxShadow="none";
+                shell.style.padding="0";
+                shell.style.border="0";
+                shell.style.display="block";
+                card.style.width="100%";
+                shell.appendChild(card);
+                wrap.appendChild(shell);
+
+            }else{
+                // modo clásico (otros grupos o edición)
+                const sig=getSigla(exam.subject); const badge=shortType(exam.type);
+                const card=document.createElement("div"); card.className="stat-card";
+                const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
+                card.style.setProperty("--subj-tint", hexToRgba(fallback,.5));
+
+                const icon=document.createElement("div"); icon.className="stat-icon-top";
+                const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png"; icon.appendChild(img);
+                sampleIcon(img,.5,fallback,(rgba)=> card.style.setProperty("--subj-tint", rgba));
+                card.appendChild(icon);
+
+                const top=document.createElement("div"); top.className="stat-top";
+                const code=document.createElement("div"); code.className="stat-code"; code.textContent=sig.display; code.title=exam.subject;
+                const badgeEl=document.createElement("div"); badgeEl.className="stat-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
+                top.appendChild(code); top.appendChild(badgeEl); card.appendChild(top);
+
+                const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHuman(mode.date);
+                card.appendChild(date);
+
+                const sub=document.createElement("div"); sub.className="stat-sub";
+                sub.textContent="votado por "+mode.count+" grupos";
+                card.appendChild(sub);
+
                 if(list.length>1){
                     const det=document.createElement("details"); const sum=document.createElement("summary");
                     sum.textContent="ver 2a y 3a moda"; det.appendChild(sum);
                     const ul=document.createElement("ul");
                     list.slice(1,3).forEach((o,i)=>{
-                        const g=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][o.date]) ? groupsByExamDate[exam.id][o.date] : [];
                         const li=document.createElement("li"); li.textContent=(i===0?"2a":"3a")+": "+formatHuman(o.date)+" — "+o.count+" votos";
-                        if(g.length) li.title="Grupos: "+g.sort((a,b)=>a-b).join(", ");
                         ul.appendChild(li);
                     });
                     det.appendChild(ul); card.appendChild(det);
                 }
-            }
 
-            wrap.appendChild(card);
+                wrap.appendChild(card);
+            }
         });
     }
 
@@ -1004,8 +1072,6 @@
     }
 
     /* ===== Entradas / control ===== */
-
-    // 1100 => resultados de primero, 2200 => resultados de segundo
     function parseGroupValue(raw){
         if(raw==null) return { kind:"empty" };
         const txt = String(raw).trim();
