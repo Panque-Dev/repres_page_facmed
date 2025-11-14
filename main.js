@@ -2,8 +2,8 @@
     "use strict";
 
     /* ================= CONFIG ================= */
-    const YEAR1_RANGE = { min: 1101, max: 1188 };   // PRIMERO
-    const YEAR2_RANGE = { min: 2201, max: 2275 };   // SEGUNDO
+    const YEAR1_RANGE = { min: 1101, max: 1182 };   // PRIMERO (actualizado)
+    const YEAR2_RANGE = { min: 2201, max: 2265 };   // SEGUNDO (actualizado)
 
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
@@ -20,11 +20,11 @@
     const STORAGE_KEY   = "deptScheduler.state.v6_remote";
     const SNAPSHOT_KEY  = (year)=>`deptScheduler.snapshot.year${year}`;
 
-    // Fantasmas
+    // Fantasmas (más translúcidos)
     const MAX_GHOSTS_PER_EXAM      = 3;
-    const MAX_ALPHA_MAIN           = 0.5;
-    const MAX_ALPHA_ALT            = 0.5;
-    const MIN_ALPHA_CAP_WHEN_FEW   = 0.2;
+    const MAX_ALPHA_MAIN           = 0.38; // antes 0.5
+    const MAX_ALPHA_ALT            = 0.26; // antes 0.5
+    const MIN_ALPHA_CAP_WHEN_FEW   = 0.18; // antes 0.2
 
     /* ======= Restricciones Fournier (visibles en calendario) ======= */
     const FOURNIER_RESTRICTIONS = {
@@ -126,20 +126,6 @@
     const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
 
     const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
-
-    // === proximidad temporal para ordenar modas ===
-    function startOfToday(){ const now=new Date(); return new Date(now.getFullYear(), now.getMonth(), now.getDate()); }
-    function proximityKey(dateStr){
-        const d=parseDate(dateStr), t0=startOfToday();
-        const delta=d - t0; const bucket = delta >= 0 ? 0 : 1; const dist = Math.abs(delta);
-        return { bucket, dist, tie: dateStr };
-    }
-    function compareByProximity(aDate, bDate){
-        const a=proximityKey(aDate), b=proximityKey(bDate);
-        if(a.bucket!==b.bucket) return a.bucket - b.bucket;
-        if(a.dist!==b.dist) return a.dist - b.dist;
-        return a.tie.localeCompare(b.tie);
-    }
 
     /* =============== Catálogos =============== */
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
@@ -413,7 +399,8 @@
         title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
 
         const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
-        sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
+        // icon tint más tenue en fantasmas
+        sampleIcon(img,.35,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
 
         card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
         card.appendChild(lineUpperGroups(groups));
@@ -423,7 +410,7 @@
         return card;
     }
 
-    /* ===== Cálculos ===== */
+    /* ===== Cálculos de distancias ===== */
     function nearestBefore(base, thisExamId){
         let best=null;
         Object.keys(lastModeByExamAll).forEach(id=>{
@@ -526,13 +513,12 @@
 
         const showMain = !!(currentGroupId || resultsMode);
 
-        // solo aplica cambios si existen los nodos (no revienta si faltan)
         safeToggle(instructions, !showMain);
         safeToggle(mainPanel, showMain);
         safeToggle(statsWrap, showMain);
     }
 
-    /* ===== Grupo actual ===== */
+    /* ===== Estado local/grupo ===== */
     function loadState(){
         try{
             const raw=localStorage.getItem(STORAGE_KEY);
@@ -648,11 +634,9 @@
     function mergeRemoteWithLocal(remoteGroups, year){
         const s=loadState();
         const map = Object.create(null);
-        // remoto manda
         (remoteGroups||[]).forEach(g=>{
             map[String(g.group_id)] = { group_id:String(g.group_id), year:g.year, proposals:g.proposals||{} };
         });
-        // locales que no existan en remoto
         Object.entries(s.groups||{}).forEach(([gid, g])=>{
             if(g.year!==year) return;
             if(!map[gid]){
@@ -685,7 +669,6 @@
     }
 
     async function recomputeAgg(){
-        // 1) remoto (si hay), con snapshot local
         let payload = null;
         try{
             payload = await apiListYear(currentYear);
@@ -696,22 +679,19 @@
             console.warn("Usando snapshot local para fantasmas:", e?.message||e);
         }
 
-        // 2) mezclar con grupos locales para que se vean al instante
         const allGroups = mergeRemoteWithLocal((payload && payload.groups) || [], currentYear);
 
-        // 3) armar filas
         const rowsAll = [];
         const rowsOthers = [];
         allGroups.forEach(g=>{
             const gid = String(g.group_id);
             Object.entries(g.proposals||{}).forEach(([exam_id, date])=>{
                 rowsAll.push({ exam_id, date, group_id: gid });
-                if(!resultsMode && String(currentGroupId||"")===gid) return; // excluye al propio salvo en resultados
+                if(!resultsMode && String(currentGroupId||"")===gid) return;
                 rowsOthers.push({ exam_id, date, group_id: gid });
             });
         });
 
-        // 4) plegar
         const all = foldAgg(rowsAll);
         const others = foldAgg(rowsOthers);
 
@@ -723,7 +703,6 @@
         lastTotalsByExamOthers   = others.totalsByExam;
         lastGroupsByExamDateOthers = others.groupsByExamDate;
 
-        // 5) pintar
         renderGhosts();
         renderStats(all.modeByExam, all.modeListByExam, all.groupsByExamDate);
         renderCurrentGroup();
@@ -755,8 +734,8 @@
         if(wrap) wrap.innerHTML="";
         const items=Object.keys(modeByExam).map(id=>({ exam: examIdToObj[id], mode: modeByExam[id], list: modeListByExam[id]||[] }));
 
-        // ordenar por cercanía temporal
-        items.sort((a,b)=> compareByProximity(a.mode.date, b.mode.date));
+        // Orden fijo por fecha (noviembre → junio)
+        items.sort((a,b)=> a.mode.date.localeCompare(b.mode.date));
 
         if(!wrap || !empty) return;
         if(items.length===0){ empty.style.display="block"; return; }
@@ -780,7 +759,7 @@
             const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHuman(mode.date);
             const sub=document.createElement("div"); sub.className="stat-sub";
             const voters=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][mode.date]) ? groupsByExamDate[exam.id][mode.date] : [];
-            sub.textContent="votado por "+mode.count+" grupos"; if(g.length) sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", ");
+            sub.textContent="votado por "+mode.count+" grupos"; if(voters.length) sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", ");
             card.appendChild(date); card.appendChild(sub);
 
             if(list.length>1){
@@ -799,7 +778,7 @@
         });
     }
 
-    /* ===== Captura ===== */
+    /* ===== Captura: encabezado UNA LÍNEA ===== */
     function proposalsMapFor(groupId){
         const s=loadState(); const g=s.groups[groupId]; if(!g) return {};
         const exams=EXAMS_BY_YEAR[g.year]||[]; const out={};
@@ -815,9 +794,36 @@
         return csv;
     }
 
+    function buildPerPagePrintHeaders(){
+        const now = new Date();
+        const dateText = now.toLocaleDateString('es-MX', { year:'numeric', month:'2-digit', day:'2-digit' });
+        const timeText = now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', hour12:false });
+        const groupText = resultsMode ? "RESULTADOS" : (currentGroupId ? `Grupo ${currentGroupId}` : "Grupo —");
+        const line = `Propuesta del ${groupText} | ${dateText} | ${timeText}`;
+
+        document.querySelectorAll(".month").forEach(sec=>{
+            let ph = sec.querySelector(".print-header");
+            if(!ph){
+                ph = document.createElement("div");
+                ph.className = "print-header";
+                sec.insertBefore(ph, sec.firstChild);
+            }
+            ph.innerHTML = `<div class="print-line">${line}</div>`;
+        });
+    }
+    function cleanupPerPagePrintHeaders(){
+        document.querySelectorAll(".month .print-header").forEach(ph=> ph.remove());
+    }
+
     async function onCapture(){
+        const removeAfter = ()=>{
+            cleanupPerPagePrintHeaders();
+            window.removeEventListener("afterprint", removeAfter);
+        };
+        window.addEventListener("afterprint", removeAfter);
         try{
             if(resultsMode || !currentGroupId){
+                buildPerPagePrintHeaders();
                 window.print();
                 return;
             }
@@ -828,6 +834,7 @@
         }catch(e){
             console.warn("No se pudo guardar en servidor, se imprime de todos modos:", e?.message||e);
         } finally {
+            buildPerPagePrintHeaders();
             window.print();
         }
     }
@@ -928,7 +935,7 @@
             if(e.key==="Enter"){
                 e.preventDefault();
                 setCurrentGroupFromInput(input.value);
-                input.blur(); // fuerza salida del campo para evitar “cursor parpadeando”
+                input.blur();
             }
         });
 
@@ -940,6 +947,6 @@
         buildIndices();
         buildCalendars();
         wire();
-        toggleEmptyState(); // tolerante si falta instructions-pane
+        toggleEmptyState();
     });
 })();
