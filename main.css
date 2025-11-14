@@ -278,12 +278,9 @@
     }
 }
 
-* {
-    box-sizing: border-box
-}
+* { box-sizing: border-box }
 
-html,
-body {
+html, body {
     margin: 0;
     padding: 0;
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, sans-serif;
@@ -309,9 +306,7 @@ body {
     -webkit-backdrop-filter: blur(10px);
 }
 
-.top-banner.hide {
-    display: none;
-}
+.top-banner.hide { display: none; }
 
 .top-banner-text {
     text-align: center;
@@ -343,9 +338,7 @@ body {
 }
 
 /* Cintas */
-.app-header.single-ribbon {
-    margin-bottom: 10px
-}
+.app-header.single-ribbon { margin-bottom: 10px }
 
 .ribbon {
     position: relative;
@@ -367,9 +360,7 @@ body {
     pointer-events: none
 }
 
-.ribbon-header {
-    padding: 12px 16px
-}
+.ribbon-header { padding: 12px 16px }
 
 .header-inner {
     display: flex;
@@ -423,10 +414,7 @@ body {
     box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
 }
 
-.capture-btn:hover {
-    filter: brightness(1.05)
-}
-
+.capture-btn:hover { filter: brightness(1.05) }
 .capture-btn:active {
     transform: translateY(1px);
     box-shadow: 0 6px 14px rgba(0, 0, 0, .5)
@@ -440,10 +428,7 @@ body {
     gap: 8px;
     cursor: pointer
 }
-
-.toggle-inline input {
-    accent-color: #60a5fa
-}
+.toggle-inline input { accent-color: #60a5fa }
 
 .group-selector {
     display: flex;
@@ -451,7 +436,6 @@ body {
     gap: 10px;
     flex-wrap: wrap
 }
-
 .group-selector label {
     font-size: 1.1rem;
     font-weight: 1000;
@@ -472,7 +456,6 @@ body {
     outline: none;
     box-shadow: 0 6px 18px rgba(0, 0, 0, .35) inset;
 }
-
 #group-input::-webkit-outer-spin-button,
 #group-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -493,47 +476,31 @@ body {
     font-size: .76rem;
     color: var(--muted)
 }
-
 .legend-item {
     display: inline-flex;
     align-items: center;
     gap: 6px
 }
-
-.legend-swatch,
-.ghost-swatch {
+.legend-swatch, .ghost-swatch {
     width: 14px;
     height: 10px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, .36)
 }
-
-.legend-swatch.status-original {
-    background: rgba(200, 209, 222, .5)
-}
-
-.legend-swatch.status-valid {
-    background: rgba(34, 197, 94, .6)
-}
-
-.legend-swatch.status-invalid {
+.legend-swatch.status-original { background: rgba(200, 209, 222, .5) }
+.legend-swatch.status-valid    { background: rgba(34, 197, 94, .6) }
+.legend-swatch.status-invalid  {
     background: rgba(239, 68, 68, .7);
     border-color: rgba(239, 68, 68, .7)
 }
-
 .ghost-swatch {
     background: rgba(78, 202, 255, .35);
     border-color: rgba(78, 202, 255, .55)
 }
 
 /* Stats */
-.stats-ribbon-wrap {
-    margin-bottom: 12px
-}
-
-.ribbon-stats {
-    padding: 12px 14px
-}
+.stats-ribbon-wrap { margin-bottom: 12px }
+.ribbon-stats { padding: 12px 14px }
 
 .stats-ribbon-header {
     display: flex;
@@ -542,14 +509,12 @@ body {
     gap: 12px;
     margin-bottom: 6px
 }
-
 .stats-ribbon-header h2 {
     margin: 0;
     font-size: .94rem;
     font-weight: 700;
     color: #f6f9ff
 }
-
 .stats-ribbon-cards {
     display: flex;
     gap: 10px;
@@ -557,7 +522,6 @@ body {
     padding-bottom: 4px;
     scrollbar-width: thin
 }
-
 .stats-empty {
     font-size: .8rem;
     color: #cdd9ea;
@@ -579,7 +543,6 @@ body {
     position: relative;
     overflow: hidden;
 }
-
 .stat-card::before {
     content: "";
     position: absolute;
@@ -588,18 +551,13 @@ body {
     background: var(--subj-tint, transparent);
     z-index: 0
 }
-
-.stat-card>* {
-    position: relative;
-    z-index: 1
-}
+.stat-card>* { position: relative; z-index: 1 }
 
 .stat-icon-top {
     display: flex;
     justify-content: center;
     margin: 2px 0 4px 0
 }
-
 .stat-icon-top img {
     width: 40px;
     height: 40px;
@@ -615,14 +573,12 @@ body {
     justify-content: space-between;
     gap: 10px
 }
-
 .stat-code {
     font-weight: 800;
     letter-spacing: .04em;
     font-size: .86rem;
     cursor: help
 }
-
 .stat-badge {
     font-size: .72rem;
     font-weight: 800;
@@ -631,16 +587,8 @@ body {
     background: rgba(0, 0, 0, .25);
     cursor: help
 }
-
-.stat-date {
-    font-size: .78rem
-}
-
-.stat-sub {
-    font-size: .7rem;
-    color: #cfd7e4;
-    cursor: help
-}
+.stat-date { font-size: .78rem }
+.stat-sub  { font-size: .7rem; color: #cfd7e4; cursor: help }
 
 /* Layout principal */
 .app-main {
@@ -660,7 +608,6 @@ body {
     backdrop-filter: blur(var(--blur));
     overflow: hidden;
 }
-
 .panel-bar {
     position: absolute;
     left: 14px;
@@ -670,14 +617,8 @@ body {
     opacity: .35;
     pointer-events: none
 }
-
-.panel-bar-top {
-    top: 10px
-}
-
-.panel-bar-middle {
-    top: 36px
-}
+.panel-bar-top { top: 10px }
+.panel-bar-middle { top: 36px }
 
 /* Pendientes */
 .pending-exams {
@@ -688,7 +629,6 @@ body {
     margin-bottom: 10px;
     backdrop-filter: blur(calc(var(--blur) - 2px))
 }
-
 .pending-exams-header {
     display: flex;
     align-items: center;
@@ -696,26 +636,22 @@ body {
     gap: 6px;
     margin-bottom: 4px
 }
-
 .pending-exams-header h2 {
     margin: 0;
     font-size: .9rem;
     font-weight: 680;
     color: #eef5ff
 }
-
 .pending-hint {
     margin: 0 0 6px;
     font-size: .74rem;
     color: #cdd9ea
 }
-
 .pending-exams-list {
     display: flex;
     flex-wrap: wrap;
     gap: 6px
 }
-
 .pending-exams-list .exam-card {
     width: var(--day-cell-w);
     min-width: var(--day-cell-w);
@@ -729,7 +665,6 @@ body {
     flex-direction: column;
     gap: 10px
 }
-
 .month {
     background: rgba(255, 255, 255, .03);
     border: 0;
@@ -737,13 +672,11 @@ body {
     border-radius: var(--radius-xl);
     box-shadow: 0 10px 24px rgba(0, 0, 0, .32)
 }
-
 .month-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     margin-bottom: 8px
 }
-
 .month-header h3 {
     margin: 0 0 8px 0;
     grid-column: span 7;
@@ -752,7 +685,6 @@ body {
     font-weight: 650;
     color: #f3f7ff
 }
-
 .month-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -762,7 +694,6 @@ body {
     border: 0;
     background: transparent
 }
-
 .day-name {
     text-align: center;
     font-weight: 600;
@@ -771,7 +702,6 @@ body {
     border-radius: 999px;
     background: rgba(0, 0, 0, .16)
 }
-
 .day-cell {
     position: relative;
     min-height: 90px;
@@ -785,19 +715,9 @@ body {
     background: rgba(255, 255, 255, .035);
     color: #e5e7eb;
 }
-
-.day-cell.empty {
-    background: transparent
-}
-
-.day-cell.weekend {
-    background: rgba(40, 77, 180, .14)
-}
-
-.day-cell.vacation {
-    background: rgba(78, 202, 255, .15)
-}
-
+.day-cell.empty   { background: transparent }
+.day-cell.weekend { background: rgba(40, 77, 180, .14) }
+.day-cell.vacation{ background: rgba(78, 202, 255, .15) }
 .day-cell.drop-target {
     background: rgba(78, 202, 255, .20);
     box-shadow: 0 0 0 2px rgba(78, 202, 255, .35)
@@ -810,49 +730,62 @@ body {
     gap: 4px;
     margin-bottom: 2px
 }
-
 .day-number {
     font-size: .92rem;
     font-weight: 700;
     color: #f8fbff
 }
-
 .day-meta {
     font-size: .66rem;
     color: #b9c3d3;
     font-style: italic
 }
 
+/* Listas y capas */
 .exam-list {
     position: relative;
-    z-index: 2;
+    z-index: 5 !important; /* asegura que las fichas reales tapen a los fantasmas */
     display: flex;
     flex-direction: column;
     gap: 6px;
     width: 100%
 }
 
-/* Fantasmas */
-.ghost-date {
-    position: absolute;
-    inset: 3px;
-    border-radius: var(--radius-xl);
+/* ====== FANTASMAS ====== */
+/* Contenedor en flujo para que aumente la altura de la semana */
+.ghost-date{
+    position: relative;      /* estaba absolute */
+    inset: auto;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    z-index: 0 !important;   /* por debajo de .exam-list */
+    pointer-events: none;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    z-index: 1;
-    pointer-events: none;
 }
 
-/* Más translúcidos y sin sombra */
+/* Tarjeta fantasma, más compacta */
 .exam-card.is-ghost {
     opacity: var(--ghost-alpha, .18);
     filter: saturate(.85);
     box-shadow: none;
     border: 1px dashed rgba(255, 255, 255, .12);
-}
 
-/* Tarjeta examen */
+    /* compactación */
+    font-size: .56rem;
+    padding: 4px 6px;
+    gap: 4px;
+}
+.exam-card.is-ghost .exam-head2{ gap: 4px; }
+.exam-card.is-ghost .exam-icon-vert img{ width: 28px; height: 28px; }
+.exam-card.is-ghost .exam-sigla{ font-size: .82rem; }
+.exam-card.is-ghost .exam-badge{ font-size: .6rem; padding: 1px 6px; }
+.exam-card.is-ghost .exam-line .line-label{ font-size: .52rem; }
+.exam-card.is-ghost .exam-line .line-value{ font-size: .64rem; }
+.exam-card.is-ghost .exam-line.stacked .line-value{ font-size: .68rem; }
+
+/* Tarjeta examen (normal) */
 .exam-card {
     position: relative;
     padding: 8px 10px;
@@ -870,7 +803,6 @@ body {
     width: 100%;
     overflow: hidden;
 }
-
 .exam-card::before {
     content: "";
     position: absolute;
@@ -879,33 +811,18 @@ body {
     background: var(--subj-tint, transparent);
     z-index: 0
 }
-
-.exam-card>* {
-    position: relative;
-    z-index: 1
-}
-
+.exam-card>* { position: relative; z-index: 1 }
 .exam-card:hover {
     transform: translateY(-1px);
     box-shadow: 0 10px 22px rgba(0, 0, 0, .55)
 }
-
 .exam-card.dragging {
     opacity: .95;
     box-shadow: 0 16px 32px rgba(0, 0, 0, .6)
 }
-
-.exam-card.status-original {
-    background: rgba(190, 198, 212, .22)
-}
-
-.exam-card.status-valid {
-    background: rgba(22, 163, 74, .32)
-}
-
-.exam-card.status-invalid {
-    background: rgba(239, 68, 68, .36)
-}
+.exam-card.status-original { background: rgba(190, 198, 212, .22) }
+.exam-card.status-valid    { background: rgba(22, 163, 74, .32) }
+.exam-card.status-invalid  { background: rgba(239, 68, 68, .36) }
 
 .exam-card.forced::after {
     content: "⚠︎";
@@ -927,18 +844,9 @@ body {
     background: rgba(200, 209, 222, .85);
     filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .25))
 }
-
-.exam-card.status-original .exam-status-strip {
-    background: rgba(200, 209, 222, .9)
-}
-
-.exam-card.status-valid .exam-status-strip {
-    background: rgba(34, 197, 94, .95)
-}
-
-.exam-card.status-invalid .exam-status-strip {
-    background: rgba(239, 68, 68, .95)
-}
+.exam-card.status-original .exam-status-strip { background: rgba(200, 209, 222, .9) }
+.exam-card.status-valid    .exam-status-strip { background: rgba(34, 197, 94, .95) }
+.exam-card.status-invalid  .exam-status-strip { background: rgba(239, 68, 68, .95) }
 
 .exam-head2 {
     display: grid;
@@ -946,13 +854,11 @@ body {
     gap: 8px;
     align-items: center
 }
-
 .exam-icon-vert {
     display: flex;
     align-items: center;
     justify-content: center
 }
-
 .exam-icon-vert img {
     width: 42px;
     height: 42px;
@@ -961,14 +867,12 @@ body {
     filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25));
     border-radius: 16px
 }
-
 .exam-title {
     display: flex;
     flex-direction: column;
     gap: 3px;
     align-items: flex-start
 }
-
 .exam-sigla {
     font-weight: 900;
     letter-spacing: .03em;
@@ -976,7 +880,6 @@ body {
     line-height: 1;
     cursor: help
 }
-
 .exam-badge {
     font-size: .74rem;
     font-weight: 800;
@@ -986,7 +889,6 @@ body {
     line-height: 1;
     cursor: help
 }
-
 .exam-line {
     display: flex;
     align-items: flex-start;
@@ -994,7 +896,6 @@ body {
     gap: 6px;
     flex-wrap: wrap
 }
-
 .exam-line .line-label,
 .exam-line .line-value {
     max-width: 100%;
@@ -1002,30 +903,19 @@ body {
     word-break: break-word;
     hyphens: auto
 }
-
-.exam-line .line-label {
-    font-size: .64rem;
-    color: #cfd7e4
-}
-
+.exam-line .line-label { font-size: .64rem; color: #cfd7e4 }
 .exam-line .line-value {
     font-size: .8rem;
     font-weight: 700;
     letter-spacing: .015em;
     text-align: right
 }
-
 .exam-line.stacked {
     flex-direction: column;
     align-items: flex-start;
     gap: 1px
 }
-
-.exam-line.stacked .line-value {
-    text-align: left;
-    font-size: .84rem
-}
-
+.exam-line.stacked .line-value { text-align: left; font-size: .84rem }
 .exam-line.upper .line-label {
     text-transform: uppercase;
     font-weight: 800;
@@ -1038,10 +928,7 @@ body {
     filter: none !important;
     background: var(--own-solid, #0b1220) !important;
 }
-
-.exam-card.own-proposal-solid::before {
-    background: rgba(0, 0, 0, 0) !important
-}
+.exam-card.own-proposal-solid::before { background: rgba(0, 0, 0, 0) !important }
 
 /* Footer */
 .app-footer {
@@ -1057,18 +944,12 @@ body {
     align-items: center;
     color: #e5e7eb
 }
-
-.footer-text p {
-    margin: 4px 0;
-    font-size: .92rem
-}
-
+.footer-text p { margin: 4px 0; font-size: .92rem }
 .footer-logos {
     display: flex;
     align-items: center;
     gap: 14px
 }
-
 .footer-logos img {
     height: 36px;
     width: auto;
@@ -1083,14 +964,12 @@ body {
     margin: 0;
     padding: 20px 0
 }
-
 .app-main {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: calc(100vh - 200px)
 }
-
 .banners-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1098,9 +977,7 @@ body {
     max-width: 800px;
     width: 100%
 }
-
-.proposal-banner,
-.manual-banner {
+.proposal-banner, .manual-banner {
     background: var(--glass);
     border: 1px solid var(--stroke);
     border-radius: var(--radius-lg);
@@ -1109,15 +986,12 @@ body {
     box-shadow: var(--shadow-soft);
     backdrop-filter: blur(var(--blur))
 }
-
-.proposal-banner h2,
-.manual-banner h2 {
+.proposal-banner h2, .manual-banner h2 {
     margin: 0 0 10px;
     font-size: 1.2rem;
     font-weight: 700
 }
-
-.manual-btn {
+.manual-btn, .proposal-btn {
     background: linear-gradient(180deg, rgba(56, 189, 248, .95), rgba(2, 132, 199, .95));
     border: 1px solid rgba(255, 255, 255, .22);
     border-radius: 999px;
@@ -1130,146 +1004,40 @@ body {
     box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
     backdrop-filter: blur(14px)
 }
-
-.manual-btn:hover {
-    filter: brightness(1.05)
-}
-
-.manual-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, .5)
-}
-
-.proposal-btn {
-    background: linear-gradient(180deg, rgba(56, 189, 248, .95), rgba(2, 132, 199, .95));
-    border: 1px solid rgba(255, 255, 255, .22);
-    border-radius: 999px;
-    padding: 12px 24px;
-    color: #02101f;
-    font-size: 1rem;
-    font-weight: 900;
-    letter-spacing: .02em;
-    cursor: pointer;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
-    backdrop-filter: blur(14px)
-}
-
-.proposal-btn:hover {
-    filter: brightness(1.05)
-}
-
-.proposal-btn:active {
+.manual-btn:hover, .proposal-btn:hover { filter: brightness(1.05) }
+.manual-btn:active, .proposal-btn:active {
     transform: translateY(1px);
     box-shadow: 0 6px 14px rgba(0, 0, 0, .5)
 }
 
 /* Responsive for intro.html */
 @media (max-width: 768px) {
-    .app-header h1 {
-        font-size: 1.5rem;
-        padding: 15px 0
-    }
-
-    .app-main {
-        min-height: calc(100vh - 150px)
-    }
-
-    .banners-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        max-width: 90%;
-        padding: 0 10px
-    }
-
-    .proposal-banner,
-    .manual-banner {
-        padding: 15px
-    }
-
-    .proposal-banner h2,
-    .manual-banner h2 {
-        font-size: 1rem
-    }
-
-    .proposal-btn,
-    .manual-btn {
-        padding: 10px 20px;
-        font-size: .9rem
-    }
+    .app-header h1 { font-size: 1.5rem; padding: 15px 0 }
+    .app-main { min-height: calc(100vh - 150px) }
+    .banners-grid { grid-template-columns: 1fr; gap: 15px; max-width: 90%; padding: 0 10px }
+    .proposal-banner, .manual-banner { padding: 15px }
+    .proposal-banner h2, .manual-banner h2 { font-size: 1rem }
+    .proposal-btn, .manual-btn { padding: 10px 20px; font-size: .9rem }
 }
-
 @media (max-width: 480px) {
-    .app-header h1 {
-        font-size: 1.2rem;
-        padding: 10px 0
-    }
-
-    .app-main {
-        min-height: calc(100vh - 120px)
-    }
-
-    .banners-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        max-width: 95%;
-        padding: 0 5px
-    }
-
-    .proposal-banner,
-    .manual-banner {
-        padding: 15px
-    }
-
-    .proposal-banner h2,
-    .manual-banner h2 {
-        font-size: .9rem
-    }
-
-    .proposal-btn,
-    .manual-btn {
-        padding: 8px 16px;
-        font-size: .8rem
-    }
+    .app-header h1 { font-size: 1.2rem; padding: 10px 0 }
+    .app-main { min-height: calc(100vh - 120px) }
+    .banners-grid { grid-template-columns: 1fr; gap: 10px; max-width: 95%; padding: 0 5px }
+    .proposal-banner, .manual-banner { padding: 15px }
+    .proposal-banner h2, .manual-banner h2 { font-size: .9rem }
+    .proposal-btn, .manual-btn { padding: 8px 16px; font-size: .8rem }
 }
 
 /* ======================= IMPRESIÓN ======================= */
-@page {
-    size: A4 landscape;
-    margin: 6mm;
-}
-
+@page { size: A4 landscape; margin: 6mm; }
 @media print {
-    * {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    :root { --bg: #ffffff; }
 
-    :root {
-        --bg: #ffffff;
-    }
-
-    body {
-        background: #e5edf7 !important;
-        color: #000 !important;
-    }
-
-    .top-banner {
-        display: none !important;
-    }
-
-    .app {
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .app-header,
-    .stats-ribbon-wrap,
-    .pending-exams,
-    .app-footer,
-    .panel-bar {
-        display: none !important;
-    }
+    body { background: #e5edf7 !important; color: #000 !important; }
+    .top-banner { display: none !important; }
+    .app { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .app-header, .stats-ribbon-wrap, .pending-exams, .app-footer, .panel-bar { display: none !important; }
 
     .main-panel {
         background: transparent !important;
@@ -1277,12 +1045,9 @@ body {
         border-radius: 0 !important;
         padding: 0 2mm 2mm !important;
     }
+    #calendar { margin-top: 0 !important; }
 
-    #calendar {
-        margin-top: 0 !important;
-    }
-
-    /* Encabezado por página: UNA SOLA LÍNEA GRANDE */
+    /* Encabezado por página */
     .print-header {
         display: block !important;
         margin: 0 2mm 2mm !important;
@@ -1293,7 +1058,6 @@ body {
         color: #000 !important;
         text-align: center !important;
     }
-
     .print-header .print-line {
         font-size: 13.5px !important;
         font-weight: 900 !important;
@@ -1319,64 +1083,24 @@ body {
         margin: 0 !important;
         color: #000 !important;
     }
-
-    .month-header {
-        margin-bottom: 2mm !important;
-    }
-
-    .month-header h3 {
-        font-size: 12px !important;
-        margin-bottom: 1mm !important;
-        color: #000 !important;
-    }
-
-    .month-grid {
-        padding: 0 !important;
-        gap: 1.5mm !important;
-        font-size: 7.5px !important;
-        grid-auto-rows: auto !important;
-    }
-
+    .month-header { margin-bottom: 2mm !important; }
+    .month-header h3 { font-size: 12px !important; margin-bottom: 1mm !important; color: #000 !important; }
+    .month-grid { padding: 0 !important; gap: 1.5mm !important; font-size: 7.5px !important; grid-auto-rows: auto !important; }
     .day-name {
-        background: #e5e7eb !important;
-        color: #000 !important;
-        padding: 0.5mm 0 !important;
-        border-radius: 999px !important;
-        font-size: 7px !important;
-        font-weight: 600 !important;
+        background: #e5e7eb !important; color: #000 !important;
+        padding: 0.5mm 0 !important; border-radius: 999px !important;
+        font-size: 7px !important; font-weight: 600 !important;
     }
-
     .day-cell {
-        min-height: auto !important;
-        padding: 0.7mm !important;
-        background: #ffffff !important;
-        color: #000 !important;
-        box-shadow: none !important;
-        border-radius: 3px !important;
+        min-height: auto !important; padding: 0.7mm !important;
+        background: #ffffff !important; color: #000 !important;
+        box-shadow: none !important; border-radius: 3px !important;
     }
-
-    .day-cell.weekend {
-        background: #e5e7eb !important;
-    }
-
-    .day-cell.vacation {
-        background: #fee2e2 !important;
-    }
-
-    .day-header {
-        margin-bottom: 0.5mm !important;
-        gap: 2px !important;
-    }
-
-    .day-number {
-        font-size: 9.5px !important;
-        color: #000 !important;
-    }
-
-    .day-meta {
-        font-size: 6.5px !important;
-        color: #111827 !important;
-    }
+    .day-cell.weekend { background: #e5e7eb !important; }
+    .day-cell.vacation{ background: #fee2e2 !important; }
+    .day-header { margin-bottom: 0.5mm !important; gap: 2px !important; }
+    .day-number { font-size: 9.5px !important; color: #000 !important; }
+    .day-meta   { font-size: 6.5px !important; color: #111827 !important; }
 
     .exam-card {
         font-size: 7.2px !important;
@@ -1387,101 +1111,33 @@ body {
         background: #f9fafb !important;
         color: #000 !important;
     }
+    .exam-card::before { opacity: .55 !important; }
+    .exam-card.status-original { background: #e5e7eb !important; }
+    .exam-card.status-valid    { background: #dcfce7 !important; }
+    .exam-card.status-invalid  { background: #fee2e2 !important; }
+    .exam-status-strip { height: 2.5px !important; }
+    .exam-icon-vert img { width: 16px !important; height: 16px !important; border-radius: 5px !important; }
+    .exam-sigla  { font-size: 8.5px !important; color: #000 !important; }
+    .exam-badge { font-size: 6.5px !important; padding: 1px 4px !important; color: #000 !important; background: #e5e7eb !important; }
+    .exam-line { gap: 2px !important; }
+    .exam-line .line-label { font-size: 5.5px !important; color: #111827 !important; }
+    .exam-line .line-value { font-size: 6.5px !important; color: #000 !important; }
 
-    .exam-card::before {
-        opacity: .55 !important;
-    }
-
-    .exam-card.status-original {
-        background: #e5e7eb !important;
-    }
-
-    .exam-card.status-valid {
-        background: #dcfce7 !important;
-    }
-
-    .exam-card.status-invalid {
-        background: #fee2e2 !important;
-    }
-
-    .exam-status-strip {
-        height: 2.5px !important;
-    }
-
-    .exam-icon-vert img {
-        width: 16px !important;
-        height: 16px !important;
-        border-radius: 5px !important;
-    }
-
-    .exam-sigla {
-        font-size: 8.5px !important;
-        color: #000 !important;
-    }
-
-    .exam-badge {
-        font-size: 6.5px !important;
-        padding: 1px 4px !important;
-        color: #000 !important;
-        background: #e5e7eb !important;
-    }
-
-    .exam-line {
-        gap: 2px !important;
-    }
-
-    .exam-line .line-label {
-        font-size: 5.5px !important;
-        color: #111827 !important;
-    }
-
-    .exam-line .line-value {
-        font-size: 6.5px !important;
-        color: #000 !important;
-    }
-
-    .ghost-date {
-        inset: 1mm !important;
-    }
-
-    .exam-card.is-ghost {
-        opacity: .16 !important;
-        filter: none !important;
-    }
+    /* mantener fantasmas en flujo en impresión */
+    .ghost-date{ position: relative !important; inset: auto !important; margin: 0 !important; }
 }
 
 /* ======== MODO COMPACTO <700px (solo ícono, tipo, y grupos en fantasmas) ======== */
 @media (max-width: 700px) {
+    .exam-head2 { grid-template-columns: 1fr; justify-items: center; gap: 4px; }
+    .exam-title { align-items: center; gap: 4px; }
 
-    /* Apilar cabeza y centrar */
-    .exam-head2 {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 4px;
-    }
+    .exam-sigla { display: none; }
+    .exam-badge{ display: inline-block; margin-top: 2px; line-height: 1; }
 
-    .exam-title {
-        align-items: center;
-        gap: 4px;
-    }
+    .exam-card .exam-line { display: none; }
 
-    /* Ocultar sigla de la materia, dejar solo el tipo */
-    .exam-sigla {
-        display: none;
-    }
-
-    .exam-badge {
-        display: inline-block;
-        margin-top: 2px;
-        line-height: 1;
-    }
-
-    /* Ocultar todas las líneas de detalle en móvil */
-    .exam-card .exam-line {
-        display: none;
-    }
-
-    /* Pero en fantasmas SÍ mostrar la línea de grupos como tercera fila */
+    /* En fantasmas sí mostrar grupos como tercera fila */
     .exam-card.is-ghost .exam-line.upper {
         display: flex;
         flex-direction: column;
@@ -1489,11 +1145,7 @@ body {
         gap: 2px;
         margin-top: 2px;
     }
-
-    .exam-card.is-ghost .exam-line.upper .line-label {
-        display: none;
-    }
-
+    .exam-card.is-ghost .exam-line.upper .line-label { display: none; }
     .exam-card.is-ghost .exam-line.upper .line-value {
         display: block;
         text-align: center;
@@ -1501,139 +1153,26 @@ body {
         font-size: .74rem;
     }
 
-    /* ===== Full-bleed: quitar márgenes/paddings para que cada semana vaya de extremo a extremo ===== */
-    html,
-    body {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
+    /* Full-bleed */
+    html, body { margin: 0 !important; padding: 0 !important; }
+    .app { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .app-header.single-ribbon, .ribbon, .ribbon-header { border-radius: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
+    .app-main { gap: 0 !important; }
+    .main-panel { padding: 0 !important; border-radius: 0 !important; }
+    .panel-bar { left: 0 !important; right: 0 !important; }
+    .stats-ribbon-wrap { margin: 0 !important; }
+    .ribbon-stats { padding-left: 0 !important; padding-right: 0 !important; border-radius: 0 !important; }
+    .calendar { gap: 0 !important; }
+    .month { padding: 0 !important; margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+    .month-header { margin: 0 !important; }
+    .month-header h3 { margin: 6px 0 !important; }
+    .month-grid { padding: 0 !important; gap: 0 !important; }
+    .day-name { padding: 2px 0 !important; border-radius: 0 !important; }
+    .day-cell { padding: 4px 2px !important; border-radius: 0 !important; }
 
-    .app {
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .app-header.single-ribbon,
-    .ribbon,
-    .ribbon-header {
-        border-radius: 0 !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-
-    .app-main {
-        gap: 0 !important;
-    }
-
-    .main-panel {
-        padding: 0 !important;
-        border-radius: 0 !important;
-    }
-
-    .panel-bar {
-        left: 0 !important;
-        right: 0 !important;
-    }
-
-    .stats-ribbon-wrap {
-        margin: 0 !important;
-    }
-
-    .ribbon-stats {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        border-radius: 0 !important;
-    }
-
-    .calendar {
-        gap: 0 !important;
-    }
-
-    .month {
-        padding: 0 !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    .month-header {
-        margin: 0 !important;
-    }
-
-    .month-header h3 {
-        margin: 6px 0 !important;
-    }
-
-    .month-grid {
-        padding: 0 !important;
-        gap: 0 !important;
-    }
-
-    .day-name {
-        padding: 2px 0 !important;
-        border-radius: 0 !important;
-    }
-
-    .day-cell {
-        padding: 4px 2px !important;
-        border-radius: 0 !important;
-    }
-}
-
-/* =====================
-   OVERRIDES: FANTASMAS
-   ===================== */
-
-/* 1) Los fantasmas entran al flujo y estiran la altura de la fila de la semana */
-.ghost-date{
-    position: relative;      /* antes era absolute */
-    inset: auto;
-    margin-top: 2px;
-    margin-bottom: 4px;
-    z-index: 1;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-/* 2) Fantasmas más compactos (tipografía y paddings) */
-.exam-card.is-ghost{
-    font-size: .56rem;       /* más pequeño que .68rem */
-    padding: 4px 6px;
-    gap: 4px;
-    border: 1px dashed rgba(255,255,255,.10);
-    opacity: var(--ghost-alpha, .18);
-    filter: saturate(.85);
-    box-shadow: none;
-}
-
-.exam-card.is-ghost .exam-head2{ gap: 4px; }
-.exam-card.is-ghost .exam-icon-vert img{ width: 28px; height: 28px; }
-.exam-card.is-ghost .exam-sigla{ font-size: .82rem; }
-.exam-card.is-ghost .exam-badge{ font-size: .6rem; padding: 1px 6px; }
-
-.exam-card.is-ghost .exam-line .line-label{ font-size: .52rem; }
-.exam-card.is-ghost .exam-line .line-value{ font-size: .64rem; }
-.exam-card.is-ghost .exam-line.stacked .line-value{ font-size: .68rem; }
-
-/* Asegura que las tarjetas reales queden por encima si hay solape */
-.exam-list{ position: relative; z-index: 2; }
-
-/* Responsive: aún más compacto en móviles */
-@media (max-width: 768px){
+    /* Fantasmas aún más compactos en móvil */
     .exam-card.is-ghost{ font-size: .5rem; padding: 3px 5px; gap: 3px; }
     .exam-card.is-ghost .exam-icon-vert img{ width: 24px; height: 24px; }
     .exam-card.is-ghost .exam-badge{ font-size: .54rem; padding: 1px 5px; }
     .exam-card.is-ghost .exam-line.upper .line-value{ font-size: .62rem; }
-}
-
-/* Impresión: mantenerlos en flujo aunque la regla previa ponía inset */
-@media print{
-    .ghost-date{
-        position: relative !important;
-        inset: auto !important;
-        margin: 0 !important;
-    }
 }

@@ -1,4 +1,4 @@
-(function(){
+(function () {
     "use strict";
 
     /* ================= CONFIG ================= */
@@ -8,35 +8,36 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
+    // Vacaciones (invierno + Semana Santa + flags específicos)
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
-    // PARO (actualizado: termina el 22 de noviembre)
-    const STRIKE_START_DATE   = "2025-11-01";
-    const STRIKE_END_DATE     = "2025-11-22";
+    // PARO (del 1 al 22 de noviembre, inclusive)
+    const STRIKE_START_DATE = "2025-11-01";
+    const STRIKE_END_DATE   = "2025-11-22";
 
-    // CLASES SIN EVALUACIÓN
-    const NOEVAL_START_DATE   = "2025-11-19";
-    const NOEVAL_END_DATE     = "2025-11-22";
+    // Clases sin evaluación
+    const NOEVAL_START_DATE = "2025-11-19";
+    const NOEVAL_END_DATE   = "2025-11-22";
 
     const SPECIAL_DAY_LABELS = {
         "2025-11-17": "Día de la Revolución"
     };
 
-    // Corte para “anteriores al paro”: todo <= 22-Nov
+    // “Antes del paro” = oficial < 2025-11-23
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
 
-    const STORAGE_KEY   = "deptScheduler.state.v6_remote";
-    const SNAPSHOT_KEY  = (year)=>`deptScheduler.snapshot.year${year}`;
+    const STORAGE_KEY  = "deptScheduler.state.v6_remote";
+    const SNAPSHOT_KEY = (year) => `deptScheduler.snapshot.year${year}`;
 
     // Fantasmas
-    const MAX_GHOSTS_PER_EXAM      = 3;
-    const MAX_ALPHA_MAIN           = 0.38;
-    const MAX_ALPHA_ALT            = 0.26;
-    const MIN_ALPHA_CAP_WHEN_FEW   = 0.18;
+    const MAX_GHOSTS_PER_EXAM    = 3;
+    const MAX_ALPHA_MAIN         = 0.38;
+    const MAX_ALPHA_ALT          = 0.26;
+    const MIN_ALPHA_CAP_WHEN_FEW = 0.18;
 
     /* ======= Restricciones Fournier ======= */
     const FOURNIER_RESTRICTIONS = {
@@ -108,11 +109,11 @@
 
     /* =============== Estado global UI =============== */
     let currentGroupId = null;
-    let currentYear    = 1;
+    let currentYear = 1;
     let showSubjectWeeks = false;
     let resultsMode = false;
 
-    // agregados para distancias y fantasmas
+    // Agregados para distancias y fantasmas
     let lastModeByExamAll = {};
     let lastModeListByExamAll = {};
     let lastTotalsByExamAll = {};
@@ -121,48 +122,30 @@
     let lastGroupsByExamDateOthers = {};
 
     /* =============== Utilidades =============== */
-    const $id = (s)=> document.getElementById(s);
-    const safeToggle = (el, show)=>{ if(!el) return; el.classList[show? "remove":"add"]("hide"); };
+    const $id = (s) => document.getElementById(s);
+    const safeToggle = (el, show) => { if (!el) return; el.classList[show ? "remove" : "add"]("hide"); };
 
-    const parseDate   = (s)=>{ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
-    const formatDate  = (y,m,d)=> y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
-    const formatHuman = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; };
-    const formatShort = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
-    const diffDays    = (a,b)=> Math.round(Math.abs(parseDate(b)-parseDate(a))/86400000);
-    const hexToRgba   = (hex, a)=>{ const h=hex.replace("#",""); const n=parseInt(h,16); const r=(n>>16)&255,g=(n>>8)&255,b=n&255; return `rgba(${r},${g},${b},${a})`; };
+    const parseDate   = (s) => { const p = s.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); };
+    const formatDate  = (y, m, d) => y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+    const formatHuman = (s) => { const p = s.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; };
+    const formatShort = (s) => { const p = s.split("-"); return p[2] + "/" + p[1] + "/" + p[0].slice(2); };
+    const diffDays    = (a, b) => Math.round(Math.abs(parseDate(b) - parseDate(a)) / 86400000);
+    const hexToRgba   = (hex, a) => { const h = hex.replace("#", ""); const n = parseInt(h, 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return `rgba(${r},${g},${b},${a})`; };
 
-    const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
-    const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
-    const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE;
-    const isNoEvaluation = (s)=> s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE;
-    const isSunday = (s)=> parseDate(s).getDay()===0;
-    const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && !isNoEvaluation(s) && s!==SELECTION_DAY;
-    const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
+    const isWithin       = (s) => s >= CAL_START_DATE && s <= CAL_END_DATE;
+    const isVacation     = (s) => (s >= VACATION_START_DATE && s <= VACATION_END_DATE) || (s >= VACATION_SS_START && s <= VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind === "vac");
+    const isStrike       = (s) => s >= STRIKE_START_DATE && s <= STRIKE_END_DATE;
+    const isNoEvaluation = (s) => s >= NOEVAL_START_DATE && s <= NOEVAL_END_DATE;
+    const isSunday       = (s) => parseDate(s).getDay() === 0;
+    const isValidDate    = (s) => isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && !isNoEvaluation(s) && s !== SELECTION_DAY;
+    const getRestriction = (d) => FOURNIER_RESTRICTIONS[d] || null;
 
-    const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
-
-    function startOfToday(){
-        const now=new Date();
-        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    }
-    function proximityKey(dateStr){
-        const d=parseDate(dateStr), t0=startOfToday();
-        const delta=d - t0;
-        const bucket = delta >= 0 ? 0 : 1;
-        const dist   = Math.abs(delta);
-        return { bucket, dist, tie: dateStr };
-    }
-    function compareByProximity(aDate, bDate){
-        const a=proximityKey(aDate), b=proximityKey(bDate);
-        if(a.bucket!==b.bucket) return a.bucket - b.bucket;
-        if(a.dist!==b.dist)     return a.dist - b.dist;
-        return a.tie.localeCompare(b.tie);
-    }
+    const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 
     /* =============== Catálogos =============== */
-    const DAY_NAMES = ["L","M","X","J","V","S","D"];
+    const DAY_NAMES   = ["L","M","X","J","V","S","D"];
     const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-    const EXAM_ORDER = ["Primer parcial","Segundo parcial","Tercer parcial","Cuarto parcial","Primer ordinario","Segundo ordinario","Extraordinario"];
+    const EXAM_ORDER  = ["Primer parcial","Segundo parcial","Tercer parcial","Cuarto parcial","Primer ordinario","Segundo ordinario","Extraordinario"];
 
     const SUBJECT_SIGLAS = {
         "Embriología Humana": { display: "EMB", file: "EMB" },
@@ -192,6 +175,24 @@
     const subjectChains = {1:{},2:{}};
     const examLabelIndex = {1:{},2:{}};
 
+    // Mapea tipo a “badge” y soporta sufijos (TEO/PRA)
+    function shortType(t) {
+        const base = t.replace(/\s*\((TEO|PRA)\)\s*$/i, "").trim();
+        const suf  = t.match(/\((TEO|PRA)\)/i)?.[0] || "";
+        const map = {
+            "Primer parcial": "PAR 1",
+            "Segundo parcial": "PAR 2",
+            "Tercer parcial":  "PAR 3",
+            "Cuarto parcial":  "PAR 4",
+            "Primer ordinario": "ORD 1",
+            "Segundo ordinario":"ORD 2",
+            "Extraordinario":   "EXT 1"
+        };
+        const badge = map[base] || t;
+        return { badge: badge + (suf ? " " + suf.toUpperCase() : ""), meaning: t };
+    }
+
+    /* ===== EXÁMENES ===== */
     const EXAMS_BY_YEAR = {
         1: [
             { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
@@ -275,179 +276,168 @@
             { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08", officialTime: "13:00" },
             { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" },
 
-            /* ===== IBC 2 ===== */
-            { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial",   officialDate: "2025-12-11", officialTime: "09:00" },
-            { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial",  officialDate: "2026-04-25", officialTime: "14:00" },
-            { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
-            { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
-            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
+            // ===== Cirugía (fechas oficiales corregidas a 2026) =====
+            // P1: PRA 12-16 Ene 2026, TEO Sáb 10 Ene 2026
+            { id: "2-ICR-P1-TEO", subject: "Introducción a la Cirugía", type: "Primer parcial (TEO)", officialDate: "2026-01-10", officialTime: "08:00" },
+            { id: "2-ICR-P1-PRA", subject: "Introducción a la Cirugía", type: "Primer parcial (PRA)", officialDate: "2026-01-12", officialTime: "08:00" },
 
-            /* ===== Introducción a la Cirugía (corregido a enero 2026 y 06 en abril) ===== */
-            { id: "2-ICR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial",   officialDate: "2026-01-12", officialTime: "08:00" },
-            { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-06", officialTime: "08:00" },
-            { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "08:00" },
-            { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "08:00" },
+            // P2: PRA 6-10 Abr 2026, TEO Sáb 11 Abr 2026
+            { id: "2-ICR-P2-TEO", subject: "Introducción a la Cirugía", type: "Segundo parcial (TEO)", officialDate: "2026-04-11", officialTime: "08:00" },
+            { id: "2-ICR-P2-PRA", subject: "Introducción a la Cirugía", type: "Segundo parcial (PRA)", officialDate: "2026-04-06", officialTime: "08:00" },
 
-            /* ===== Promoción ===== */
-            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
-            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
-            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
-            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
+            // O1: PRÁ 27 Abr, TEO 28 Abr 2026 - 13:00
+            { id: "2-ICR-O1-TEO", subject: "Introducción a la Cirugía", type: "Primer ordinario (TEO)", officialDate: "2026-04-28", officialTime: "13:00" },
+            { id: "2-ICR-O1-PRA", subject: "Introducción a la Cirugía", type: "Primer ordinario (PRA)", officialDate: "2026-04-27", officialTime: "13:00" },
 
-            /* Micro y Parasito */
-            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial",   officialDate: "2025-12-06", officialTime: "13:00" },
-            { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial",  officialDate: "2026-04-13", officialTime: "15:00" },
-            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial",   officialDate: "2026-05-02", officialTime: "08:00" },
+            // O2 y EXT (según tabulador proporcionado)
+            { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario", officialDate: "2026-05-21", officialTime: "12:00" },
+            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-05-29", officialTime: "08:00" },
+
+            // ===== Promoción (PCV) =====
+            { id: "2-PCV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",  officialDate: "2025-11-18", officialTime: "09:00" },
+            { id: "2-PCV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial", officialDate: "2026-04-15", officialTime: "15:00" },
+            { id: "2-PCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
+            { id: "2-PCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-18", officialTime: "14:00" },
+            { id: "2-PCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",  officialDate: "2026-06-06", officialTime: "09:00" },
+
+            // Micro y Para
+            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial",  officialDate: "2025-12-06", officialTime: "13:00" },
+            { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
+            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial",  officialDate: "2026-05-02", officialTime: "08:00" },
             { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
-            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario",officialDate: "2026-05-30", officialTime: "08:00" }
+            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-30", officialTime: "08:00" }
         ]
     };
 
-    function buildIndices(){
-        [1,2].forEach(year=>{
-            const bySubject={};
-            EXAMS_BY_YEAR[year].forEach(ex=>{
-                examIdToObj[ex.id]=ex;
+    function buildIndices() {
+        [1, 2].forEach(year => {
+            const bySubject = {};
+            EXAMS_BY_YEAR[year].forEach(ex => {
+                examIdToObj[ex.id] = ex;
                 (bySubject[ex.subject] ||= []).push(ex);
                 examLabelIndex[year][ex.id] = `${ex.subject} — ${ex.type}`;
             });
-            Object.keys(bySubject).forEach(sub=>{
-                bySubject[sub].sort((a,b)=>{
-                    return EXAM_ORDER.indexOf(a.type)-EXAM_ORDER.indexOf(b.type) || a.officialDate.localeCompare(b.officialDate);
-                });
-                subjectChains[year][sub]=bySubject[sub].map(e=>e.id);
+            Object.keys(bySubject).forEach(sub => {
+                bySubject[sub].sort((a,b) =>
+                    EXAM_ORDER.indexOf(a.type.replace(/\s*\(.*\)$/, "")) - EXAM_ORDER.indexOf(b.type.replace(/\s*\(.*\)$/, "")) ||
+                    a.officialDate.localeCompare(b.officialDate)
+                );
+                subjectChains[year][sub] = bySubject[sub].map(e => e.id);
             });
         });
     }
 
     /* ===== Color desde ícono ===== */
     const sampledCache = new Map();
-    function sampleIcon(imgEl, alpha, fallback, apply){
-        const key=imgEl.src+"@avg@"+alpha;
-        if(sampledCache.has(key)) return apply(sampledCache.get(key));
-        const img=new Image(); img.crossOrigin="anonymous"; img.src=imgEl.src;
-        const compute=()=>{
-            try{
-                const c=document.createElement("canvas"); c.width=1; c.height=1;
-                const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,10,10);
-                const d=ctx.getImageData(0,0,10,10).data;
-                const rgba=`rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
+    function sampleIcon(imgEl, alpha, fallback, apply) {
+        const key = imgEl.src + "@avg@" + alpha;
+        if (sampledCache.has(key)) return apply(sampledCache.get(key));
+        const img = new Image(); img.crossOrigin = "anonymous"; img.src = imgEl.src;
+        const compute = () => {
+            try {
+                const c = document.createElement("canvas"); c.width = 1; c.height = 1;
+                const ctx = c.getContext("2d"); ctx.drawImage(img, 0, 0, 10, 10);
+                const d = ctx.getImageData(0,0,10,10).data;
+                const rgba = `rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
                 sampledCache.set(key, rgba); apply(rgba);
-            }catch{ apply(hexToRgba(fallback, alpha)); }
+            } catch { apply(hexToRgba(fallback, alpha)); }
         };
-        if(img.complete) compute(); else img.addEventListener("load", compute);
+        if (img.complete) compute(); else img.addEventListener("load", compute);
     }
-    function sampleIconAt(imgEl, x, y, alpha, fallback, apply){
-        const key=imgEl.src+`@${x},${y}@${alpha}`;
-        if(sampledCache.has(key)) return apply(sampledCache.get(key));
-        const img=new Image(); img.crossOrigin="anonymous"; img.src=imgEl.src;
-        const compute=()=>{
-            try{
+    function sampleIconAt(imgEl, x, y, alpha, fallback, apply) {
+        const key = imgEl.src + `@${x},${y}@${alpha}`;
+        if (sampledCache.has(key)) return apply(sampledCache.get(key));
+        const img = new Image(); img.crossOrigin = "anonymous"; img.src = imgEl.src;
+        const compute = () => {
+            try {
                 const c=document.createElement("canvas"); c.width=img.naturalWidth||42; c.height=img.naturalHeight||42;
                 const ctx=c.getContext("2d"); ctx.drawImage(img,0,0);
                 const d=ctx.getImageData(Math.min(x,c.width-1),Math.min(y,c.height-1),1,1).data;
                 const rgba=`rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
                 sampledCache.set(key, rgba); apply(rgba);
-            }catch{ apply(hexToRgba(fallback, alpha)); }
+            } catch { apply(hexToRgba(fallback, alpha)); }
         };
-        if(img.complete) compute(); else img.addEventListener("load", compute);
+        if (img.complete) compute(); else img.addEventListener("load", compute);
     }
 
-    function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
-    function shortType(t){
-        switch(t){
-            case "Primer parcial": return {badge:"PAR 1", meaning:"Parcial 1"};
-            case "Segundo parcial": return {badge:"PAR 2", meaning:"Parcial 2"};
-            case "Tercer parcial": return {badge:"PAR 3", meaning:"Parcial 3"};
-            case "Cuarto parcial": return {badge:"PAR 4", meaning:"Parcial 4"};
-            case "Primer ordinario": return {badge:"ORD 1", meaning:"Ordinario 1"};
-            case "Segundo ordinario": return {badge:"ORD 2", meaning:"Ordinario 2"};
-            case "Extraordinario": return {badge:"EXT 1", meaning:"Extraordinario"};
-            default: return {badge:t, meaning:t};
-        }
+    function getSigla(sub) {
+        return SUBJECT_SIGLAS[sub] || { display: sub.split(" ").map(w => w[0]).join("").slice(0,3).toUpperCase(), file: "GEN" };
     }
 
     /* ===== UI helpers ===== */
-    function line(label, value){
-        const row=document.createElement("div"); row.className="exam-line";
-        const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
-        const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
+    function line(label, value) {
+        const row = document.createElement("div"); row.className = "exam-line";
+        const l = document.createElement("span"); l.className = "line-label"; l.textContent = label;
+        const v = document.createElement("span"); v.className = "line-value"; v.textContent = value;
         row.appendChild(l); row.appendChild(v); return row;
     }
-    function lineStacked(label, value){
-        const row=document.createElement("div"); row.className="exam-line stacked";
-        const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
-        const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
+    function lineStacked(label, value) {
+        const row = document.createElement("div"); row.className = "exam-line stacked";
+        const l = document.createElement("span"); l.className = "line-label"; l.textContent = label;
+        const v = document.createElement("span"); v.className = "line-value"; v.textContent = value;
         row.appendChild(l); row.appendChild(v); return row;
     }
-    function lineUpperGroups(groups){
+    function lineUpperGroups(groups) {
         const text = (groups && groups.length)
             ? groups.slice(0,5).sort((a,b)=>a-b).join(", ") + (groups.length>5 ? "  +" + (groups.length-5) : "")
             : "—";
-        const row=line("ESTA ES UNA FECHA VOTADA POR:", text);
+        const row = line("ESTA ES UNA FECHA VOTADA POR:", text);
         row.classList.add("upper");
         return row;
     }
 
-    function createExamCard(exam, viewDate, statusClass, forced, opts={}){
+    function createExamCard(exam, viewDate, statusClass, forced, opts={}) {
         const { approvedDate, suggestionDate, isOwn, groupProposals } = opts;
-        const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-        const card=document.createElement("div"); card.className="exam-card "+statusClass; card.draggable=true; card.dataset.examId=exam.id;
+        const sig = getSigla(exam.subject); const badge = shortType(exam.type);
+        const card = document.createElement("div"); card.className = "exam-card " + statusClass; card.draggable = true; card.dataset.examId = exam.id;
+        if (forced) card.classList.add("forced");
+        if (isOwn) card.classList.add("own-proposal-solid");
 
-        // aseguremos que siempre quede sobre fantasmas si hay solape
-        card.style.zIndex = "3";
+        const strip = document.createElement("div"); strip.className = "exam-status-strip"; card.appendChild(strip);
 
-        if(forced) card.classList.add("forced");
-        if(isOwn) card.classList.add("own-proposal-solid");
-
-        const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
-
-        const head=document.createElement("div"); head.className="exam-head2";
-        const icon=document.createElement("div"); icon.className="exam-icon-vert";
-        const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png";
+        const head = document.createElement("div"); head.className = "exam-head2";
+        const icon = document.createElement("div"); icon.className = "exam-icon-vert";
+        const img  = document.createElement("img"); img.alt = sig.display; img.src = "img/" + sig.file + ".png";
         icon.appendChild(img); head.appendChild(icon);
 
-        const title=document.createElement("div"); title.className="exam-title";
-        const sigla=document.createElement("div"); sigla.className="exam-sigla"; sigla.textContent=sig.display; sigla.title=exam.subject;
-        const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
+        const title = document.createElement("div"); title.className = "exam-title";
+        const sigla = document.createElement("div"); sigla.className = "exam-sigla"; sigla.textContent = sig.display; sigla.title = exam.subject;
+        const badgeEl = document.createElement("div"); badgeEl.className = "exam-badge"; badgeEl.textContent = badge.badge; badgeEl.title = badge.meaning;
         title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
 
         const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
-        if(!isOwn) sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
+        if (!isOwn) sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
         else sampleIconAt(img,20,20,1,fallback,(rgba)=>card.style.setProperty("--own-solid",rgba));
 
         const appText = approvedDate ? formatShort(approvedDate) : formatShort(exam.officialDate);
         const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(viewDate);
-        card.appendChild(lineStacked("última fecha aprobada:", appText));
+        card.appendChild(lineStacked("fecha original:", appText));
         card.appendChild(lineStacked("sugerencia de reprogramación:", sugText));
 
         const baseDate = suggestionDate || viewDate;
         const distPrev = groupProposals ? nearestBeforeOwn(baseDate, exam.id, groupProposals) : null;
         const distNext = groupProposals ? nearestAfterOwn(baseDate, exam.id, groupProposals) : null;
         card.appendChild(line("Último departamental según votos:", distPrev!=null? `${distPrev} días atrás`:"—"));
-        card.appendChild(line("Próximo departamental según votos:", distNext!=null? `${distNext} días`:"—"));
+        card.appendChild(line("Próximo departamental según votos:",  distNext!=null? `${distNext} días`:"—"));
 
-        if(showSubjectWeeks && currentGroupId){
+        if (showSubjectWeeks && currentGroupId) {
             const w=weeksToNextSame(currentYear, exam.id, groupProposals||{});
             card.appendChild(line("Semanas para cubrir la siguiente unidad:", (w!=null? `${w} semanas`:"—")));
         }
 
-        card.addEventListener("dragstart", e=>{ e.dataTransfer.setData("text/plain", exam.id); e.dataTransfer.effectAllowed="move"; card.classList.add("dragging"); });
-        card.addEventListener("dragend", ()=> card.classList.remove("dragging"));
+        card.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", exam.id); e.dataTransfer.effectAllowed="move"; card.classList.add("dragging"); });
+        card.addEventListener("dragend",   () => card.classList.remove("dragging"));
 
         return card;
     }
 
-    /* ===== NUEVO: ficha completa de ganador en resultados ===== */
-    function createResultCard(exam, opts={}){
+    function createResultCard(exam, opts={}) {
         const { approvedDate, suggestionDate, prev, next } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
 
         const card=document.createElement("div");
         card.className="exam-card status-valid";
         card.draggable=false; card.dataset.examId=exam.id;
-        card.style.zIndex = "3"; // sobre fantasmas
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
 
@@ -466,18 +456,17 @@
 
         card.appendChild(lineStacked("fecha original:", formatShort(approvedDate || exam.officialDate)));
         card.appendChild(lineStacked("propuesta ganadora:", formatShort(suggestionDate || exam.officialDate)));
-        card.appendChild(line("último examen:", prev!=null? `${prev} días atrás`:"—"));
+        card.appendChild(line("último examen:",  prev!=null? `${prev} días atrás`:"—"));
         card.appendChild(line("próximo examen:", next!=null? `${next} días`:"—"));
 
         return card;
     }
 
-    // Fantasmas compactos
-    function createGhostCard(exam, dateStr, groups, alpha){
+    // Fantasmas compactos mostrando grupos
+    function createGhostCard(exam, dateStr, groups, alpha) {
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-        const card=document.createElement("div"); card.className="exam-card is-ghost"; card.draggable=false;
+        const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
         card.style.setProperty("--ghost-alpha", alpha.toFixed(3));
-        card.style.zIndex = "1"; // debajo de las reales
 
         const head=document.createElement("div"); head.className="exam-head2";
         const icon=document.createElement("div"); icon.className="exam-icon-vert";
@@ -500,7 +489,7 @@
     }
 
     /* ===== Cálculos de distancias ===== */
-    function nearestBefore(base, thisExamId){
+    function nearestBefore(base, thisExamId) {
         let best=null;
         Object.keys(lastModeByExamAll).forEach(id=>{
             if(id===thisExamId) return;
@@ -509,7 +498,7 @@
         });
         return best;
     }
-    function nearestAfter(base, thisExamId){
+    function nearestAfter(base, thisExamId) {
         let best=null;
         Object.keys(lastModeByExamAll).forEach(id=>{
             if(id===thisExamId) return;
@@ -519,7 +508,6 @@
         return best;
     }
 
-    // SOLO MISMO GRUPO (modo edición)
     function dateForExamInGroup(examId, proposalsMap){
         const ex = examIdToObj[examId];
         if(!ex) return null;
@@ -564,14 +552,16 @@
     }
 
     /* ===== Calendario ===== */
-    function monthList(){
+    function monthList() {
         const out=[]; const s=parseDate(CAL_START_DATE), e=parseDate(CAL_END_DATE);
         let c=new Date(s.getFullYear(), s.getMonth(), 1);
         while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
         return out;
     }
-    function buildCalendars(){
-        const root=$id("calendar"); root.innerHTML="";
+
+    function buildCalendars() {
+        const root=$id("calendar"); if (!root) return;
+        root.innerHTML="";
         monthList().forEach(({y,m})=>{
             const sec=document.createElement("section"); sec.className="month";
             const h=document.createElement("header"); h.className="month-header";
@@ -600,9 +590,8 @@
                 else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
                 else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
                 else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
-                // prioridad: “Clases sin evaluación” debe mostrarse del 19 al 22 (por encima de “Paro”)
-                else if(isNoEvaluation(ds)) meta.textContent = "Clases sin evaluación";
-                else if(isStrike(ds)) meta.textContent = "Paro";
+                else if(isStrike(ds)) meta.textContent="Paro";
+                else if(isNoEvaluation(ds)) meta.textContent="Clases sin evaluación";
                 else if(isVacation(ds)) meta.textContent="Vacaciones";
                 else if(dow===0) meta.textContent="Fin de semana";
                 if (SPECIAL_DAY_LABELS[ds]) meta.textContent = SPECIAL_DAY_LABELS[ds];
@@ -611,11 +600,6 @@
 
                 const ghost=document.createElement("div"); ghost.className="ghost-date"; cell.appendChild(ghost);
                 const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
-
-                // z-index y stacking: las reales sobre fantasmas
-                ghost.style.zIndex = "1";
-                list.style.zIndex  = "2";
-                ghost.style.pointerEvents = "none";
 
                 cell.addEventListener("dragover", e=>{
                     if(resultsMode) return;
@@ -638,7 +622,8 @@
         });
         syncCardWidth();
     }
-    function syncCardWidth(){
+
+    function syncCardWidth() {
         const sample=document.querySelector(".month .month-grid .day-cell:not(.empty)");
         if(!sample) return;
         const cs=getComputedStyle(sample);
@@ -646,17 +631,21 @@
         document.documentElement.style.setProperty("--day-cell-w", w+"px");
     }
 
-    /* ===== Mostrar/ocultar cuando no hay grupo ===== */
-    function toggleEmptyState(){
-        const instructions = $id("instructions-pane");
-        const mainPanel    = document.querySelector(".main-panel");
-        const statsWrap    = document.querySelector(".stats-ribbon-wrap");
+    /* ===== Mostrar/ocultar: SIEMPRE mostrar el calendario ===== */
+    function toggleEmptyState() {
+        // Dejamos el calendario y las stats siempre visibles.
+        const mainPanel = document.querySelector(".main-panel");
+        const statsWrap = document.querySelector(".stats-ribbon-wrap");
+        if (mainPanel) mainPanel.classList.remove("hide");
+        if (statsWrap) statsWrap.classList.remove("hide");
 
-        const showMain = !!(currentGroupId || resultsMode);
-
-        safeToggle(instructions, !showMain);
-        safeToggle(mainPanel, showMain);
-        safeToggle(statsWrap, showMain);
+        // Mensaje de estado
+        const status=$id("group-status");
+        if (status) {
+            if (!currentGroupId && !resultsMode) status.textContent = "Escribe tu grupo para comenzar";
+            else status.textContent = resultsMode ? (currentYear===1?"Resultados (Primer año)":"Resultados (Segundo año)")
+                : (currentYear===1?"Primer año":"Segundo año");
+        }
     }
 
     /* ===== Estado local/grupo ===== */
@@ -712,7 +701,6 @@
             );
 
             const dayCell=document.querySelector('.day-cell[data-date="'+suggestionDate+'"]');
-            // “anteriores al paro” = oficiales hasta 22-Nov (corte 23)
             const isOriginalBefore = ex.officialDate < FORCED_REPROGRAM_CUTOFF;
             const placeInPending = isOriginalBefore && (suggestionDate===ex.officialDate);
 
@@ -742,15 +730,9 @@
                 alert("Ese día solo se puede hasta las "+(fr.freeUntil||"16:00")+". El examen está programado a las "+(ex?.officialTime||"08:00")+".");
             }
         }
-        if(isNoEvaluation(dateStr)){
-            alert("“Clases sin evaluación”: en estos días no se permite programar exámenes.");
-            return;
-        }
-        if(isStrike(dateStr)){
-            alert("Paro: no se permite programar exámenes en este periodo.");
-            return;
-        }
-        if(!isValidDate(dateStr)) return alert("Esa fecha es inválida (fin de semana o periodo vacacional).");
+        if(isNoEvaluation(dateStr)){ alert("“Clases sin evaluación”: en estos días no se permite programar exámenes."); return; }
+        if(isStrike(dateStr)){       alert("Paro: no se permite programar exámenes en este periodo."); return; }
+        if(!isValidDate(dateStr))    return alert("Esa fecha es inválida (fin de semana o periodo vacacional).");
 
         const s=loadState(); ensureGroup(String(currentGroupId), currentYear);
         s.groups[currentGroupId].proposals ||= {};
@@ -879,8 +861,8 @@
         lastModeListByExamAll = all.modeListByExam;
         lastTotalsByExamAll   = all.totalsByExam;
 
-        lastModeListByExamOthers = others.modeListByExam;
-        lastTotalsByExamOthers   = others.totalsByExam;
+        lastModeListByExamOthers   = others.modeListByExam;
+        lastTotalsByExamOthers     = others.totalsByExam;
         lastGroupsByExamDateOthers = others.groupsByExamDate;
 
         renderGhosts();
@@ -957,7 +939,7 @@
             if(a.mode.date!==b.mode.date) return a.mode.date.localeCompare(b.mode.date);
             const sa=a.exam.subject, sb=b.exam.subject;
             if(sa!==sb) return sa.localeCompare(sb, "es");
-            return EXAM_ORDER.indexOf(a.exam.type) - EXAM_ORDER.indexOf(b.exam.type);
+            return EXAM_ORDER.indexOf(a.exam.type.replace(/\s*\(.*\)$/, "")) - EXAM_ORDER.indexOf(b.exam.type.replace(/\s*\(.*\)$/, ""));
         }
         items.sort(compareChrono);
 
@@ -1121,7 +1103,6 @@
         const parsed = parseGroupValue(raw);
         const status=$id("group-status");
         const statsYear=$id("stats-year");
-
         const setStatus=(msg)=>{ if(status) status.textContent=msg; };
 
         if(parsed.kind==="empty"){
@@ -1184,7 +1165,6 @@
         $id("capture-btn")?.addEventListener("click", onCapture);
         $id("stats-year")?.addEventListener("change", async (e)=>{
             currentYear = Number(e.target.value)||1;
-            if(!resultsMode && !currentGroupId){ return; }
             await recomputeAgg();
             renderCurrentGroup();
         });
@@ -1215,5 +1195,7 @@
         buildCalendars();
         wire();
         toggleEmptyState();
+        // Render fantasma/estadísticas aunque no se haya escrito grupo
+        try { await recomputeAgg(); } catch {}
     });
 })();
