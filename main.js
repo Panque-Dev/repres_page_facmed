@@ -16,6 +16,39 @@
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY = "2025-12-02";
 
+    // Restricciones del Auditorio Fournier según último informe de dirección
+    // Solo se listan días NO libres
+    const FOURNIER_RESTRICTIONS = {
+        // No disponible todo el día
+        "2026-01-13": { kind: "blocked" },
+        "2026-01-14": { kind: "blocked" },
+        "2026-01-15": { kind: "blocked" },
+        "2026-01-21": { kind: "blocked" },
+        "2026-01-22": { kind: "blocked" },
+        "2026-01-23": { kind: "blocked" },
+        "2026-01-26": { kind: "blocked" },
+        "2026-01-27": { kind: "blocked" },
+        "2026-01-28": { kind: "blocked" },
+        "2026-01-30": { kind: "blocked" },
+
+        // 19 de enero: Libre desde las 15:00 horas
+        "2026-01-19": { kind: "partial", freeFrom: "15:00" }
+    };
+
+    function getFournierRestriction(dateStr){
+        return FOURNIER_RESTRICTIONS[dateStr] || null;
+    }
+
+    function getExamTime(exam){
+        // Devuelve "HH:MM" (usa la hora oficial del examen)
+        if(exam && typeof exam.officialTime === "string" && exam.officialTime.length >= 5){
+            return exam.officialTime.slice(0,5);
+        }
+        return "08:00";
+    }
+
+
+
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
@@ -42,7 +75,7 @@
     };
 
     const SUBJECT_COLORS = {
-        ANA:"#f97316", BQM:"#a855f7", HIS:"#e11d48", EMB:"#ef476f", SPC:"#2ec4b6", ISM:"#8ecae6",
+        ANA:"#A8003D", BQM:"#831438", HIS:"#e11d48", EMB:"#E48090", SPC:"#831438", ISM:"#641C74",
         IBC1:"#22d3ee", IBC2:"#06b6d4", IB1:"#00b4d8", IB2:"#00a896",
         FIS:"#60a5fa", FAR:"#f59e0b", INM:"#22c55e", MyP:"#fb7185", ICR:"#38bdf8", PCV:"#14b8a6"
     };
@@ -381,8 +414,47 @@
 
     function moveExamToDate(examId, dateStr){
         if(!currentGroupId || !currentYear) return;
-        if(!isDateWithinCalendar(dateStr)){ alert("La fecha está fuera del rango noviembre 2025–junio 2026."); return; }
-        if(!isDateValidForExam(dateStr)){ alert("Esa fecha es inválida (fin de semana o periodo vacacional)."); return; }
+
+        if(!isDateWithinCalendar(dateStr)){
+            alert("La fecha está fuera del rango noviembre 2025–junio 2026.");
+            return;
+        }
+
+        const exam = examIndex[examId];
+        const restriction = getFournierRestriction(dateStr);
+        const baseMsg = "El Auditorio Fournier estará ocupado ese día según el último informe de dirección.";
+
+        // Reglas específicas de Fournier
+        if(restriction && exam){
+            const hora = getExamTime(exam);
+
+            if(restriction.kind === "blocked"){
+                // Día completamente no disponible
+                alert(baseMsg);
+                return;
+            }
+
+            if(restriction.kind === "partial"){
+                const libreDesde = restriction.freeFrom || "15:00";
+
+                // Siempre mostrar aviso en este día
+                if(hora < libreDesde){
+                    // Hora del examen antes del horario libre -> bloquear
+                    alert(baseMsg + " Solo está libre a partir de las " + libreDesde + ". El examen está programado a las " + hora + ".");
+                    return;
+                }else{
+                    // Hora permitida, pero advertimos
+                    alert(baseMsg + " Este día solo está libre a partir de las " + libreDesde + ". El examen está programado a las " + hora + ".");
+                    // aquí SÍ dejamos continuar
+                }
+            }
+        }
+
+        // Resto de validaciones generales (fines, vacaciones, etc.)
+        if(!isDateValidForExam(dateStr)){
+            alert("Esa fecha es inválida (fin de semana o periodo vacacional).");
+            return;
+        }
 
         const state=loadState();
         if(!state.groups[currentGroupId]) state.groups[currentGroupId]=createInitialGroupEntry(currentGroupId, currentYear);
@@ -392,6 +464,7 @@
         renderCurrentGroup();
         recomputeStatsAndGhosts();
     }
+
 
     /* Fantasmas y ribbon */
     function renderGhosts(year, modeByExam){

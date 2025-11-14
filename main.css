@@ -451,25 +451,30 @@ html,body{
 /* Ajustes para impresión en PDF A4 apaisado */
 @page{
     size:A4 landscape;
-    margin:6mm; /* más área útil vertical */
+    margin:6mm;
 }
 @media print{
     *{
         -webkit-print-color-adjust:exact;
         print-color-adjust:exact;
     }
+
     :root{
         --bg:#ffffff;
     }
+
     body{
-        background:#e5edf7!important; /* fondo con color pero clarito */
-        color:#020617!important;
+        background:#e5edf7!important; /* fondo claro con color */
+        color:#000000!important;       /* texto negro */
     }
+
     .app{
         max-width:100%!important;
         margin:0!important;
         padding:0!important;
     }
+
+    /* Todo lo que no queremos en la captura */
     .app-header,
     .stats-ribbon-wrap,
     .pending-exams,
@@ -477,29 +482,46 @@ html,body{
     .panel-bar{
         display:none!important;
     }
+
     .main-panel{
         background:transparent!important;
         box-shadow:none!important;
         border-radius:0!important;
         padding:0 2mm 2mm!important;
     }
+
     #calendar{
         margin-top:0!important;
     }
+
+    /* Encabezado de la captura */
     .print-header{
         display:block!important;
         margin:0 2mm 2mm!important;
-        background:#0f172a!important;
-        color:#e5e7eb!important;
-        border-color:#1f2937!important;
+        padding:8px 12px 4px!important;
+        background:#f9fafb!important;
+        border-radius:8px!important;
+        border:1px solid #cbd5e1!important;
+        color:#000000!important;
     }
-    .print-subtitle,
+    .print-header h1{
+        color:#000000!important;
+        font-size:11.5px!important; /* un poquito más grande */
+        margin:0 0 3px!important;
+    }
+    .print-subtitle{
+        color:#000000!important;
+        font-size:9.5px!important;
+        margin:0 0 2px!important;
+    }
     .print-meta{
-        color:#e5e7eb!important;
+        color:#111827!important;
+        font-size:8px!important;
     }
 
+    /* Un mes por hoja, quepa completo en ancho y alto */
     .month{
-        background:#f3f4f6!important; /* mes sobre fondo claro con color */
+        background:#f3f4f6!important; /* fondo claro con color suave */
         box-shadow:none!important;
         border-radius:3px!important;
         padding:2mm 2mm 3mm!important;
@@ -510,14 +532,16 @@ html,body{
         max-width:100%!important;
         box-sizing:border-box;
         margin:0!important;
+        color:#000000!important;
     }
+
     .month-header{
         margin-bottom:2mm!important;
     }
     .month-header h3{
-        font-size:10px!important;
+        font-size:12px!important;       /* un poquito más grande */
         margin-bottom:1mm!important;
-        color:#111827!important;
+        color:#000000!important;
     }
 
     .month-grid{
@@ -525,23 +549,24 @@ html,body{
         gap:1mm!important;
         row-gap:0.8mm!important;
         column-gap:1.5mm!important;
-        font-size:6.5px!important;
-        grid-auto-rows:auto!important; /* ya NO todas las filas del mismo alto global */
+        font-size:7.5px!important;      /* sube un poco el tamaño base */
+        grid-auto-rows:auto!important;  /* filas NO forzadas al mismo alto */
     }
 
     .day-name{
         background:#e5e7eb!important;
-        color:#020617!important;
+        color:#000000!important;
         padding:0.5mm 0!important;
         border-radius:999px!important;
-        font-size:6.3px!important;
+        font-size:7px!important;
+        font-weight:600!important;
     }
 
     .day-cell{
         min-height:auto!important;
         padding:0.7mm!important;
         background:#ffffff!important;
-        color:#020617!important;
+        color:#000000!important;
         box-shadow:none!important;
         border-radius:3px!important;
     }
@@ -557,23 +582,25 @@ html,body{
         gap:2px!important;
     }
     .day-number{
-        font-size:8px!important;
+        font-size:9.5px!important;  /* un poquito más grande */
+        color:#000000!important;
     }
     .day-meta{
-        font-size:5px!important;
-        color:#6b7280!important;
+        font-size:6.5px!important;
+        color:#111827!important;
     }
 
     .exam-card{
-        font-size:6.3px!important; /* fichas más pequeñas en captura */
+        font-size:7.2px!important;    /* fichas un poquito más grandes */
         padding:0.7mm 1mm!important;
         box-shadow:none!important;
         border-radius:3px!important;
         border:0.4px solid #cbd5e1!important;
         background:#f9fafb!important;
+        color:#000000!important;
     }
     .exam-card::before{
-        opacity:.55!important; /* mantiene el color pero no tan oscuro */
+        opacity:.55!important;  /* conserva color de materia, pero suave */
     }
     .exam-card.status-original{
         background:#e5e7eb!important;
@@ -594,25 +621,38 @@ html,body{
         border-radius:5px!important;
     }
     .exam-sigla{
-        font-size:7px!important;
+        font-size:8.5px!important;
+        color:#000000!important;
     }
     .exam-badge{
-        font-size:5.5px!important;
+        font-size:6.5px!important;
         padding:1px 4px!important;
+        color:#000000!important;
+        background:#e5e7eb!important;
     }
     .exam-line{
         gap:2px!important;
     }
     .exam-line .line-label{
-        font-size:5px!important;
+        font-size:5.5px!important;
+        color:#111827!important;
     }
     .exam-line .line-value{
-        font-size:6px!important;
+        font-size:6.5px!important;
+        color:#000000!important;
     }
 
     .ghost-date{
         opacity:.22!important;
         background:rgba(56,189,248,.13)!important;
         box-shadow:inset 0 0 0 0.6px rgba(56,189,248,.35)!important;
+    }
+
+    /* Por si algún otro estilo de pantalla puso colores claros: fuerza texto negro */
+    .month *,
+    .day-cell *,
+    .print-header *,
+    .exam-card *{
+        color:#000000!important;
     }
 }
