@@ -15,7 +15,7 @@
 
     // PARO (bloqueo con formato de vacaciones)
     const STRIKE_START_DATE   = "2025-11-01";
-    const STRIKE_END_DATE     = "2025-11-18"; // <- termina el 18
+    const STRIKE_END_DATE     = "2025-11-18"; // termina el 18
 
     // CLASES SIN EVALUACIÓN (bloquea exámenes, SIN fondo azul)
     const NOEVAL_START_DATE   = "2025-11-19";
@@ -111,9 +111,9 @@
     let currentGroupId = null;     // string con el grupo en modo edición
     let currentYear    = 1;        // 1 o 2
     let showSubjectWeeks = false;
-    let resultsMode = false;       // true cuando grupo === "0000" o "RESULTADOS"
+    let resultsMode = false;       // true cuando se ven resultados por año
 
-    // agregados para distancias y fantasmas
+    // agregados para distancias y fantasmas (agregados globales de otros grupos)
     let lastModeByExamAll = {};
     let lastModeListByExamAll = {};
     let lastTotalsByExamAll = {};
@@ -134,8 +134,8 @@
 
     const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
     const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
-    const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE; // Paro
-    const isNoEvaluation = (s)=> s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE; // Clases sin evaluación (sin fondo azul)
+    const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE;
+    const isNoEvaluation = (s)=> s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE;
     const isSunday = (s)=> parseDate(s).getDay()===0;
     const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && !isNoEvaluation(s) && s!==SELECTION_DAY;
     const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
@@ -371,7 +371,7 @@
     }
 
     function createExamCard(exam, viewDate, statusClass, forced, opts={}){
-        const { approvedDate, suggestionDate, isOwn } = opts;
+        const { approvedDate, suggestionDate, isOwn, groupProposals } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card "+statusClass; card.draggable=true; card.dataset.examId=exam.id;
         if(forced) card.classList.add("forced");
@@ -398,15 +398,15 @@
         card.appendChild(lineStacked("última fecha aprobada:", appText));
         card.appendChild(lineStacked("sugerencia de reprogramación:", sugText));
 
+        // Distancias SOLO con exámenes del mismo grupo (en modo edición)
         const baseDate = suggestionDate || viewDate;
-        const distPrev = nearestBefore(baseDate, exam.id);
-        const distNext = nearestAfter(baseDate, exam.id);
+        const distPrev = groupProposals ? nearestBeforeOwn(baseDate, exam.id, groupProposals) : null;
+        const distNext = groupProposals ? nearestAfterOwn(baseDate, exam.id, groupProposals) : null;
         card.appendChild(line("Último departamental según votos:", distPrev!=null? `${distPrev} días atrás`:"—"));
         card.appendChild(line("Próximo departamental según votos:", distNext!=null? `${distNext} días`:"—"));
 
         if(showSubjectWeeks && currentGroupId){
-            const s=loadState(); const map=(s.groups[currentGroupId] && s.groups[currentGroupId].proposals)||{};
-            const w=weeksToNextSame(currentYear, exam.id, map);
+            const w=weeksToNextSame(currentYear, exam.id, groupProposals||{});
             card.appendChild(line("Semanas para cubrir la siguiente unidad:", (w!=null? `${w} semanas`:"—")));
         }
 
@@ -443,6 +443,8 @@
     }
 
     /* ===== Cálculos de distancias ===== */
+
+    // (agregado de todos) — para stats/otros usos
     function nearestBefore(base, thisExamId){
         let best=null;
         Object.keys(lastModeByExamAll).forEach(id=>{
@@ -461,6 +463,42 @@
         });
         return best;
     }
+
+    // ====== Distancias SOLO con fechas del MISMO GRUPO ======
+    function dateForExamInGroup(examId, proposalsMap){
+        const ex = examIdToObj[examId];
+        if(!ex) return null;
+        return (proposalsMap && proposalsMap[examId]) || ex.officialDate || null;
+    }
+    function nearestBeforeOwn(base, thisExamId, proposalsMap){
+        let best=null;
+        const list = EXAMS_BY_YEAR[currentYear] || [];
+        list.forEach(ex=>{
+            if(ex.id===thisExamId) return;
+            const d = dateForExamInGroup(ex.id, proposalsMap);
+            if(!d) return;
+            if(d<base){
+                const dd = diffDays(d, base);
+                if(best==null || dd<best) best=dd;
+            }
+        });
+        return best;
+    }
+    function nearestAfterOwn(base, thisExamId, proposalsMap){
+        let best=null;
+        const list = EXAMS_BY_YEAR[currentYear] || [];
+        list.forEach(ex=>{
+            if(ex.id===thisExamId) return;
+            const d = dateForExamInGroup(ex.id, proposalsMap);
+            if(!d) return;
+            if(d>base){
+                const dd = diffDays(base, d);
+                if(best==null || dd<best) best=dd;
+            }
+        });
+        return best;
+    }
+
     function weeksToNextSame(year, examId, proposalsMap){
         const ex=examIdToObj[examId]; if(!ex) return null;
         const chain=(subjectChains[year]||{})[ex.subject]||[];
@@ -496,7 +534,7 @@
                 const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
                 const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
                 if(isVacation(ds)) cell.classList.add("vacation");
-                if(isStrike(ds))   cell.classList.add("vacation"); // PARO con mismo formato
+                if(isStrike(ds))   cell.classList.add("vacation"); // Paro con mismo estilo
                 const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
 
                 const hdr=document.createElement("div"); hdr.className="day-header";
@@ -511,8 +549,6 @@
                 else if(isNoEvaluation(ds)) meta.textContent = "Clases sin evaluación";
                 else if(isVacation(ds)) meta.textContent="Vacaciones";
                 else if(dow===0) meta.textContent="Fin de semana";
-
-                // Etiqueta especial que puede sobrescribir (ej. 17 de nov)
                 if (SPECIAL_DAY_LABELS[ds]) meta.textContent = SPECIAL_DAY_LABELS[ds];
 
                 hdr.appendChild(n); hdr.appendChild(meta); cell.appendChild(hdr);
@@ -522,7 +558,6 @@
 
                 cell.addEventListener("dragover", e=>{
                     if(resultsMode) return;
-                    // Bloquear visualmente drops en días no válidos
                     const dstr=cell.dataset.date;
                     if(!isValidDate(dstr)){ return; }
                     e.preventDefault(); cell.classList.add("drop-target");
@@ -606,7 +641,14 @@
             const isOriginal = suggestionDate===approvedDate;
             let status=""; if(!valid) status="status-invalid"; else if(isOriginal) status="status-original"; else status="status-valid";
             const forced = (ex.officialDate < FORCED_REPROGRAM_CUTOFF) && !valid;
-            const card=createExamCard(ex, suggestionDate, status, forced, {approvedDate, suggestionDate, isOwn: !!currentGroupId});
+
+            const card=createExamCard(
+                ex,
+                suggestionDate,
+                status,
+                forced,
+                { approvedDate, suggestionDate, isOwn: !!currentGroupId, groupProposals: proposalsMap }
+            );
 
             const dayCell=document.querySelector('.day-cell[data-date="'+suggestionDate+'"]');
             const isOriginalBefore = ex.officialDate < FORCED_REPROGRAM_CUTOFF;
@@ -638,7 +680,6 @@
                 alert("Ese día solo se puede hasta las "+(fr.freeUntil||"16:00")+". El examen está programado a las "+(ex?.officialTime||"08:00")+".");
             }
         }
-        // Mensajes claros para periodos sin evaluación y paro
         if(isNoEvaluation(dateStr)){
             alert("“Clases sin evaluación”: en estos días no se permite programar exámenes.");
             return;
@@ -783,18 +824,62 @@
         });
     }
 
+    // ===== helpers para resultados: distancias entre modas, excluyendo misma materia
+    function prevNextDistancesByMode(items){
+        // items: [{exam, mode: {date,count}, voters:[...] }]
+        // Mapa para búsqueda rápida
+        const arr = items.map(x=>({
+            id: x.exam.id,
+            subj: x.exam.subject,
+            date: x.mode.date
+        })).sort((a,b)=> a.date.localeCompare(b.date));
+
+        function nearestPrevDifferentSubject(idx){
+            const base=arr[idx];
+            let best=null;
+            for(let i=idx-1;i>=0;i--){
+                if(arr[i].subj!==base.subj){ best = diffDays(arr[i].date, base.date); break; }
+            }
+            return best;
+        }
+        function nearestNextDifferentSubject(idx){
+            const base=arr[idx];
+            let best=null;
+            for(let i=idx+1;i<arr.length;i++){
+                if(arr[i].subj!==base.subj){ best = diffDays(base.date, arr[i].date); break; }
+            }
+            return best;
+        }
+        const distMap = {};
+        arr.forEach((row,idx)=>{
+            distMap[row.id] = {
+                prev: nearestPrevDifferentSubject(idx),
+                next: nearestNextDifferentSubject(idx)
+            };
+        });
+        return distMap;
+    }
+
     function renderStats(modeByExam, modeListByExam, groupsByExamDate){
         const wrap=$id("stats-ribbon"), empty=$id("stats-empty");
         if(wrap) wrap.innerHTML="";
-        const items=Object.keys(modeByExam).map(id=>({ exam: examIdToObj[id], mode: modeByExam[id], list: modeListByExam[id]||[] }));
+        const items=Object.keys(modeByExam).map(id=>({
+            exam: examIdToObj[id],
+            mode: modeByExam[id],
+            list: modeListByExam[id]||[],
+            voters: (groupsByExamDate[id] && groupsByExamDate[id][modeByExam[id].date]) ? groupsByExamDate[id][modeByExam[id].date] : []
+        })).filter(x=> !!x.exam);
 
         // Orden: más próximo → más lejano
         items.sort((a,b)=> compareByProximity(a.mode.date, b.mode.date));
 
+        // Distancias entre modas, excluyendo misma materia (solo se usa/visualiza en resultados)
+        const distancesById = prevNextDistancesByMode(items);
+
         if(!wrap || !empty) return;
         if(items.length===0){ empty.style.display="block"; return; }
         empty.style.display="none";
-        items.forEach(({exam,mode,list})=>{
+        items.forEach(({exam,mode,list,voters})=>{
             const sig=getSigla(exam.subject); const badge=shortType(exam.type);
             const card=document.createElement("div"); card.className="stat-card";
             const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
@@ -811,23 +896,47 @@
             top.appendChild(code); top.appendChild(badgeEl); card.appendChild(top);
 
             const date=document.createElement("div"); date.className="stat-date"; date.textContent="moda: "+formatHuman(mode.date);
-            const sub=document.createElement("div"); sub.className="stat-sub";
-            const voters=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][mode.date]) ? groupsByExamDate[exam.id][mode.date] : [];
-            sub.textContent="votado por "+mode.count+" grupos"; if(voters.length) sub.title="Grupos: "+voters.sort((a,b)=>a-b).join(", ");
-            card.appendChild(date); card.appendChild(sub);
+            card.appendChild(date);
 
-            if(list.length>1){
-                const det=document.createElement("details"); const sum=document.createElement("summary");
-                sum.textContent="ver 2a y 3a moda"; det.appendChild(sum);
-                const ul=document.createElement("ul");
-                list.slice(1,3).forEach((o,i)=>{
-                    const g=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][o.date]) ? groupsByExamDate[exam.id][o.date] : [];
-                    const li=document.createElement("li"); li.textContent=(i===0?"2a":"3a")+": "+formatHuman(o.date)+" — "+o.count+" votos";
-                    if(g.length) li.title="Grupos: "+g.sort((a,b)=>a-b).join(", ");
-                    ul.appendChild(li);
-                });
-                det.appendChild(ul); card.appendChild(det);
+            // Subtexto: conteo y (en resultados) lista completa de grupos
+            const sub=document.createElement("div"); sub.className="stat-sub";
+            sub.textContent="votado por "+mode.count+" grupos";
+            card.appendChild(sub);
+
+            if(resultsMode){
+                // Mostrar TODOS los grupos que votaron esa moda
+                const listDiv = document.createElement("div");
+                listDiv.className = "stat-groups";
+                const groupsText = voters && voters.length ? voters.sort((a,b)=>a-b).join(", ") : "—";
+                listDiv.textContent = "Grupos: " + groupsText;
+                card.appendChild(listDiv);
+
+                // Distancias entre departamentales (modas), excluyendo misma materia
+                const d = distancesById[exam.id] || {prev:null,next:null};
+                const distWrap = document.createElement("div");
+                distWrap.className = "stat-dists";
+                const prevTxt = d.prev!=null ? `${d.prev} días atrás` : "—";
+                const nextTxt = d.next!=null ? `${d.next} días` : "—";
+                const l1 = document.createElement("div"); l1.className="stat-dist-line"; l1.textContent = "Último depa distinto: " + prevTxt;
+                const l2 = document.createElement("div"); l2.className="stat-dist-line"; l2.textContent = "Próximo depa distinto: " + nextTxt;
+                distWrap.appendChild(l1); distWrap.appendChild(l2);
+                card.appendChild(distWrap);
+            } else {
+                // En modo edición mantenemos la UI previa (opcionalmente 2a/3a moda)
+                if(list.length>1){
+                    const det=document.createElement("details"); const sum=document.createElement("summary");
+                    sum.textContent="ver 2a y 3a moda"; det.appendChild(sum);
+                    const ul=document.createElement("ul");
+                    list.slice(1,3).forEach((o,i)=>{
+                        const g=(groupsByExamDate[exam.id] && groupsByExamDate[exam.id][o.date]) ? groupsByExamDate[exam.id][o.date] : [];
+                        const li=document.createElement("li"); li.textContent=(i===0?"2a":"3a")+": "+formatHuman(o.date)+" — "+o.count+" votos";
+                        if(g.length) li.title="Grupos: "+g.sort((a,b)=>a-b).join(", ");
+                        ul.appendChild(li);
+                    });
+                    det.appendChild(ul); card.appendChild(det);
+                }
             }
+
             wrap.appendChild(card);
         });
     }
@@ -852,7 +961,8 @@
         const now = new Date();
         const dateText = now.toLocaleDateString('es-MX', { year:'numeric', month:'2-digit', day:'2-digit' });
         const timeText = now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', hour12:false });
-        const groupText = resultsMode ? "RESULTADOS" : (currentGroupId ? `Grupo ${currentGroupId}` : "Grupo —");
+        const groupText = resultsMode ? (currentYear===1? "RESULTADOS PRIMERO" : "RESULTADOS SEGUNDO")
+            : (currentGroupId ? `Grupo ${currentGroupId}` : "Grupo —");
         const line = `Propuesta del ${groupText} | ${dateText} | ${timeText}`;
 
         document.querySelectorAll(".month").forEach(sec=>{
@@ -894,13 +1004,16 @@
     }
 
     /* ===== Entradas / control ===== */
+
+    // 1100 => resultados de primero, 2200 => resultados de segundo
     function parseGroupValue(raw){
         if(raw==null) return { kind:"empty" };
         const txt = String(raw).trim();
         if(txt==="") return { kind:"empty" };
-        if(/^0+$/.test(txt) || /^resultados$/i.test(txt)){
-            return { kind:"results" };
-        }
+
+        if(txt==="1100") return { kind:"results", year:1 };
+        if(txt==="2200") return { kind:"results", year:2 };
+
         const n = Number(txt);
         if(Number.isInteger(n)) return { kind:"number", value:n };
         return { kind:"invalid" };
@@ -922,7 +1035,9 @@
 
         if(parsed.kind==="results"){
             resultsMode=true; currentGroupId=null;
-            setStatus("Resultados generales (solo lectura)");
+            currentYear = parsed.year===2 ? 2 : 1;
+            setStatus(currentYear===1 ? "Resultados (Primer año)" : "Resultados (Segundo año)");
+            if(statsYear) statsYear.value=String(currentYear);
             toggleEmptyState();
             await recomputeAgg();
             return;
