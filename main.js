@@ -13,9 +13,18 @@
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
-    // NUEVO: rango de PARO (bloqueo con formato de vacaciones)
+    // PARO (bloqueo con formato de vacaciones)
     const STRIKE_START_DATE   = "2025-11-01";
-    const STRIKE_END_DATE     = "2025-11-22";
+    const STRIKE_END_DATE     = "2025-11-18"; // <- termina el 18
+
+    // CLASES SIN EVALUACIÓN (bloquea exámenes, SIN fondo azul)
+    const NOEVAL_START_DATE   = "2025-11-19";
+    const NOEVAL_END_DATE     = "2025-11-22";
+
+    // Etiquetas especiales puntuales
+    const SPECIAL_DAY_LABELS = {
+        "2025-11-17": "Día de la Revolución"
+    };
 
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
@@ -26,9 +35,9 @@
 
     // Fantasmas (más translúcidos)
     const MAX_GHOSTS_PER_EXAM      = 3;
-    const MAX_ALPHA_MAIN           = 0.38; // antes 0.5
-    const MAX_ALPHA_ALT            = 0.26; // antes 0.5
-    const MIN_ALPHA_CAP_WHEN_FEW   = 0.18; // antes 0.2
+    const MAX_ALPHA_MAIN           = 0.38;
+    const MAX_ALPHA_ALT            = 0.26;
+    const MIN_ALPHA_CAP_WHEN_FEW   = 0.18;
 
     /* ======= Restricciones Fournier (visibles en calendario) ======= */
     const FOURNIER_RESTRICTIONS = {
@@ -125,30 +134,31 @@
 
     const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
     const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
-    const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE; // NUEVO: rango de PARO
+    const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE; // Paro
+    const isNoEvaluation = (s)=> s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE; // Clases sin evaluación (sin fondo azul)
     const isSunday = (s)=> parseDate(s).getDay()===0;
-    const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && s!==SELECTION_DAY; // invalida PARO
+    const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && !isNoEvaluation(s) && s!==SELECTION_DAY;
     const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
 
     const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
 
-    // ===== Orden "más próximo → más lejano" (futuro primero; luego pasado por cercanía) =====
+    // ===== Orden "más próximo → más lejano" =====
     function startOfToday(){
         const now=new Date();
         return new Date(now.getFullYear(), now.getMonth(), now.getDate());
     }
     function proximityKey(dateStr){
         const d=parseDate(dateStr), t0=startOfToday();
-        const delta=d - t0;                    // ms desde hoy
+        const delta=d - t0;
         const bucket = delta >= 0 ? 0 : 1;     // 0 = futuro, 1 = pasado
-        const dist   = Math.abs(delta);        // magnitud de cercanía
+        const dist   = Math.abs(delta);
         return { bucket, dist, tie: dateStr };
     }
     function compareByProximity(aDate, bDate){
         const a=proximityKey(aDate), b=proximityKey(bDate);
-        if(a.bucket!==b.bucket) return a.bucket - b.bucket;   // futuro antes que pasado
-        if(a.dist!==b.dist)     return a.dist - b.dist;       // más cercano primero
-        return a.tie.localeCompare(b.tie);                    // desempate estable
+        if(a.bucket!==b.bucket) return a.bucket - b.bucket;
+        if(a.dist!==b.dist)     return a.dist - b.dist;
+        return a.tie.localeCompare(b.tie);
     }
 
     /* =============== Catálogos =============== */
@@ -422,7 +432,6 @@
         title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
 
         const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
-        // icon tint más tenue en fantasmas
         sampleIcon(img,.35,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
 
         card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
@@ -487,7 +496,7 @@
                 const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
                 const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
                 if(isVacation(ds)) cell.classList.add("vacation");
-                if(isStrike(ds))   cell.classList.add("vacation"); // mismo formato que vacaciones
+                if(isStrike(ds))   cell.classList.add("vacation"); // PARO con mismo formato
                 const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
 
                 const hdr=document.createElement("div"); hdr.className="day-header";
@@ -498,15 +507,26 @@
                 else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
                 else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
                 else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
-                else if(isStrike(ds)) meta.textContent = "Paro";         // NUEVO: etiqueta Paro
+                else if(isStrike(ds)) meta.textContent = "Paro";
+                else if(isNoEvaluation(ds)) meta.textContent = "Clases sin evaluación";
                 else if(isVacation(ds)) meta.textContent="Vacaciones";
                 else if(dow===0) meta.textContent="Fin de semana";
+
+                // Etiqueta especial que puede sobrescribir (ej. 17 de nov)
+                if (SPECIAL_DAY_LABELS[ds]) meta.textContent = SPECIAL_DAY_LABELS[ds];
+
                 hdr.appendChild(n); hdr.appendChild(meta); cell.appendChild(hdr);
 
                 const ghost=document.createElement("div"); ghost.className="ghost-date"; cell.appendChild(ghost);
                 const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
 
-                cell.addEventListener("dragover", e=>{ if(resultsMode) return; e.preventDefault(); cell.classList.add("drop-target"); });
+                cell.addEventListener("dragover", e=>{
+                    if(resultsMode) return;
+                    // Bloquear visualmente drops en días no válidos
+                    const dstr=cell.dataset.date;
+                    if(!isValidDate(dstr)){ return; }
+                    e.preventDefault(); cell.classList.add("drop-target");
+                });
                 cell.addEventListener("dragleave", ()=> cell.classList.remove("drop-target"));
                 cell.addEventListener("drop", e=>{
                     if(resultsMode) return;
@@ -617,6 +637,15 @@
             if(fr.kind==="partial_until"){
                 alert("Ese día solo se puede hasta las "+(fr.freeUntil||"16:00")+". El examen está programado a las "+(ex?.officialTime||"08:00")+".");
             }
+        }
+        // Mensajes claros para periodos sin evaluación y paro
+        if(isNoEvaluation(dateStr)){
+            alert("“Clases sin evaluación”: en estos días no se permite programar exámenes.");
+            return;
+        }
+        if(isStrike(dateStr)){
+            alert("Paro: no se permite programar exámenes en este periodo.");
+            return;
         }
         if(!isValidDate(dateStr)) return alert("Esa fecha es inválida (fin de semana o periodo vacacional).");
 
@@ -759,7 +788,7 @@
         if(wrap) wrap.innerHTML="";
         const items=Object.keys(modeByExam).map(id=>({ exam: examIdToObj[id], mode: modeByExam[id], list: modeListByExam[id]||[] }));
 
-        // Orden: más próximo → más lejano (futuro primero; luego pasado por cercanía)
+        // Orden: más próximo → más lejano
         items.sort((a,b)=> compareByProximity(a.mode.date, b.mode.date));
 
         if(!wrap || !empty) return;
@@ -803,7 +832,7 @@
         });
     }
 
-    /* ===== Captura: encabezado UNA LÍNEA ===== */
+    /* ===== Captura ===== */
     function proposalsMapFor(groupId){
         const s=loadState(); const g=s.groups[groupId]; if(!g) return {};
         const exams=EXAMS_BY_YEAR[g.year]||[]; const out={};
