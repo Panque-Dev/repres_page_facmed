@@ -280,6 +280,13 @@
             { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
             { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
+
+            { id: "2-ICR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial",   officialDate: "2025-01-12", officialTime: "8:00" },
+            { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-6", officialTime: "8:00" },
+            { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "8:00" },
+            { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
+            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" }
+
             /* ===== Promo ===== */
             { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
             { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
