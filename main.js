@@ -271,7 +271,14 @@
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: "2025-11-26", officialTime: "15:00" },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: "2025-12-02", officialTime: "08:00" },
             { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08", officialTime: "13:00" },
-            { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" }
+            { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" },
+
+            /* ===== NUEVO: Integración Básico Clínica II (IBC 2) ===== */
+            { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial",   officialDate: "2025-12-11", officialTime: "09:00" },
+            { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial",  officialDate: "2026-04-25", officialTime: "14:00" },
+            { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
+            { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
+            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" }
         ]
     };
 
@@ -959,7 +966,7 @@
 
                 // NUEVO: envolver en 'stat-card' para heredar el MISMO ancho de la barra
                 const shell=document.createElement("div");
-                shell.className="stat-card";   // usa la misma rejilla y ancho que el resto
+                shell.className="stat-card";
                 shell.style.background="transparent";
                 shell.style.boxShadow="none";
                 shell.style.padding="0";
