@@ -620,7 +620,7 @@
 
     /* ===== API remota (Functions) ===== */
     async function apiSaveProposals(group_id, year, proposals, csvText){
-        const res = await fetch("/api/save", {
+        const res = await fetch("/.netlify/functions/proposals-save", {
             method:"POST",
             headers:{ "Content-Type":"application/json" },
             body: JSON.stringify({ group_id:Number(group_id), year:Number(year), proposals, csv: csvText||null })
@@ -632,14 +632,14 @@
         return res.json();
     }
     async function apiGetGroup(group_id, year){
-        const url = `/api/get?group_id=${encodeURIComponent(group_id)}&year=${encodeURIComponent(year)}`;
+        const url = `/.netlify/functions/proposals-get?group_id=${encodeURIComponent(group_id)}&year=${encodeURIComponent(year)}`;
         const res = await fetch(url);
         if(res.status===404) return null;
         if(!res.ok) throw new Error("Error al leer del servidor");
         return res.json();
     }
     async function apiListYear(year){
-        const res = await fetch(`/api/list?year=${encodeURIComponent(year)}`);
+        const res = await fetch(`/.netlify/functions/proposals-list?year=${encodeURIComponent(year)}`);
         if(!res.ok) throw new Error("Error al listar propuestas");
         return res.json();
     }
