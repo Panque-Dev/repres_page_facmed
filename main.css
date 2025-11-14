@@ -59,6 +59,7 @@
 
     .group-selector {
         flex-direction: column;
+        align-content: center;
         align-items: stretch;
         gap: 8px;
     }
@@ -199,7 +200,7 @@
     }
 
     .day-cell {
-        min-height: 70px;
+        min-height: 90px;
         padding: 4px 4px 6px;
     }
 
@@ -773,7 +774,7 @@ body {
 
 .day-cell {
     position: relative;
-    min-height: 86px;
+    min-height: 90px;
     padding: 6px 6px 8px;
     display: flex;
     flex-direction: column;
@@ -1577,5 +1578,62 @@ body {
     .day-cell {
         padding: 4px 2px !important;
         border-radius: 0 !important;
+    }
+}
+
+/* =====================
+   OVERRIDES: FANTASMAS
+   ===================== */
+
+/* 1) Los fantasmas entran al flujo y estiran la altura de la fila de la semana */
+.ghost-date{
+    position: relative;      /* antes era absolute */
+    inset: auto;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    z-index: 1;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* 2) Fantasmas más compactos (tipografía y paddings) */
+.exam-card.is-ghost{
+    font-size: .56rem;       /* más pequeño que .68rem */
+    padding: 4px 6px;
+    gap: 4px;
+    border: 1px dashed rgba(255,255,255,.10);
+    opacity: var(--ghost-alpha, .18);
+    filter: saturate(.85);
+    box-shadow: none;
+}
+
+.exam-card.is-ghost .exam-head2{ gap: 4px; }
+.exam-card.is-ghost .exam-icon-vert img{ width: 28px; height: 28px; }
+.exam-card.is-ghost .exam-sigla{ font-size: .82rem; }
+.exam-card.is-ghost .exam-badge{ font-size: .6rem; padding: 1px 6px; }
+
+.exam-card.is-ghost .exam-line .line-label{ font-size: .52rem; }
+.exam-card.is-ghost .exam-line .line-value{ font-size: .64rem; }
+.exam-card.is-ghost .exam-line.stacked .line-value{ font-size: .68rem; }
+
+/* Asegura que las tarjetas reales queden por encima si hay solape */
+.exam-list{ position: relative; z-index: 2; }
+
+/* Responsive: aún más compacto en móviles */
+@media (max-width: 768px){
+    .exam-card.is-ghost{ font-size: .5rem; padding: 3px 5px; gap: 3px; }
+    .exam-card.is-ghost .exam-icon-vert img{ width: 24px; height: 24px; }
+    .exam-card.is-ghost .exam-badge{ font-size: .54rem; padding: 1px 5px; }
+    .exam-card.is-ghost .exam-line.upper .line-value{ font-size: .62rem; }
+}
+
+/* Impresión: mantenerlos en flujo aunque la regla previa ponía inset */
+@media print{
+    .ghost-date{
+        position: relative !important;
+        inset: auto !important;
+        margin: 0 !important;
     }
 }

@@ -466,6 +466,7 @@
         return card;
     }
 
+    // *** ACTUALIZADO: fantasmas muestran SOLO los grupos votantes (sin fecha) ***
     function createGhostCard(exam, dateStr, groups, alpha){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
@@ -484,7 +485,8 @@
         const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
         sampleIcon(img,.35,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
 
-        card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
+        // antes: card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
+        // ahora: solo grupos que votaron por esta fecha
         card.appendChild(lineUpperGroups(groups));
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; strip.style.display="none";
@@ -672,7 +674,7 @@
 
     function renderCurrentGroup(){
         const pending=$id("pending-exams-list"); if(pending) pending.innerHTML="";
-        document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="");
+        document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="" );
 
         if(resultsMode || !currentGroupId){ return; }
 
