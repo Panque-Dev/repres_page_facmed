@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <title>Reprogramación de departamentales</title>
@@ -7,99 +8,109 @@
     <link rel="icon" href="ico/DEPARTAMENTALES.ico" type="image/x-icon" />
     <link rel="stylesheet" href="main.css" />
 </head>
+
 <body>
-<div id="mobile-warning" class="top-banner warn" role="alert" aria-live="polite">
-    <span class="top-banner-text">Esta aplicación ahora es responsiva para móviles. ¡Disfrútala en cualquier dispositivo!</span>
-    <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
-</div>
+    <div id="mobile-warning" class="top-banner warn" role="alert" aria-live="polite">
+        <span class="top-banner-text">Esta aplicación ahora es responsiva para móviles. ¡Disfrútala en cualquier
+            dispositivo!</span>
+        <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
+    </div>
 
-<div class="app">
-    <header class="app-header single-ribbon">
-        <div class="ribbon ribbon-header">
-            <div class="header-inner">
-                <div class="app-title-block">
-                    <h1>Formato para la Reprogramación de Departamentales</h1>
-                    <p class="app-subtitle">Utiliza esta página para crear rápidamente tus propuestas arrastrando los examenes sobre el calendario</p>
-                </div>
+    <div class="app">
+        <header class="app-header single-ribbon">
+            <div class="ribbon ribbon-header">
+                <div class="header-inner">
+                    <div class="app-title-block">
+                        <h1>Formato para la Reprogramación de Departamentales</h1>
+                        <p class="app-subtitle">Utiliza esta página para crear rápidamente tus propuestas arrastrando
+                            los examenes sobre el calendario</p>
+                    </div>
+                    
+                    <div class="header-right">
+                        <div class="group-selector">
+                            <label for="group-input">Grupo</label>
+                            <input id="group-input" type="number" min="1101" max="2265" step="1" inputmode="numeric" />
+                            <span id="group-status" class="group-status"></span>
+                            <div id="group-hint" class="group-hint">
+                                Ingresa tu grupo de primero 11## o de segundo 22##,
+                                o escribe 1100 o 2200 para previsualizar los resultados de cada grado.
+                            </div>
+                        </div>
 
-                <div class="header-right">
-                    <div class="group-selector">
-                        <label for="group-input">Grupo</label>
-                        <input id="group-input" type="number" min="1101" max="2265" step="1" inputmode="numeric" />
-                        <span id="group-status" class="group-status"></span>
-                        <div id="group-hint" class="group-hint">
-                            Ingresa tu grupo de primero 11## o de segundo 22##,
-                            o escribe 1100 o 2200 para previsualizar los resultados de cada grado.
+                        <div class="legend">
+                            <span class="legend-item"><span class="legend-swatch status-original"></span>Oficial
+                                intacta</span>
+                            <span class="legend-item"><span class="legend-swatch status-valid"></span>Reprogramada
+                                válida</span>
+                            <span class="legend-item"><span class="legend-swatch status-invalid"></span>Fecha
+                                inválida</span>
+                            <span class="legend-item"><span class="ghost-swatch"></span>Fecha fantasma</span>
+                        </div>
+
+                        <div class="header-actions">
+                            <label class="toggle-inline"
+                                title="Agrega una 4ª fila con semanas hasta el siguiente examen de la misma materia">
+                                <input id="toggle-subject-weeks" type="checkbox" />
+                                ver semanas por materia
+                            </label>
+                            <button id="capture-btn" type="button" class="capture-btn">1. Tomar captura</button>
+                            <button type="button" class="proposal-btn"
+                        onclick="window.location.href='https://forms.gle/u31wmK7mqzjU8bKB9'">2. Enviar Propuesta</button>
                         </div>
                     </div>
-
-                    <div class="legend">
-                        <span class="legend-item"><span class="legend-swatch status-original"></span>Oficial intacta</span>
-                        <span class="legend-item"><span class="legend-swatch status-valid"></span>Reprogramada válida</span>
-                        <span class="legend-item"><span class="legend-swatch status-invalid"></span>Fecha inválida</span>
-                        <span class="legend-item"><span class="ghost-swatch"></span>Fecha fantasma</span>
-                    </div>
-
-                    <div class="header-actions">
-                        <label class="toggle-inline" title="Agrega una 4ª fila con semanas hasta el siguiente examen de la misma materia">
-                            <input id="toggle-subject-weeks" type="checkbox" />
-                            ver semanas por materia
-                        </label>
-                        <button id="capture-btn" type="button" class="capture-btn">Tomar captura</button>
-                    </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <section class="stats-ribbon-wrap">
-        <div class="ribbon ribbon-stats">
-            <div class="stats-ribbon-header">
-                <h2>Propuestas más repetidas</h2>
-                <div class="stats-controls">
-                    <label for="stats-year">Año</label>
-                    <select id="stats-year">
-                        <option value="1">Primero</option>
-                        <option value="2">Segundo</option>
-                    </select>
+        <section class="stats-ribbon-wrap">
+            <div class="ribbon ribbon-stats">
+                <div class="stats-ribbon-header">
+                    <h2>Propuestas más repetidas</h2>
+                    <div class="stats-controls">
+                        <label for="stats-year">Año</label>
+                        <select id="stats-year">
+                            <option value="1">Primero</option>
+                            <option value="2">Segundo</option>
+                        </select>
+                    </div>
                 </div>
+                <div id="stats-empty" class="stats-empty">Aún no hay datos suficientes para calcular modas.</div>
+                <div id="stats-ribbon" class="stats-ribbon-cards" aria-live="polite"></div>
             </div>
-            <div id="stats-empty" class="stats-empty">Aún no hay datos suficientes para calcular modas.</div>
-            <div id="stats-ribbon" class="stats-ribbon-cards" aria-live="polite"></div>
-        </div>
-    </section>
-
-    <main class="app-main">
-        <section class="main-panel">
-            <div class="panel-bar panel-bar-top"></div>
-            <div class="panel-bar panel-bar-middle"></div>
-
-            <section class="pending-exams">
-                <div class="pending-exams-header">
-                    <h2>Exámenes anteriores al Paro</h2>
-                </div>
-                <p class="pending-hint">Arrastra estas tarjetas a un día libre del calendario.</p>
-                <div id="pending-exams-list" class="pending-exams-list"></div>
-            </section>
-
-            <div id="calendar" class="calendar"></div>
         </section>
-    </main>
-</div>
 
-<footer class="app-footer">
-    <div class="footer-text">
+        <main class="app-main">
+            <section class="main-panel">
+                <div class="panel-bar panel-bar-top"></div>
+                <div class="panel-bar panel-bar-middle"></div>
 
-        <p>Realizado por los representantes</p>
-        <p>Programado por @mauricioisbl y <a href="https://www.instagram.com/jovan.m3d/">@jovan.m3d</a></p>
-        <p>© TAGLE CORPORATION 2025 - Derechos más o menos reservados</p>
+                <section class="pending-exams">
+                    <div class="pending-exams-header">
+                        <h2>Exámenes anteriores al Paro</h2>
+                    </div>
+                    <p class="pending-hint">Arrastra estas tarjetas a un día libre del calendario.</p>
+                    <div id="pending-exams-list" class="pending-exams-list"></div>
+                </section>
+
+                <div id="calendar" class="calendar"></div>
+            </section>
+        </main>
     </div>
-    <div class="footer-logos">
-        <img src="img/logo-unam.png" alt="Logo UNAM" />
-        <img src="img/logo_facmed.png" alt="Logo FacMed" />
-    </div>
-</footer>
 
-<script defer src="main.js"></script>
+    <footer class="app-footer">
+        <div class="footer-text">
+
+            <p>Realizado por los representantes</p>
+            <p>Programado por @mauricioisbl y <a href="https://www.instagram.com/jovan.m3d/">@jovan.m3d</a></p>
+            <p>© TAGLE CORPORATION 2025 - Derechos más o menos reservados</p>
+        </div>
+        <div class="footer-logos">
+            <img src="img/logo-unam.png" alt="Logo UNAM" />
+            <img src="img/logo_facmed.png" alt="Logo FacMed" />
+        </div>
+    </footer>
+
+    <script defer src="main.js"></script>
 </body>
+
 </html>
