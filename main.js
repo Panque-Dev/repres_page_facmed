@@ -13,9 +13,9 @@
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
-    // PARO
+    // PARO (actualizado: termina el 22 de noviembre)
     const STRIKE_START_DATE   = "2025-11-01";
-    const STRIKE_END_DATE     = "2025-11-18";
+    const STRIKE_END_DATE     = "2025-11-22";
 
     // CLASES SIN EVALUACIÓN
     const NOEVAL_START_DATE   = "2025-11-19";
@@ -25,6 +25,7 @@
         "2025-11-17": "Día de la Revolución"
     };
 
+    // Corte para “anteriores al paro”: todo <= 22-Nov
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
 
@@ -274,32 +275,32 @@
             { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08", officialTime: "13:00" },
             { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" },
 
-            /* ===== NUEVO: Integración Básico Clínica II (IBC 2) ===== */
+            /* ===== IBC 2 ===== */
             { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial",   officialDate: "2025-12-11", officialTime: "09:00" },
             { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial",  officialDate: "2026-04-25", officialTime: "14:00" },
             { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
             { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
 
-            /* ===== Intro Cirugía ===== */
-            { id: "2-ICR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial",   officialDate: "2025-01-12", officialTime: "8:00" },
-            { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-6", officialTime: "8:00" },
-            { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "8:00" },
+            /* ===== Introducción a la Cirugía (corregido a enero 2026 y 06 en abril) ===== */
+            { id: "2-ICR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial",   officialDate: "2026-01-12", officialTime: "08:00" },
+            { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-06", officialTime: "08:00" },
+            { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "08:00" },
             { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" },
+            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "08:00" },
 
-            /* ===== Promo ===== */
+            /* ===== Promoción ===== */
             { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
             { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
             { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
-            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
-            /* micro y para*/
-            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
-            { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
-            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial", officialDate: "2026-05-02", officialTime: "08:00" },
+
+            /* Micro y Parasito */
+            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial",   officialDate: "2025-12-06", officialTime: "13:00" },
+            { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial",  officialDate: "2026-04-13", officialTime: "15:00" },
+            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial",   officialDate: "2026-05-02", officialTime: "08:00" },
             { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
-            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-30", officialTime: "08:00" },
+            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario",officialDate: "2026-05-30", officialTime: "08:00" }
         ]
     };
 
@@ -393,6 +394,10 @@
         const { approvedDate, suggestionDate, isOwn, groupProposals } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card "+statusClass; card.draggable=true; card.dataset.examId=exam.id;
+
+        // aseguremos que siempre quede sobre fantasmas si hay solape
+        card.style.zIndex = "3";
+
         if(forced) card.classList.add("forced");
         if(isOwn) card.classList.add("own-proposal-solid");
 
@@ -440,8 +445,9 @@
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
 
         const card=document.createElement("div");
-        card.className="exam-card status-valid"; // ficha sólida, no opaca
+        card.className="exam-card status-valid";
         card.draggable=false; card.dataset.examId=exam.id;
+        card.style.zIndex = "3"; // sobre fantasmas
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
 
@@ -466,11 +472,12 @@
         return card;
     }
 
-    // *** ACTUALIZADO: fantasmas muestran SOLO los grupos votantes (sin fecha) ***
+    // Fantasmas compactos
     function createGhostCard(exam, dateStr, groups, alpha){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-        const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
+        const card=document.createElement("div"); card.className="exam-card is-ghost"; card.draggable=false;
         card.style.setProperty("--ghost-alpha", alpha.toFixed(3));
+        card.style.zIndex = "1"; // debajo de las reales
 
         const head=document.createElement("div"); head.className="exam-head2";
         const icon=document.createElement("div"); icon.className="exam-icon-vert";
@@ -485,8 +492,6 @@
         const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
         sampleIcon(img,.35,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
 
-        // antes: card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
-        // ahora: solo grupos que votaron por esta fecha
         card.appendChild(lineUpperGroups(groups));
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; strip.style.display="none";
@@ -595,8 +600,9 @@
                 else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
                 else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
                 else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
-                else if(isStrike(ds)) meta.textContent = "Paro";
+                // prioridad: “Clases sin evaluación” debe mostrarse del 19 al 22 (por encima de “Paro”)
                 else if(isNoEvaluation(ds)) meta.textContent = "Clases sin evaluación";
+                else if(isStrike(ds)) meta.textContent = "Paro";
                 else if(isVacation(ds)) meta.textContent="Vacaciones";
                 else if(dow===0) meta.textContent="Fin de semana";
                 if (SPECIAL_DAY_LABELS[ds]) meta.textContent = SPECIAL_DAY_LABELS[ds];
@@ -605,6 +611,11 @@
 
                 const ghost=document.createElement("div"); ghost.className="ghost-date"; cell.appendChild(ghost);
                 const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
+
+                // z-index y stacking: las reales sobre fantasmas
+                ghost.style.zIndex = "1";
+                list.style.zIndex  = "2";
+                ghost.style.pointerEvents = "none";
 
                 cell.addEventListener("dragover", e=>{
                     if(resultsMode) return;
@@ -701,6 +712,7 @@
             );
 
             const dayCell=document.querySelector('.day-cell[data-date="'+suggestionDate+'"]');
+            // “anteriores al paro” = oficiales hasta 22-Nov (corte 23)
             const isOriginalBefore = ex.officialDate < FORCED_REPROGRAM_CUTOFF;
             const placeInPending = isOriginalBefore && (suggestionDate===ex.officialDate);
 
@@ -813,9 +825,7 @@
         return { totalsByExam, modeByExam, modeListByExam, groupsByExamDate };
     }
 
-    // Pinta ganadores (fichas sólidas) en calendario SOLO en resultados
     function renderResultsWinners(modeByExam){
-        // limpiar contenedores de fichas
         document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="");
         if(!resultsMode) return;
 
@@ -874,7 +884,6 @@
         lastGroupsByExamDateOthers = others.groupsByExamDate;
 
         renderGhosts();
-        // NUEVO: fichas ganadoras sólidas en calendario (solo resultados)
         renderResultsWinners(all.modeByExam);
         renderStats(all.modeByExam, all.modeListByExam, all.groupsByExamDate);
         renderCurrentGroup();
@@ -901,7 +910,6 @@
         });
     }
 
-    // Distancias entre modas para ribbon (se mantiene)
     function prevNextDistancesByMode(items){
         const arr = items.map(x=>({
             id: x.exam.id,
@@ -935,7 +943,6 @@
         return distMap;
     }
 
-    /* ===== Propuestas más repetidas: FICHAS en resultados con mismo ancho ===== */
     function renderStats(modeByExam, modeListByExam, groupsByExamDate){
         const wrap=$id("stats-ribbon"), empty=$id("stats-empty");
         if(wrap) wrap.innerHTML="";
@@ -946,7 +953,6 @@
             voters: (groupsByExamDate[id] && groupsByExamDate[id][modeByExam[id].date]) ? groupsByExamDate[id][modeByExam[id].date] : []
         })).filter(x=> !!x.exam);
 
-        // Orden cronológico estricto
         function compareChrono(a,b){
             if(a.mode.date!==b.mode.date) return a.mode.date.localeCompare(b.mode.date);
             const sa=a.exam.subject, sb=b.exam.subject;
@@ -960,9 +966,8 @@
         if(!wrap || !empty) return;
         if(items.length===0){ empty.style.display="block"; return; }
         empty.style.display="none";
-        items.forEach(({exam,mode,list,voters})=>{
+        items.forEach(({exam,mode,list})=>{
             if(resultsMode){
-                // ficha completa tipo examen
                 const d = distancesById[exam.id] || {prev:null,next:null};
                 const card = createResultCard(exam, {
                     approvedDate: exam.officialDate,
@@ -971,7 +976,6 @@
                     next: d.next
                 });
 
-                // ver 2a y 3a moda dentro de la ficha
                 if(list.length>1){
                     const det=document.createElement("details");
                     const sum=document.createElement("summary");
@@ -987,7 +991,6 @@
                     card.appendChild(det);
                 }
 
-                // NUEVO: envolver en 'stat-card' para heredar el MISMO ancho de la barra
                 const shell=document.createElement("div");
                 shell.className="stat-card";
                 shell.style.background="transparent";
@@ -1000,7 +1003,6 @@
                 wrap.appendChild(shell);
 
             }else{
-                // modo clásico (otros grupos o edición)
                 const sig=getSigla(exam.subject); const badge=shortType(exam.type);
                 const card=document.createElement("div"); card.className="stat-card";
                 const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
