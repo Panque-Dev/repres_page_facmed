@@ -289,11 +289,11 @@
             { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" },
 
             /* ===== Promo ===== */
-            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
-            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
-            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
-            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
-            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
+            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
+            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
+            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
+            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
+            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
             /* micro y para*/
             { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
             { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
