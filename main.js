@@ -279,7 +279,13 @@
             { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial",  officialDate: "2026-04-25", officialTime: "14:00" },
             { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
-            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" }
+            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
+            /* ===== Promo ===== */
+            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
+            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
+            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
+            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
+            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" }
         ]
     };
 
