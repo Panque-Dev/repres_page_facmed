@@ -8,7 +8,7 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    const VACATION_START_DATE = "2025-12-12";
+    const VACATION_START_DATE = "2025-12-13";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
