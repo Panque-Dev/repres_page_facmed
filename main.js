@@ -293,14 +293,7 @@
             { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
             { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
-            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
-        
-             /* Microbiología y Parasitología*/
-            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
-            {  id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
-            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial", officialDate: "2026-05-02", officialTime: "08:00" },
-            { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
-            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-30", officialTime: "08:00" },   
+            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" }
         ]
     };
 
