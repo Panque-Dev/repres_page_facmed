@@ -13,6 +13,270 @@
     --day-cell-w: 220px;
 }
 
+/* Media queries para móviles */
+@media (max-width: 768px) {
+    :root {
+        --day-cell-w: 150px;
+        --radius-xxl: 12px;
+        --radius-xl: 10px;
+        --radius-lg: 8px;
+    }
+
+    .app {
+        max-width: 100%;
+        margin: 0;
+        padding: 8px 4px 14px;
+    }
+
+    .ribbon {
+        padding: 8px 10px;
+        border-radius: var(--radius-lg);
+    }
+
+    .ribbon-header {
+        padding: 8px 12px;
+    }
+
+    .header-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .app-title-block h1 {
+        font-size: clamp(1.0rem, 1.5rem + 2vw, 1.2rem);
+    }
+
+    .app-subtitle {
+        font-size: .78rem;
+    }
+
+    .header-right {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .group-selector {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    #group-input {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    .legend {
+        flex-direction: column;
+        gap: 6px 8px;
+        font-size: .7rem;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .capture-btn {
+        padding: 10px 16px;
+        font-size: .9rem;
+    }
+
+    .stats-ribbon-wrap {
+        margin-bottom: 8px;
+    }
+
+    .ribbon-stats {
+        padding: 8px 10px;
+    }
+
+    .stats-ribbon-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .stats-ribbon-header h2 {
+        font-size: .8rem;
+    }
+
+    .stats-ribbon-cards {
+        gap: 8px;
+        padding-bottom: 2px;
+    }
+
+    .stat-card {
+        width: var(--day-cell-w);
+        min-width: var(--day-cell-w);
+        max-width: var(--day-cell-w);
+        padding: 8px 10px;
+    }
+
+    .stat-icon-top img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .stat-code {
+        font-size: .78rem;
+    }
+
+    .stat-badge {
+        font-size: .64rem;
+        padding: 2px 6px;
+    }
+
+    .stat-date {
+        font-size: .7rem;
+    }
+
+    .stat-sub {
+        font-size: .62rem;
+    }
+
+    .app-main {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .main-panel {
+        padding: 12px 12px 14px;
+    }
+
+    .panel-bar {
+        left: 10px;
+        right: 10px;
+    }
+
+    .pending-exams {
+        padding: 8px 8px 10px;
+        margin-bottom: 8px;
+    }
+
+    .pending-exams-header h2 {
+        font-size: .8rem;
+    }
+
+    .pending-hint {
+        font-size: .68rem;
+    }
+
+    .pending-exams-list {
+        gap: 4px;
+    }
+
+    .pending-exams-list .exam-card {
+        width: var(--day-cell-w);
+        min-width: var(--day-cell-w);
+        max-width: var(--day-cell-w);
+    }
+
+    .calendar {
+        gap: 8px;
+    }
+
+    .month {
+        padding: 10px 10px 12px;
+    }
+
+    .month-header h3 {
+        font-size: .88rem;
+        margin-bottom: 6px;
+    }
+
+    .month-grid {
+        gap: 4px;
+        padding: 6px;
+    }
+
+    .day-name {
+        font-size: .6rem;
+        padding: 3px 1px;
+    }
+
+    .day-cell {
+        min-height: 70px;
+        padding: 4px 4px 6px;
+    }
+
+    .day-header {
+        margin-bottom: 1px;
+        gap: 2px;
+    }
+
+    .day-number {
+        font-size: .8rem;
+    }
+
+    .day-meta {
+        font-size: .58rem;
+    }
+
+    .exam-list {
+        gap: 4px;
+    }
+
+    .exam-card {
+        padding: 6px 8px;
+        font-size: .62rem;
+    }
+
+    .exam-head2 {
+        gap: 6px;
+    }
+
+    .exam-icon-vert img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .exam-sigla {
+        font-size: .9rem;
+    }
+
+    .exam-badge {
+        font-size: .68rem;
+        padding: 2px 7px;
+    }
+
+    .exam-line {
+        gap: 4px;
+    }
+
+    .exam-line .line-label {
+        font-size: .58rem;
+    }
+
+    .exam-line .line-value {
+        font-size: .72rem;
+    }
+
+    .exam-line.stacked .line-value {
+        font-size: .76rem;
+    }
+
+    .exam-line.upper .line-label {
+        font-size: .7rem;
+    }
+
+    .app-footer {
+        margin-top: 14px;
+        padding: 10px 14px;
+    }
+
+    .footer-text p {
+        font-size: .8rem;
+    }
+
+    .footer-logos img {
+        height: 30px;
+    }
+}
+
 *{box-sizing:border-box}
 html,body{
     margin:0;

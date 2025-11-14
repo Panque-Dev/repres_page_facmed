@@ -1,13 +1,22 @@
-# TODO: Make Interface Responsive for Mobile and Websites
+# TODO: Hacer el programa responsivo para celulares
 
-## Steps to Complete
+## Información recopilada
+- El sitio tiene un banner advirtiendo contra el uso en móviles, pero ahora queremos hacerlo responsivo.
+- El CSS usa anchos fijos como `--day-cell-w: 220px`, lo que causa problemas en pantallas pequeñas.
+- El layout principal usa grid y flex, pero no se adapta a móviles.
+- Elementos como el header, stats, calendario y tarjetas de exámenes necesitan ajustes para pantallas pequeñas.
 
-- [x] Update CSS for mobile responsiveness (screens < 768px):
-  - [x] Adjust header layout to stack vertically on small screens.
-  - [x] Modify .app-main to use single column on mobile.
-  - [x] Make sidebar responsive (e.g., hide or stack below main panel).
-  - [x] Reduce padding, font sizes, and margins for mobile.
-  - [x] Ensure calendar day cells are touch-friendly (min height, padding).
-  - [x] Adjust group selector, legend, and other elements for small screens.
-- [x] Test responsiveness by launching the browser and checking different screen sizes.
-- [x] Finalize and verify no layout breaks.
+## Plan
+- [x] Quitar o ajustar el banner de advertencia para móviles en `index.html`.
+- [x] Agregar media queries en `main.css` para pantallas pequeñas (max-width: 768px):
+  - Cambiar `--day-cell-w` a un valor relativo o mínimo.
+  - Apilar elementos verticalmente (e.g., header, stats).
+  - Reducir tamaños de fuentes, paddings y márgenes.
+  - Ajustar el calendario para que las celdas se adapten mejor.
+  - Hacer las tarjetas de exámenes más compactas.
+- [x] Ajustar el layout principal para móviles: cambiar grid a flex o ajustar columnas.
+
+## Pasos de seguimiento
+- [x] Probar el sitio en un simulador de móvil o navegador con herramientas de desarrollo.
+- [x] Verificar que el calendario, tarjetas y navegación funcionen bien en pantallas pequeñas.
+- [x] Ajustar si es necesario basado en pruebas.
