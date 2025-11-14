@@ -8,7 +8,7 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    const VACATION_START_DATE = "2025-12-12";
+    const VACATION_START_DATE = "2025-12-13";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
@@ -158,6 +158,11 @@
         return a.tie.localeCompare(b.tie);
     }
 
+    /* ===== Exclusiones en stats ===== */
+    const EXCLUDED_FROM_STATS_SUBJECTS = new Set([
+        "Introducción a la Cirugía"
+    ]);
+
     /* =============== Catálogos =============== */
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const MONTH_NAMES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -282,27 +287,21 @@
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
             { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
 
-            /* ===== Intro Cirugía Teórico ===== */
-            { id: "2-ICR-P1", subject: "Introducción a la Cirugía Teórico", type: "Primer parcial",   officialDate: "2025-01-12", officialTime: "8:00" },
-            { id: "2-ICR-P2", subject: "Introducción a la Cirugía Teórico", type: "Segundo parcial",  officialDate: "2026-04-6", officialTime: "8:00" },
-            { id: "2-ICR-O1", subject: "Introducción a la Cirugía Teórico", type: "Primer ordinario", officialDate: "2026-04-28", officialTime: "8:00" },
-            { id: "2-ICR-O2", subject: "Introducción a la Cirugía Teórico", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-ICR-EX", subject: "Introducción a la Cirugía Teórico", type: "Extraordinario",   officialDate: "2026-05-29", officialTime: "8:00" },
-
-            /* ===== Intro Cirugía Práctico ===== */
-            { id: "2-CIR-P1-PR", subject: "Introducción a la Cirugía", type: "Primer parcial (Práctico)", officialDate: "2026-01-12", officialTime: "08:00", evaluationWeek: "2026-01-12 al 2026-01-16"},
-            { id: "2-CIR-P2-PR", subject: "Introducción a la Cirugía", type: "Segundo parcial (Práctico)", officialDate: "2026-04-06", officialTime: "08:00", evaluationWeek: "2026-04-06 al 2026-04-10"},
-            { id: "2-CIR-O1-PR", subject: "Introducción a la Cirugía", type: "Primer ordinario (Práctico)", officialDate: "2026-04-27", officialTime: "13:00", },
-            { id: "2-CIR-O2-PR", subject: "Introducción a la Cirugía", type: "Segundo ordinario (Práctico)", officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-CIR-EX-PR", subject: "Introducción a la Cirugía", type: "Extraordinario (Práctico)", officialDate: "2026-05-29", officialTime: "08:00" },
+            /* ===== Intro Cirugía ===== */
+            { id: "2-ICR-P1", subject: "Introducción a la Cirugía", type: "Primer parcial",   officialDate: "2025-01-12", officialTime: "8:00" },
+            { id: "2-ICR-P2", subject: "Introducción a la Cirugía", type: "Segundo parcial",  officialDate: "2026-04-6", officialTime: "8:00" },
+            { id: "2-ICR-O1", subject: "Introducción a la Cirugía", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "8:00" },
+            { id: "2-ICR-O2", subject: "Introducción a la Cirugía", type: "Segundo ordinario",officialDate: "2026-05-21", officialTime: "12:00" },
+            { id: "2-ICR-EX", subject: "Introducción a la Cirugía", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "8:00" },
 
             /* ===== Promo ===== */
-            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
-            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
-            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
-            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
-            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de la Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
-            /* micro y para*/
+            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
+            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
+            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
+            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
+            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
+
+            /* Micro */
             { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
             { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
             { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial", officialDate: "2026-05-02", officialTime: "08:00" },
@@ -442,13 +441,13 @@
         return card;
     }
 
-    /* ===== NUEVO: ficha completa de ganador en resultados ===== */
+    /* ===== ficha completa de ganador en resultados ===== */
     function createResultCard(exam, opts={}){
         const { approvedDate, suggestionDate, prev, next } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
 
         const card=document.createElement("div");
-        card.className="exam-card status-valid"; // ficha sólida, no opaca
+        card.className="exam-card status-valid";
         card.draggable=false; card.dataset.examId=exam.id;
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
@@ -474,6 +473,7 @@
         return card;
     }
 
+    // Fantasma minimal
     function createGhostCard(exam, dateStr, groups, alpha){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
@@ -492,7 +492,6 @@
         const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
         sampleIcon(img,.35,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
 
-        card.appendChild(lineStacked("PROPUESTA:", formatHuman(dateStr)));
         card.appendChild(lineUpperGroups(groups));
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; strip.style.display="none";
@@ -680,7 +679,9 @@
 
     function renderCurrentGroup(){
         const pending=$id("pending-exams-list"); if(pending) pending.innerHTML="";
-        document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="");
+        document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="" );
+        // limpiar marcas para ocultar fantasmas si hay ficha del grupo
+        document.querySelectorAll(".day-cell.has-own").forEach(c => c.classList.remove("has-own"));
 
         if(resultsMode || !currentGroupId){ return; }
 
@@ -712,6 +713,8 @@
 
             if(currentGroupId && !placeInPending && dayCell && isWithin(suggestionDate)){
                 dayCell.querySelector(".exam-list").appendChild(card);
+                // marca para ocultar fantasmas en ese día
+                dayCell.classList.add("has-own");
             }else if(pending){
                 pending.appendChild(card);
             }
@@ -819,9 +822,8 @@
         return { totalsByExam, modeByExam, modeListByExam, groupsByExamDate };
     }
 
-    // Pinta ganadores (fichas sólidas) en calendario SOLO en resultados
+    // Ganadores sólidos en calendario SOLO en resultados
     function renderResultsWinners(modeByExam){
-        // limpiar contenedores de fichas
         document.querySelectorAll(".exam-list").forEach(el=> el.innerHTML="");
         if(!resultsMode) return;
 
@@ -880,7 +882,6 @@
         lastGroupsByExamDateOthers = others.groupsByExamDate;
 
         renderGhosts();
-        // NUEVO: fichas ganadoras sólidas en calendario (solo resultados)
         renderResultsWinners(all.modeByExam);
         renderStats(all.modeByExam, all.modeListByExam, all.groupsByExamDate);
         renderCurrentGroup();
@@ -907,7 +908,7 @@
         });
     }
 
-    // Distancias entre modas para ribbon (se mantiene)
+    // Distancias entre modas para ribbon
     function prevNextDistancesByMode(items){
         const arr = items.map(x=>({
             id: x.exam.id,
@@ -941,18 +942,19 @@
         return distMap;
     }
 
-    /* ===== Propuestas más repetidas: FICHAS en resultados con mismo ancho ===== */
+    /* ===== Propuestas más repetidas: EXCLUYENDO CIRUGÍA ===== */
     function renderStats(modeByExam, modeListByExam, groupsByExamDate){
         const wrap=$id("stats-ribbon"), empty=$id("stats-empty");
         if(wrap) wrap.innerHTML="";
+        // construir items y EXCLUIR materias definidas
         const items=Object.keys(modeByExam).map(id=>({
             exam: examIdToObj[id],
             mode: modeByExam[id],
             list: modeListByExam[id]||[],
             voters: (groupsByExamDate[id] && groupsByExamDate[id][modeByExam[id].date]) ? groupsByExamDate[id][modeByExam[id].date] : []
-        })).filter(x=> !!x.exam);
+        }))
+            .filter(x=> !!x.exam && !EXCLUDED_FROM_STATS_SUBJECTS.has(x.exam.subject));
 
-        // Orden cronológico estricto
         function compareChrono(a,b){
             if(a.mode.date!==b.mode.date) return a.mode.date.localeCompare(b.mode.date);
             const sa=a.exam.subject, sb=b.exam.subject;
@@ -968,7 +970,6 @@
         empty.style.display="none";
         items.forEach(({exam,mode,list,voters})=>{
             if(resultsMode){
-                // ficha completa tipo examen
                 const d = distancesById[exam.id] || {prev:null,next:null};
                 const card = createResultCard(exam, {
                     approvedDate: exam.officialDate,
@@ -977,7 +978,6 @@
                     next: d.next
                 });
 
-                // ver 2a y 3a moda dentro de la ficha
                 if(list.length>1){
                     const det=document.createElement("details");
                     const sum=document.createElement("summary");
@@ -993,7 +993,6 @@
                     card.appendChild(det);
                 }
 
-                // NUEVO: envolver en 'stat-card' para heredar el MISMO ancho de la barra
                 const shell=document.createElement("div");
                 shell.className="stat-card";
                 shell.style.background="transparent";
@@ -1006,7 +1005,6 @@
                 wrap.appendChild(shell);
 
             }else{
-                // modo clásico (otros grupos o edición)
                 const sig=getSigla(exam.subject); const badge=shortType(exam.type);
                 const card=document.createElement("div"); card.className="stat-card";
                 const key=sig.display.replace(/\s+/g,""); const fallback=SUBJECT_COLORS[key]||"#4ecaff";
