@@ -71,7 +71,7 @@
     const diffDays = (aStr,bStr)=> Math.round(Math.abs(parseDate(bStr)-parseDate(aStr))/86400000);
     const hexToRgba = (hex, a)=>{ const h=hex.replace("#",""); const n=parseInt(h,16); const r=(n>>16)&255,g=(n>>8)&255,b=n&255; return `rgba(${r},${g},${b},${a})`; };
 
-    /* Muestreo 1x1 del ícono (primer píxel). Cacheado. */
+    /* Muestreo 10x10 del ícono Cacheado. */
     const sampledColorCache = new Map();
     function sampleIconColor(imgEl, alpha, fallbackHex, apply){
         const key = imgEl.getAttribute("src") + "@" + alpha;
@@ -85,8 +85,8 @@
                 const c = document.createElement("canvas");
                 c.width = 1; c.height = 1;
                 const ctx = c.getContext("2d");
-                ctx.drawImage(img, 0, 0, 1, 1);
-                const d = ctx.getImageData(0, 0, 1, 1).data;
+                ctx.drawImage(img, 0, 0, 10, 10);
+                const d = ctx.getImageData(0, 0, 10, 10).data;
                 const rgba = `rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
                 sampledColorCache.set(key, rgba);
                 apply(rgba);
@@ -274,7 +274,7 @@
         const to   = (modeByExam[nextId]?.date) || nextExam.officialDate;
         if(!from || !to) return null;
         const days = diffDays(from, to);
-        return Math.round((days/7)*10)/10; /* 1 decimal */
+        return Math.round((days/7)*10)/10;
     }
 
     /* Tarjeta */
@@ -295,13 +295,13 @@
         /* tinte del ícono (primer píxel) */
         const key = sigla.display.replace(/\s+/g,"");
         const fallbackHex = SUBJECT_COLORS[key] || "#4ecaff";
-        card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .12));
+        card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .5));
         const head=document.createElement("div"); head.className="exam-head2";
 
         const icon=document.createElement("div"); icon.className="exam-icon-vert";
         const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+(sigla.file)+".png";
         icon.appendChild(img);
-        sampleIconColor(img, .12, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
+        sampleIconColor(img, .5, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
 
         const titleBox=document.createElement("div"); titleBox.className="exam-title";
         const sigSpan=document.createElement("div"); sigSpan.className="exam-sigla"; sigSpan.textContent=sigla.display; sigSpan.title = exam.subject;
@@ -440,11 +440,11 @@
 
             const key=sigla.display.replace(/\s+/g,"");
             const fallbackHex=SUBJECT_COLORS[key] || "#4ecaff";
-            card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .09));
+            card.style.setProperty("--subj-tint", hexToRgba(fallbackHex, .5));
             const icon=document.createElement("div"); icon.className="stat-icon-top";
             const img=document.createElement("img"); img.alt=sigla.display; img.src="img/"+sigla.file+".png";
             icon.appendChild(img);
-            sampleIconColor(img, .09, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
+            sampleIconColor(img, .5, fallbackHex, (rgba)=> card.style.setProperty("--subj-tint", rgba));
             card.appendChild(icon);
 
             const top=document.createElement("div"); top.className="stat-top";
@@ -520,7 +520,7 @@
 
         renderGhosts(year, modeByExam);
         renderStatsRibbon(year, modeByExam, modeListByExam);
-        renderCurrentGroup(); /* re-render para recalcular líneas con nuevas modas */
+        renderCurrentGroup();
     }
 
     /* Controles */
@@ -543,6 +543,77 @@
             showSubjectWeeks = cb.checked;
             const st=loadState(); st.showSubjectWeeks = showSubjectWeeks; saveState(st);
             renderCurrentGroup();
+        });
+    }
+    function wireCaptureButton(){
+        const btn=document.getElementById("capture-btn"); if(!btn) return;
+        btn.addEventListener("click", ()=>{
+            if(!currentGroupId){
+                alert("Primero ingresa tu grupo para generar la captura.");
+                const input=document.getElementById("group-input");
+                if(input) input.focus();
+                return;
+            }
+            const groupSpan=document.getElementById("print-group");
+            if(groupSpan){
+                const yearLabel=currentYear===1?"Primer año":"Segundo año";
+                groupSpan.textContent="Grupo: "+currentGroupId+" · "+yearLabel;
+            }
+            const capturedSpan=document.getElementById("print-captured-at");
+            if(capturedSpan){
+                const now=new Date();
+                const f=now.toLocaleString("es-MX",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+                capturedSpan.textContent="Capturado el "+f;
+            }
+            window.print();
+        });
+    }
+    function maybeShowIntroOverlay(){
+        const s=loadState();
+        if(s.introSeen) return;
+        const target=document.querySelector(".group-selector");
+        if(!target) return;
+
+        const overlay=document.createElement("div");
+        overlay.className="intro-overlay";
+
+        const tooltip=document.createElement("div");
+        tooltip.className="intro-tooltip";
+        tooltip.innerHTML='<div class="intro-text"><strong>Primero ingresa tu grupo</strong><p>Después arrastra la programación sobre el calendario para consolidar la sugerencia de tu grupo.</p></div><button type="button" class="intro-close">Entendido</button><div class="intro-arrow"></div>';
+
+        overlay.appendChild(tooltip);
+        document.body.appendChild(overlay);
+
+        function position(){
+            const rect=target.getBoundingClientRect();
+            const ttRect=tooltip.getBoundingClientRect();
+            let top=rect.bottom+14+window.scrollY;
+            let left=rect.left+rect.width/2-ttRect.width/2+window.scrollX;
+            const minLeft=8+window.scrollX;
+            const maxLeft=window.innerWidth-ttRect.width-8+window.scrollX;
+            if(left<minLeft) left=minLeft;
+            if(left>maxLeft) left=maxLeft;
+            tooltip.style.top=top+"px";
+            tooltip.style.left=left+"px";
+            const arrowX=rect.left+rect.width/2-left;
+            tooltip.style.setProperty("--arrow-x", arrowX+"px");
+        }
+
+        position();
+        window.addEventListener("resize", position);
+
+        function closeIntro(){
+            if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            const state=loadState();
+            state.introSeen=true;
+            saveState(state);
+            window.removeEventListener("resize", position);
+        }
+
+        const btn=tooltip.querySelector(".intro-close");
+        if(btn) btn.addEventListener("click", closeIntro);
+        overlay.addEventListener("click", e=>{
+            if(e.target===overlay) closeIntro();
         });
     }
     function onResize(){
@@ -667,10 +738,13 @@
         wireGroupSelector();
         wireStatsControls();
         wireWeeksToggle();
+        wireCaptureButton();
         onResize();
 
         const input=document.getElementById("group-input");
         if (input) { input.value = String(YEAR1_RANGE.min); setCurrentGroup(YEAR1_RANGE.min); }
         else { recomputeStatsAndGhosts(); }
+
+        maybeShowIntroOverlay();
     });
 })();
