@@ -13,6 +13,10 @@
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
+    // NUEVO: rango de PARO (bloqueo con formato de vacaciones)
+    const STRIKE_START_DATE   = "2025-11-01";
+    const STRIKE_END_DATE     = "2025-11-22";
+
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
 
@@ -121,8 +125,9 @@
 
     const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
     const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
+    const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE; // NUEVO: rango de PARO
     const isSunday = (s)=> parseDate(s).getDay()===0;
-    const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && s!==SELECTION_DAY;
+    const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && s!==SELECTION_DAY; // invalida PARO
     const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
 
     const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
@@ -482,6 +487,7 @@
                 const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
                 const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
                 if(isVacation(ds)) cell.classList.add("vacation");
+                if(isStrike(ds))   cell.classList.add("vacation"); // mismo formato que vacaciones
                 const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
 
                 const hdr=document.createElement("div"); hdr.className="day-header";
@@ -492,6 +498,7 @@
                 else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
                 else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
                 else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
+                else if(isStrike(ds)) meta.textContent = "Paro";         // NUEVO: etiqueta Paro
                 else if(isVacation(ds)) meta.textContent="Vacaciones";
                 else if(dow===0) meta.textContent="Fin de semana";
                 hdr.appendChild(n); hdr.appendChild(meta); cell.appendChild(hdr);
