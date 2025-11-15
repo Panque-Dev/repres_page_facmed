@@ -197,9 +197,9 @@
         "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
     };
     const SUBJECT_COLORS = {
-        ANA:"#A8003D", BQM:"#831438", HIS:"#e11d48", EMB:"#E48090", SPC:"#831438", ISM:"#641C74",
-        IBC1:"#22d3ee", IBC2:"#06b6d4", IB1:"#00b4d8", IB2:"#00a896",
-        FIS:"#60a5fa", FAR:"#f59e0b", INM:"#22c55e", MyP:"#fb7185", ICR:"#38bdf8", PCV:"#14b8a6"
+        ANA:"#A8003D", BQM:"#1D7464", HIS:"#8E117C", EMB:"#E48090", SPC:"#2C7C8E", ISM:"#641C74",
+        IBC1:"#22d3ee", IBC2:"#06b6d4", IB1:"#00b4d8", IB2:"#0072A8",
+        FIS:"#F44F32", FAR:"#DA74B8", INM:"#A84DDA", MyP:"#A89C1C", ICR:"#1D98A8", PCV:"#8E004F"
     };
 
     const examIdToObj = {};
