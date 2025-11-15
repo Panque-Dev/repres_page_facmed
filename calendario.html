@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <title>Reprogramación de departamentales</title>
@@ -8,127 +7,117 @@
     <link rel="icon" href="ico/DEPARTAMENTALES.ico" type="image/x-icon" />
     <link rel="stylesheet" href="main.css" />
 </head>
-
 <body>
-    <div id="mobile-warning" class="top-banner warn" role="alert" aria-live="polite">
-        <span class="top-banner-text">SI TU GRUPO QUIERE HACER UNA MODIFICACIÓN, NO SE OLVIDEN DE TOMAR NUEVA CAPTURA Y MANDARLA PARA QUE SE GUARDEN LOS CAMBIOS. Consideraremos la última captura de su grupo</span>
-        <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
-    </div>
+<div id="mobile-warning" class="top-banner warn" role="alert" aria-live="polite">
+    <span class="top-banner-text">SI TU GRUPO QUIERE HACER UNA MODIFICACIÓN, NO SE OLVIDEN DE TOMAR NUEVA CAPTURA Y MANDARLA PARA QUE SE GUARDEN LOS CAMBIOS. Consideraremos la última captura de su grupo</span>
+    <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
+</div>
 
-    <div id="mobile-warning" class="top-banner warn" role="alert" aria-live="polite">
-        <span class="top-banner-text">Si ya no aparecen exámenes anteriores al paro, probablemente alguien de tu grupo ya sugirió una fecha y están del lado del calendario. Puedes arrastrrarlo también</span>
-        <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
-    </div>
+<div id="mobile-warning" class="top-banner warn" role="alert" aria-live="polite">
+    <span class="top-banner-text">Si ya no aparecen exámenes anteriores al paro, probablemente alguien de tu grupo ya sugirió una fecha y están del lado del calendario. Puedes arrastrrarlo también</span>
+    <button id="mobile-warning-close" class="top-banner-close" aria-label="Cerrar">×</button>
+</div>
 
-    <div class="app">
-        <header class="app-header single-ribbon">
-            <div class="ribbon ribbon-header">
-                <div class="header-inner">
-                    <div class="app-title-block">
-                        <h1>Formato para la Reprogramación de Departamentales</h1>
-                        <p class="app-subtitle">Utiliza esta página para crear rápidamente tus propuestas arrastrando
-                            los examenes sobre el calendario</p>
-                        <p>Ingresa tu grupo de primero 11## o de segundo 22##</p>
-                        <p>o escribe 1100 o 2200 para previsualizar los resultados POR EXAMEN de cada grado.</p>
+<div class="app">
+    <header class="app-header single-ribbon">
+        <div class="ribbon ribbon-header">
+            <div class="header-inner">
+                <div class="app-title-block">
+                    <h1>Formato para la Reprogramación de Departamentales</h1>
+                    <p class="app-subtitle">Utiliza esta página para crear rápidamente tus propuestas arrastrando los examenes sobre el calendario</p>
+                    <p>Ingresa tu grupo de primero 11## o de segundo 22##</p>
+                    <p>o escribe 1100 o 2200 para previsualizar los resultados POR EXAMEN de cada grado.</p>
+                </div>
+                <img src="img/snoopy-woodstuck.png" width="150rem" height="150rem" alt="">
+                <div class="header-right">
+                    <div class="group-selector">
+                        <label for="group-input">Grupo</label>
+                        <input id="group-input" type="number" min="1101" max="2265" step="1" inputmode="numeric" />
+                        <span id="group-status" class="group-status"></span>
+                        <div id="group-hint" class="group-hint"></div>
                     </div>
-                    <img src="img/snoopy-woodstuck.png" width="150rem" height="150rem" alt="">
-                    <div class="header-right">
-                        <div class="group-selector">
-                            <label for="group-input">Grupo</label>
-                            <input id="group-input" type="number" min="1101" max="2265" step="1" inputmode="numeric" />
-                            <span id="group-status" class="group-status"></span>
-                            <div id="group-hint" class="group-hint"></div>
-                        </div>
 
-                        <div class="legend">
-                            <span class="legend-item"><span class="legend-swatch status-original"></span>Oficial
-                                intacta</span>
-                            <span class="legend-item"><span class="legend-swatch status-valid"></span>Reprogramada
-                                válida</span>
-                            <span class="legend-item"><span class="legend-swatch status-invalid"></span>Fecha
-                                inválida</span>
-                            <span class="legend-item"><span class="ghost-swatch"></span>Fecha fantasma</span>
-                        </div>
+                    <div class="legend">
+                        <span class="legend-item"><span class="legend-swatch status-original"></span>Oficial intacta</span>
+                        <span class="legend-item"><span class="legend-swatch status-valid"></span>Reprogramada válida</span>
+                        <span class="legend-item"><span class="legend-swatch status-invalid"></span>Fecha inválida</span>
+                        <span class="legend-item"><span class="ghost-swatch"></span>Fecha fantasma</span>
+                    </div>
 
-                        <div class="header-actions">
-                            <label class="toggle-inline"
-                                title="Agrega una 4ª fila con semanas hasta el siguiente examen de la misma materia">
-                                <input id="toggle-subject-weeks" type="checkbox" />
-                                ver semanas por materia
-                            </label>
-                            <!-- botón hamburguesa -->
-                            <button class="hamburger" id="hamburgerBtn">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                                </svg>
-                            </button>
-                            <!-- ménu -->
-                            <div class="nav-links" id="navLinks" style="margin-right: auto;">
-                                <button type="button" class="proposal-btn nav-btn"
-                                    onclick="window.location.href='index.html'">Regresar a Inicio</button>
-                                <button id="capture-btn" type="button" class="capture-btn nav-btn">1. Tomar
-                                    captura</button>
-                                <button type="button" class="nav-btn proposal-btn"
-                                    onclick="window.location.href='https://forms.gle/u31wmK7mqzjU8bKB9'">2. Enviar
-                                    Propuesta
-                                    (correo facmed)</button>
-                            </div>
+                    <div class="header-actions">
+                        <label class="toggle-inline" title="Agrega una 4ª fila con semanas hasta el siguiente examen de la misma materia">
+                            <input id="toggle-subject-weeks" type="checkbox" />
+                            ver semanas por materia
+                        </label>
+                        <button class="hamburger" id="hamburgerBtn">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                        </button>
+                        <div class="nav-links" id="navLinks" style="margin-right: auto;">
+                            <button type="button" class="proposal-btn nav-btn" onclick="window.location.href='index.html'">Regresar a Inicio</button>
+                            <button id="capture-btn" type="button" class="capture-btn nav-btn">1. Tomar captura</button>
+                            <button type="button" class="nav-btn proposal-btn" onclick="window.location.href='https://forms.gle/u31wmK7mqzjU8bKB9'">2. Enviar Propuesta (correo facmed)</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <section class="stats-ribbon-wrap">
-            <div class="ribbon ribbon-stats">
-                <div class="stats-ribbon-header">
-                    <h2>Propuestas más repetidas</h2>
-                    <div class="stats-controls">
-                        <label for="stats-year">Año</label>
-                        <select id="stats-year">
-                            <option value="1">Primero</option>
-                            <option value="2">Segundo</option>
-                        </select>
-                    </div>
+    <section class="stats-ribbon-wrap">
+        <div class="ribbon ribbon-stats">
+            <div class="stats-ribbon-header">
+                <h2>Propuestas más repetidas</h2>
+                <div class="stats-controls">
+                    <label for="stats-year">Año</label>
+                    <select id="stats-year">
+                        <option value="1">Primero</option>
+                        <option value="2">Segundo</option>
+                    </select>
                 </div>
-                <div id="stats-empty" class="stats-empty">Aún no hay datos suficientes para calcular modas.</div>
-                <div id="stats-ribbon" class="stats-ribbon-cards" aria-live="polite"></div>
             </div>
-        </section>
+            <div id="stats-empty" class="stats-empty">Aún no hay datos suficientes para calcular modas.</div>
+            <div id="stats-ribbon" class="stats-ribbon-cards" aria-live="polite"></div>
+        </div>
+    </section>
 
-        <main class="app-main">
-            <section class="main-panel">
-                <div class="panel-bar panel-bar-top"></div>
-                <div class="panel-bar panel-bar-middle"></div>
+    <main class="app-main">
+        <section class="main-panel">
+            <div class="panel-bar panel-bar-top"></div>
+            <div class="panel-bar panel-bar-middle"></div>
 
-                <section class="pending-exams">
-                    <div class="pending-exams-header">
-                        <h2>Exámenes anteriores al Paro</h2>
-                    </div>
-                    <p class="pending-hint">Arrastra estas tarjetas a un día libre del calendario.</p>
-                    <div id="pending-exams-list" class="pending-exams-list"></div>
-                </section>
-
-                <div id="calendar" class="calendar"></div>
+            <section class="pending-exams">
+                <div class="pending-exams-header">
+                    <h2>Exámenes anteriores al Paro</h2>
+                </div>
+                <p class="pending-hint">Arrastra estas tarjetas a un día libre del calendario.</p>
+                <div id="pending-exams-list" class="pending-exams-list"></div>
             </section>
-        </main>
+
+            <div id="calendar" class="calendar"></div>
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    <div class="footer-text">
+        <p>Realizado por las y los representantes de grupo de Primer y Segundo Año</p>
+        <p>Agradecemos especialmente a Tagle, María, Marco Antonio por su apoyo y colaboración en el instructivo y el formulario de enviar respuesta</p>
+        <p>Programado por Mauricio <a href="https://www.instagram.com/mauricioisbl/">@mauricioisbl</a> y Héctor <a href="https://www.instagram.com/jovan.m3d/">@jovan.m3d</a></p>
+        <p>© TAGLE CORPORATION 2025 - Derechos más o menos reservados</p>
     </div>
+    <div class="footer-logos">
+        <img src="img/facmed.png" alt="Logo FacMed" />
+    </div>
+</footer>
 
-    <footer class="app-footer">
-        <div class="footer-text">
-            <p>Realizado por las y los representantes de grupo de Primer y Segundo Año</p>
-            <p>Agradecemos especialmente a Tagle, María, Marco Antonio por su apoyo y colaboración en el instructivo y el formulario de enviar respuesta</p>
-            <p>Programado por Mauricio <a href="https://www.instagram.com/mauricioisbl/">@mauricioisbl</a> y Héctor <a href="https://www.instagram.com/jovan.m3d/">@jovan.m3d</a></p>
-            <p>© TAGLE CORPORATION 2025 - Derechos más o menos reservados</p>
-        </div>
-        <div class="footer-logos">
-            <img src="img/facmed.png" alt="Logo FacMed" />
-        </div>
-    </footer>
-
-    <script defer src="main.js"></script>
+<!-- NUEVO: dividir JS en módulos de datos, resultados y capturas -->
+<script defer src="fechas.js"></script>
+<script defer src="resultados.js"></script>
+<script defer src="capturas.js"></script>
+<script defer src="main.js"></script>
 </body>
-
 </html>

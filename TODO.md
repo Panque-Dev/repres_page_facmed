@@ -1,5 +1,0 @@
-- [x] Fix the third div class in index.html from "app-main" to "banners-grid"
-- [x] Update CSS for .app-main to stack containers vertically and center them
-- [x] Insert Vimeo video iframe into the third banner in index.html
-- [x] Make all three banners-grid containers have the same width as the third one
-- [x] Add responsive design for the three containers with equal size and well-distributed content
