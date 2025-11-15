@@ -22,7 +22,12 @@
     const NOEVAL_END_DATE     = "2025-11-22";
 
     const SPECIAL_DAY_LABELS = {
-        "2025-11-17": "Día de la Revolución"
+        "2025-11-17": "Día de la Revolución",
+        "2025-12-12": "Virgen de Guadalupe (ya no asisten los trabajadores)",
+        "2025-12-24": "Nochebuena",
+        "2025-12-25": "Navidad",
+        "2026-01-01": "Año Nuevo",
+        "2026-02-02": "Día de la Constitución",
     };
 
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
@@ -61,6 +66,7 @@
         "2026-01-28": { kind: "blocked" },
         "2026-01-30": { kind: "blocked" },
 
+        "2026-02-02": { kind: "vac" },
         "2026-02-03": { kind: "blocked" },
         "2026-02-04": { kind: "blocked" },
         "2026-02-05": { kind: "blocked" },
@@ -111,7 +117,7 @@
     };
 
     const FOURNIER_REASON_TEXT =
-        "Estos son los motivos por los que el Fournier está ocupado:\n\n" +
+        "Estos pueden ser los motivos por los que el Fournier está ocupado:\n\n" +
         "-aplicación de exámenes de otros grados escolares incluyendo certificaciones o exámenes profesionales.";
 
     /* =============== Estado global UI =============== */

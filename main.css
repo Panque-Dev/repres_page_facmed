@@ -10,13 +10,13 @@
     --radius-xl: 14px;
     --radius-lg: 12px;
     --blur: 18px;
-    --day-cell-w: 220px;
+    --day-cell-w: 100px;
 }
 
 /* Media queries para móviles */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     :root {
-        --day-cell-w: 150px;
+        --day-cell-w: 50px;
         --radius-xxl: 12px;
         --radius-xl: 10px;
         --radius-lg: 8px;
@@ -114,7 +114,7 @@
         width: var(--day-cell-w);
         min-width: var(--day-cell-w);
         max-width: var(--day-cell-w);
-        padding: 8px 10px;
+        padding: 8px;
     }
 
     .stat-icon-top img {
@@ -154,7 +154,7 @@
     }
 
     .pending-exams {
-        padding: 8px 8px 10px;
+        padding: 4px;
         margin-bottom: 8px;
     }
 
@@ -181,7 +181,7 @@
     }
 
     .month {
-        padding: 10px 10px 12px;
+        padding: 5px;
     }
 
     .month-header h3 {
@@ -191,17 +191,17 @@
 
     .month-grid {
         gap: 4px;
-        padding: 6px;
+        padding: 5px;
     }
 
     .day-name {
         font-size: .6rem;
-        padding: 3px 1px;
+        padding: 5px;
     }
 
     .day-cell {
         min-height: 90px;
-        padding: 4px 4px 6px;
+        padding: 5px;
     }
 
     .day-header {
@@ -222,7 +222,7 @@
     }
 
     .exam-card {
-        padding: 6px 8px;
+        padding: 2px;
         font-size: .62rem;
     }
 
@@ -241,7 +241,7 @@
 
     .exam-badge {
         font-size: .68rem;
-        padding: 2px 7px;
+        padding: 2px;
     }
 
     .exam-line {
@@ -266,7 +266,7 @@
 
     .app-footer {
         margin-top: 14px;
-        padding: 10px 14px;
+        padding: 10px;
     }
 
     .footer-text p {
@@ -337,7 +337,7 @@ body {
 }
 
 .app {
-    max-width: 1280px;
+    max-width: 1639px;
     margin: 0 auto;
     padding: 16px 14px 28px
 }
@@ -546,7 +546,7 @@ body {
 .stats-ribbon-header h2 {
     margin: 0;
     font-size: .94rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #f6f9ff
 }
 
@@ -601,8 +601,8 @@ body {
 }
 
 .stat-icon-top img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25));
@@ -813,7 +813,7 @@ body {
 
 .day-number {
     font-size: .92rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #f8fbff
 }
 
@@ -855,7 +855,7 @@ body {
 /* Tarjeta examen */
 .exam-card {
     position: relative;
-    padding: 8px 10px;
+    padding: 8px;
     border-radius: var(--radius-xl);
     font-size: .68rem;
     cursor: grab;
@@ -1010,7 +1010,7 @@ body {
 
 .exam-line .line-value {
     font-size: .8rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: .015em;
     text-align: right
 }
@@ -1097,7 +1097,7 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
-    max-width: 800px;
+    max-width: 1000px;
     width: 100%
 }
 
@@ -1116,7 +1116,7 @@ body {
 .manual-banner h2 {
     margin: 0 0 10px;
     font-size: 1.2rem;
-    font-weight: 700
+    font-weight: 800
 }
 
 .manual-btn {
@@ -1145,8 +1145,8 @@ body {
 .proposal-btn {
     background: linear-gradient(180deg, rgba(56, 189, 248, .95), rgba(2, 132, 199, .95));
     border: 1px solid rgba(255, 255, 255, .22);
-    border-radius: 999px;
-    padding: 12px 24px;
+    border-radius: 50px;
+    padding: 15px
     color: #02101f;
     font-size: 1rem;
     font-weight: 900;
@@ -1184,7 +1184,7 @@ body {
 }
 
 /* Responsive for intro.html */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .app-header h1 {
         font-size: 1.5rem;
         padding: 15px 0
@@ -1198,7 +1198,6 @@ body {
         grid-template-columns: 1fr;
         gap: 15px;
         max-width: 90%;
-        padding: 0 10px
     }
 
     .proposal-banner,
@@ -1213,52 +1212,14 @@ body {
 
     .proposal-btn,
     .manual-btn {
-        padding: 10px 20px;
+        border-radius: var(--radius-lg);
+        padding: 10px;
         font-size: .9rem
     }
 
     iframe {
         width: 100% !important;
         height: 300px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .app-header h1 {
-        font-size: 1.2rem;
-        padding: 10px 0
-    }
-
-    .app-main {
-        min-height: calc(100vh - 120px)
-    }
-
-    .banners-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        max-width: 95%;
-        padding: 0 5px
-    }
-
-    .proposal-banner,
-    .manual-banner {
-        padding: 15px
-    }
-
-    .proposal-banner h2,
-    .manual-banner h2 {
-        font-size: .9rem
-    }
-
-    .proposal-btn,
-    .manual-btn {
-        padding: 8px 16px;
-        font-size: .8rem
-    }
-
-    iframe {
-        width: 100% !important;
-        height: 250px !important;
     }
 }
 
@@ -1480,8 +1441,8 @@ body {
     }
 }
 
-/* ======== MODO COMPACTO <700px (solo ícono, tipo, y grupos en fantasmas) ======== */
-@media (max-width: 700px) {
+/* ======== MODO COMPACTO <800px (solo ícono, tipo, y grupos en fantasmas) ======== */
+@media (max-width: 800px) {
 
     /* Apilar cabeza y centrar */
     .exam-head2 {
@@ -1611,7 +1572,7 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .hamburger {
     display: block;
   }
@@ -1676,7 +1637,7 @@ body {
 .exam-list{ position: relative; z-index: 3; }
 
 /* Responsive: aún más compacto en móviles */
-@media (max-width: 768px){
+@media (max-width: 800px){
     .exam-card.is-ghost{ font-size: .5rem; padding: 3px 5px; gap: 3px; }
     .exam-card.is-ghost .exam-icon-vert img{ width: 24px; height: 24px; }
     .exam-card.is-ghost .exam-badge{ font-size: .54rem; padding: 1px 5px; }
