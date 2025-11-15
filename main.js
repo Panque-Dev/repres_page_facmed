@@ -98,7 +98,16 @@
         "2026-03-26": { kind: "blocked" },
         "2026-03-27": { kind: "blocked" },
         "2026-03-30": { kind: "vac" },
-        "2026-03-31": { kind: "vac" }
+        "2026-03-31": { kind: "vac" },
+
+        "2026-04-07": { kind: "blocked" },
+        "2026-04-15": { kind: "blocked" },
+        "2026-04-22": { kind: "blocked" },
+        "2026-04-24": { kind: "blocked" },
+        "2026-04-27": { kind: "blocked" },
+        "2026-04-28": { kind: "blocked" },
+        "2026-04-29": { kind: "blocked" },
+        "2026-04-30": { kind: "blocked" },
     };
 
     const FOURNIER_REASON_TEXT =
