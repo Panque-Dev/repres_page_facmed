@@ -1239,3 +1239,8 @@
         toggleEmptyState();
     });
 })();
+
+// ------- LÓGICA DEL MENÚ HAMBURGUESA -------
+document.getElementById("hamburgerBtn").addEventListener("click", () => {
+  document.getElementById("navLinks").classList.toggle("active");
+});

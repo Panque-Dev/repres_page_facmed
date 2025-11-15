@@ -402,7 +402,7 @@ body {
 
 .header-actions {
     display: flex;
-    align-items: center;
+    align-items: right;
     justify-content: flex-end;
     gap: 8px;
     flex-wrap: wrap
@@ -1165,6 +1165,24 @@ body {
     box-shadow: 0 6px 14px rgba(0, 0, 0, .5)
 }
 
+.nav-links {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-btn {
+  cursor: pointer;
+}
+
+.hamburger {
+  font-size: 26px;
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+}
+
 /* Responsive for intro.html */
 @media (max-width: 768px) {
     .app-header h1 {
@@ -1593,6 +1611,30 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background: #1e1e1e;
+    padding: 10px 0;
+    width: 100%;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-btn {
+    width: 100%;
+    border-radius: 0;
+    padding: 15px;
+    text-align: center;
+  }
+}
 /* =====================
    OVERRIDES: FANTASMAS
    ===================== */
