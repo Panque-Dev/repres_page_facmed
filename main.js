@@ -193,7 +193,6 @@
         "Inmunología": { display: "INM", file: "INM" },
         "Microbiología y Parasitología": { display: "MyP", file: "MyP" },
         "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
-        "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
         "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
     };
     const SUBJECT_COLORS = {

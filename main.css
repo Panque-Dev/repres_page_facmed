@@ -1070,10 +1070,10 @@ body {
 }
 
 .footer-logos img {
-    height: 36px;
+    height: 70px;
     width: auto;
     opacity: .9;
-    filter: brightness(0) invert(1)
+    border-radius: var(--radius-lg);
 }
 
 /* Intro page styles */
