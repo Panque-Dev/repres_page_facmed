@@ -1006,12 +1006,12 @@
                 if(list.length>1){
                     const det=document.createElement("details");
                     const sum=document.createElement("summary");
-                    sum.textContent="ver las 3 modas más repetidas";
+                    sum.textContent="ver otras modas más repetidas";
                     det.appendChild(sum);
                     const ul=document.createElement("ul");
                     list.slice(1,3).forEach((o,i)=>{
                         const li=document.createElement("li");
-                        li.textContent=(i===0?"1a":"3a")+": "+formatHuman(o.date)+o.count+" votos";
+                        li.textContent=(i===0?"2a":"3a")+": "+formatHuman(o.date)+o.count+" votos";
                         ul.appendChild(li);
                     });
                     det.appendChild(ul);
