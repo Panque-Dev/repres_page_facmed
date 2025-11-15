@@ -356,8 +356,8 @@
         const compute=()=>{
             try{
                 const c=document.createElement("canvas"); c.width=1; c.height=1;
-                const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,10,10);
-                const d=ctx.getImageData(0,0,10,10).data;
+                const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,5,5);
+                const d=ctx.getImageData(0,0,5,5).data;
                 const rgba=`rgba(${d[0]},${d[1]},${d[2]},${alpha})`;
                 sampledCache.set(key, rgba); apply(rgba);
             }catch{ apply(hexToRgba(fallback, alpha)); }
