@@ -54,7 +54,7 @@
     .header-right {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 10px;
     }
 
     .group-selector {
@@ -177,7 +177,7 @@
     }
 
     .calendar {
-        gap: 8px;
+        gap: 10px;
     }
 
     .month {
@@ -394,10 +394,10 @@ body {
 }
 
 .header-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px
+    display: inline-grid;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 20px
 }
 
 .header-actions {
@@ -410,7 +410,7 @@ body {
 
 .capture-btn {
     padding: 12px 22px;
-    border-radius: 999px;
+    border-radius: 100px;
     border: 1px solid rgba(255, 255, 255, .22);
     background: linear-gradient(180deg, rgba(56, 189, 248, .95), rgba(2, 132, 199, .95));
     color: #02101f;
@@ -447,7 +447,7 @@ body {
 
 .group-selector {
     display: flex;
-    align-items: center;
+    align-items: right;
     gap: 10px;
     flex-wrap: wrap
 }
@@ -739,8 +739,8 @@ body {
 }
 
 .month-header {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    display: column;
+    grid-template-columns: repeat(10, 10fr);
     margin-bottom: 8px
 }
 
@@ -748,7 +748,7 @@ body {
     margin: 0 0 8px 0;
     grid-column: span 7;
     text-align: center;
-    font-size: .94rem;
+    font-size: .99rem;
     font-weight: 650;
     color: #f3f7ff
 }
