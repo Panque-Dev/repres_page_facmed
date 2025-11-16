@@ -249,6 +249,22 @@
     const r = parseInt(m[1],16), g=parseInt(m[2],16), b=parseInt(m[3],16);
     return `rgba(${r},${g},${b},${a})`;
   }
+  
+function makeSupportBar(value, max, color){
+  const wrap = document.createElement("div");
+  wrap.className = "mini-support";
+  if(color){ wrap.style.setProperty('--bar-color', color); }
+  const fill = document.createElement("div");
+  fill.className = "fill";
+  wrap.appendChild(fill);
+  // async to allow CSS transition
+  requestAnimationFrame(()=>{
+    const pct = max ? Math.max(0, Math.min(100, 100*value/max)) : 0;
+    fill.style.width = pct + "%";
+  });
+  return wrap;
+}
+
   function colorForExam(exam){
     const sig = getSigla(exam.subject).display;
     const key = sig.replace(/\s+/g,"");
@@ -459,11 +475,19 @@
   function renderExamModes(year, modes){
     const wrap = $id("results-exam-modes");
     wrap.innerHTML="";
+    const totalGroups = (cache.get(year)?.groups || []).length;
     modes.forEach(r=>{
       const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters });
       const holder = document.createElement("div");
       holder.className="stat-card";
       holder.appendChild(card);
+      if(totalGroups>0){
+        const col = colorForExam(r.exam);
+        const bar = makeSupportBar(r.voters.length, totalGroups, hexToRgba(col, .95));
+        const cap = document.createElement('div'); cap.className='support-caption'; cap.textContent = `${r.voters.length} de ${totalGroups} grupos (${Math.round(100*r.voters.length/totalGroups)}%)`;
+        holder.appendChild(bar);
+        holder.appendChild(cap);
+      }
       wrap.appendChild(holder);
     });
     $id("calendar-wrap").classList.add("hide");
@@ -508,9 +532,30 @@
       const row = document.createElement("div");
       row.className = "sim-item";
       row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+      row.style.setProperty('--fill', it.pct + '%');
       list.appendChild(row);
     }
     panel.classList.remove("hide");
+
+    // resumen de apoyo a la propuesta
+const calWrap = $id("calendar-wrap");
+let sup = qs("#cluster-support");
+if(!sup){
+  sup = document.createElement("div");
+  sup.id = "cluster-support";
+  sup.className = "bar-card"; // reusar estilo de tarjeta simple
+  calWrap.insertBefore(sup, calWrap.firstChild);
+}
+sup.innerHTML = "";
+const totalGroups = groupsData.length;
+const suppTitle = document.createElement("div");
+suppTitle.className = "bar-title";
+const count = (cluster && cluster.groups) ? cluster.groups.length : 0;
+const pct = totalGroups ? Math.round(100*count/totalGroups) : 0;
+suppTitle.textContent = `Apoyo total a esta propuesta: ${count} de ${totalGroups} grupos (${pct}%)`;
+const bar2 = makeSupportBar(count, totalGroups, 'rgba(56,189,248,.95)');
+sup.appendChild(suppTitle);
+sup.appendChild(bar2);
 
     $id("results-exam-modes").classList.add("hide");
     $id("calendar-wrap").classList.remove("hide");

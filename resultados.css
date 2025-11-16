@@ -149,3 +149,30 @@
 .calendar .exam-card .exam-status-strip{ background: var(--card-strip, rgba(56,189,248,.95)) !important; }
 
 .ghost-min{ opacity: .6; }
+
+
+/* Mini support bar */
+.mini-support{ 
+  margin-top: 6px; 
+  background: rgba(0,0,0,.28); 
+  border: 1px solid rgba(255,255,255,.12); 
+  border-radius: 999px; 
+  height: 10px; 
+  overflow: hidden;
+}
+.mini-support .fill{ 
+  height: 100%; width: 0%; 
+  background: var(--bar-color, rgba(56,189,248,.9)); 
+  transition: width .8s ease-out;
+}
+.support-caption{ font-size: .82rem; margin-top: 4px; color: var(--muted); }
+
+/* Similarity row filled by percentage */
+.sim-item{ position: relative; overflow: hidden; }
+.sim-item::before{
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: var(--fill, 0%);
+  background: linear-gradient(90deg, rgba(56,189,248,.30), rgba(2,132,199,.30));
+  z-index: 0;
+}
+.sim-item > *{ position: relative; z-index: 1; }
