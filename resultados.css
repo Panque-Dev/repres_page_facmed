@@ -56,7 +56,7 @@
 
 .ribbon-chooser{ padding: 12px 14px; margin-bottom: 12px; }
 
-.choos er{ display:flex; flex-direction:column; gap:10px; }
+.chooser{ display:flex; flex-direction:column; gap:10px; }
 
 .chooser-title{ text-align: center; font-weight: 900; }
 
@@ -147,4 +147,35 @@
   padding: 6px;
   max-height: 120px;
   overflow: auto;
+}
+
+
+/* Overrides de color por tarjeta (Resultados) */
+.exam-card.status-valid{
+  background: var(--card-bg, rgba(22,163,74,.32)) !important;
+}
+.exam-status-strip{
+  background: var(--strip-bg, rgba(200, 209, 222, .85)) !important;
+}
+
+
+/* Visual de lista de similitud con barra */
+.sim-legend{
+  margin-bottom: 8px;
+  font-size: .9rem;
+  font-weight: 800;
+  color: #dbe7ff;
+}
+.similarity-list .sim-item{
+  position: relative;
+  overflow: hidden;
+}
+.similarity-list .sim-item::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--pct, 0%);
+  background: rgba(56,189,248,.25);
+  border-right: 1px solid rgba(56,189,248,.55);
+  pointer-events: none;
 }

@@ -32,6 +32,34 @@
     "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
     "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
   };
+// Colores por materia (ajusta si tus íconos difieren)
+const SUBJECT_COLORS = {
+  "Anatomía": "#d94141",
+  "Bioquímica y Biología Molecular": "#6b5bd2",
+  "Biología Celular e Histología Médica": "#27a0b7",
+  "Embriología Humana": "#f59e0b",
+  "Informática Biomédica I": "#22c55e",
+  "Informática Biomédica II": "#10b981",
+  "Integración Básico Clínica I": "#3b82f6",
+  "Integración Básico Clínica II": "#2563eb",
+  "Salud Pública y Comunidad": "#14b8a6",
+  "Introducción a la Salud Mental": "#ef4444",
+  "Fisiología": "#7c3aed",
+  "Farmacología": "#0ea5e9",
+  "Inmunología": "#06b6d4",
+  "Microbiología y Parasitología": "#ef476f",
+  "Introducción a la Cirugía": "#8b5cf6",
+  "Promoción de la Salud en el Ciclo de Vida": "#eab308"
+};
+function subjectColor(sub){ return SUBJECT_COLORS[sub] || "#59b2ff"; }
+function hexToRGBA(hex, alpha=0.28){
+  const h = hex.replace("#","");
+  const r = parseInt(h.substring(0,2), 16);
+  const g = parseInt(h.substring(2,4), 16);
+  const b = parseInt(h.substring(4,6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 
   const EXAMS_BY_YEAR = {
     1: [
@@ -208,7 +236,9 @@
   }
   function createGhostCard(exam, voters=[]){
     const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-    const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
+    const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min";
+    const col = subjectColor(exam.subject);
+    card.style.setProperty("--strip-bg", col); card.draggable=false;
     const head=document.createElement("div"); head.className="exam-head2";
     const icon=document.createElement("div"); icon.className="exam-icon-vert";
     const img=document.createElement("img"); img.alt=sig.display; img.src="img/"+sig.file+".png";
@@ -280,14 +310,25 @@
   /* ========= Datos desde Netlify ========= */
   const cache = new Map(); // year -> { groups: [{group_id, year, proposals}] }
   async function fetchYear(year){
-    if(cache.has(year)) return cache.get(year);
-    const res = await fetch(`/api/list?year=${year}`);
-    if(!res.ok) throw new Error("No se pudieron obtener datos");
+  if(cache.has(year)) return cache.get(year);
+  try{
+    const res = await fetch(`/.netlify/functions/proposals-list?year=${year}`);
+    if(!res.ok) throw new Error("HTTP "+res.status);
     const json = await res.json();
     cache.set(year, json);
+    localStorage.setItem("SNAPSHOT::"+year, JSON.stringify(json));
     return json;
+  }catch(e){
+    const raw = localStorage.getItem("SNAPSHOT::"+year);
+    if(raw){
+      const json = JSON.parse(raw);
+      cache.set(year, json);
+      console.warn("Usando snapshot local de resultados:", e?.message||e);
+      return json;
+    }
+    throw e;
   }
-
+}
   /* ========= Cómputos ========= */
   function computeExamModes(year, groups){
     const index = Object.fromEntries(EXAMS_BY_YEAR[year].map(ex=>[ex.id, ex]));
@@ -338,6 +379,8 @@
 
   /* ========= Render ========= */
   function renderExamModes(year, modes){
+    const simBlock = document.querySelector(".ribbon.ribbon-sim-block"); if(simBlock) simBlock.classList.add("hide");
+
     const wrap = $id("results-exam-modes");
     wrap.innerHTML="";
     modes.forEach(r=>{
@@ -378,18 +421,25 @@
 
     // similitudes
     const list = $id("similarity-list");
-    list.innerHTML="";
-    const groupsData = cache.get(year)?.groups || [];
-    const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, cluster.proposals, g.proposals||{}) }));
-    all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-    for(const it of all){
-      const row = document.createElement("div");
-      row.className="sim-item";
-      row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
-      list.appendChild(row);
-    }
+list.innerHTML="";
+const groupsData = cache.get(year)?.groups || [];
+const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, cluster.proposals, g.proposals||{}) }));
+all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
+const hi = all.filter(x=>x.pct>=90).length;
+const legend = $id("high-sim-count");
+if(legend) legend.textContent = String(hi);
+
+for(const it of all){
+  const row = document.createElement("div");
+  row.className="sim-item";
+  row.style.setProperty("--pct", it.pct + "%");
+  row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+  list.appendChild(row);
+}
+
 
     // mostrar secciones correctas
+    const simBlock = document.querySelector(".ribbon.ribbon-sim-block"); if(simBlock) simBlock.classList.remove("hide");
     $id("results-exam-modes").classList.add("hide");
     $id("calendar-wrap").classList.remove("hide");
   }
