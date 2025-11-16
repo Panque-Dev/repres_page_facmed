@@ -14,6 +14,75 @@
   const CAL_START_DATE = "2025-11-01";
   const CAL_END_DATE   = "2026-06-30";
 
+const VACATION_START_DATE = "2025-12-12";
+const VACATION_END_DATE   = "2026-01-04";
+const VACATION_SS_START   = "2026-03-29";
+const VACATION_SS_END     = "2026-04-05";
+
+const STRIKE_START_DATE   = "2025-11-01";
+const STRIKE_END_DATE     = "2025-11-18";
+
+const NOEVAL_START_DATE   = "2025-11-19";
+const NOEVAL_END_DATE     = "2025-11-22";
+
+const SPECIAL_DAY_LABELS = {
+  "2025-11-17": "Día de la Revolución",
+  "2025-12-12": "Virgen de Guadalupe (ya no asisten los trabajadores)",
+  "2025-12-24": "Nochebuena",
+  "2025-12-25": "Navidad",
+  "2026-01-01": "Año Nuevo",
+  "2026-02-02": "Día de la Constitución"
+};
+
+const FOURNIER_RESTRICTIONS = {
+  "2025-11-24": { kind: "blocked" },
+  "2025-12-01": { kind: "blocked" },
+  "2025-12-02": { kind: "blocked" },
+  "2025-12-03": { kind: "blocked" },
+  "2025-12-04": { kind: "blocked" },
+  "2025-12-08": { kind: "blocked" },
+  "2026-01-06": { kind: "blocked" },
+  "2026-01-07": { kind: "blocked" },
+  "2026-01-13": { kind: "blocked" },
+  "2026-01-14": { kind: "blocked" },
+  "2026-01-15": { kind: "blocked" },
+  "2026-01-16": { kind: "blocked" },
+  "2026-01-17": { kind: "blocked" },
+  "2026-01-19": { kind: "partial_after", freeFrom: "15:00" },
+  "2026-01-21": { kind: "blocked" },
+  "2026-01-22": { kind: "blocked" },
+  "2026-01-23": { kind: "blocked" },
+  "2026-01-26": { kind: "blocked" },
+  "2026-01-27": { kind: "blocked" },
+  "2026-01-28": { kind: "blocked" },
+  "2026-01-30": { kind: "blocked" },
+  "2026-02-02": { kind: "vac" },
+  "2026-02-03": { kind: "blocked" },
+  "2026-02-04": { kind: "blocked" },
+  "2026-02-05": { kind: "blocked" },
+  "2026-02-06": { kind: "blocked" },
+  "2026-02-09": { kind: "blocked" },
+  "2026-03-30": { kind: "vac" },
+  "2026-03-31": { kind: "vac" },
+  "2026-04-07": { kind: "blocked" },
+  "2026-04-15": { kind: "blocked" },
+  "2026-04-22": { kind: "blocked" },
+  "2026-04-24": { kind: "blocked" },
+  "2026-04-27": { kind: "blocked" },
+  "2026-04-28": { kind: "blocked" },
+  "2026-04-29": { kind: "blocked" },
+  "2026-04-30": { kind: "blocked" }
+};
+
+const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
+const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
+const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE;
+const isNoEvaluation = (s)=> s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE;
+const isSunday = (s)=> parseDate(s).getDay()===0;
+const isValidDate = (s)=> isWithin(s) && !isSunday(s) && !isVacation(s) && !isStrike(s) && !isNoEvaluation(s);
+const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
+
+
   const SUBJECT_SIGLAS = {
     "Embriología Humana": { display: "EMB", file: "EMB" },
     "Anatomía": { display: "ANA", file: "ANA" },
@@ -176,6 +245,19 @@ function hexToRGBA(hex, alpha=0.28){
   const diffDays   = (a,b)=> Math.round(Math.abs(parseDate(b)-parseDate(a))/86400000);
   const formatShort = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
   function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
+  
+function hexToRgba(hex, a){
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if(!m) return `rgba(56,189,248,${a})`;
+  const r = parseInt(m[1],16), g=parseInt(m[2],16), b=parseInt(m[3],16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function colorForExam(exam){
+  const sig = getSigla(exam.subject).display;
+  const key = sig.replace(/\s+/g,"");
+  return SUBJECT_COLORS[sig] || SUBJECT_COLORS[key] || "#38bdf8";
+}
+
   function shortType(t){
     switch(t){
       case "Primer parcial": return {badge:"PAR 1", meaning:"Parcial 1"};
@@ -227,6 +309,9 @@ function hexToRGBA(hex, alpha=0.28){
   function createGhostCard(exam, voters=[]){
     const sig=getSigla(exam.subject); const badge=shortType(exam.type);
     const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min";
+    const __col = colorForExam(exam);
+    card.style.setProperty('--card-bg', hexToRgba(__col, .14));
+    card.style.setProperty('--card-strip', hexToRgba(__col, .6));
     const col = subjectColor(exam.subject);
     card.style.setProperty("--strip-bg", col); card.draggable=false;
     const head=document.createElement("div"); head.className="exam-head2";
@@ -277,9 +362,23 @@ function hexToRGBA(hex, alpha=0.28){
       for(let d=1; d<=last; d++){
         const ds=formatDate(y,m+1,d);
         const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
+        const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
+        if(isVacation(ds)) cell.classList.add("vacation");
+        if(isStrike(ds))   cell.classList.add("vacation");
+        const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
         const hdr=document.createElement("div"); hdr.className="day-header";
         const n=document.createElement("span"); n.className="day-number"; n.textContent=String(d);
-        const meta=document.createElement("span"); meta.className="day-meta"; meta.textContent="";
+        const meta=document.createElement("span"); meta.className="day-meta";
+        if(ds===CAL_START_DATE) meta.textContent="Inicio";
+        else if(ds===CAL_END_DATE) meta.textContent="Fin";
+        else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
+        else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
+        else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
+        else if(isStrike(ds)) meta.textContent = "Paro";
+        else if(isNoEvaluation(ds)) meta.textContent = "Clases sin evaluación";
+        else if(isVacation(ds)) meta.textContent="Vacaciones";
+        else if(dow===0) meta.textContent="Fin de semana";
+        if (SPECIAL_DAY_LABELS[ds]) meta.textContent = SPECIAL_DAY_LABELS[ds];
         hdr.appendChild(n); hdr.appendChild(meta); cell.appendChild(hdr);
         const ghost=document.createElement("div"); ghost.className="ghost-date"; cell.appendChild(ghost);
         const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
@@ -398,6 +497,7 @@ function hexToRGBA(hex, alpha=0.28){
     qs("#calendar-wrap").classList.add("hide");
     qs("#results-title").textContent = "Propuesta por Moda por Examen";
     wrap.classList.remove("hide");
+    $id("similarity-panel").classList.add("hide");
   }
 
   function renderFullCalendar(year, cluster, altCluster){
@@ -423,28 +523,27 @@ function hexToRGBA(hex, alpha=0.28){
       }
     }
 
-    // similitudes
-    const list = $id("similarity-list");
+    
+// similitudes al panel superior
+const panel = $id("similarity-panel");
+const list = $id("similarity-list");
+const legend = $id("similarity-legend-90");
 list.innerHTML="";
 const groupsData = cache.get(year)?.groups || [];
 const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, cluster.proposals, g.proposals||{}) }));
 all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-const hi = all.filter(x=>x.pct>=90).length;
-const legend = $id("high-sim-count");
-if(legend) legend.textContent = String(hi);
-
+let count90 = all.filter(x => x.pct >= 90).length;
+legend.textContent = String(count90);
 for(const it of all){
   const row = document.createElement("div");
-  row.className="sim-item";
-  row.style.setProperty("--pct", it.pct + "%");
+  row.className = "sim-item";
   row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
   list.appendChild(row);
 }
+panel.classList.remove("hide");
 
+$id("results-exam-modes").classList.add("hide");
 
-    // mostrar secciones correctas
-    const simBlock = document.querySelector(".ribbon.ribbon-sim-block"); if(simBlock) simBlock.classList.remove("hide");
-    $id("results-exam-modes").classList.add("hide");
     $id("calendar-wrap").classList.remove("hide");
   }
 

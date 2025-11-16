@@ -179,3 +179,31 @@
   border-right: 1px solid rgba(56,189,248,.55);
   pointer-events: none;
 }
+
+
+/* Similaridad bajo selector de grado */
+.similarity-panel{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-xl);
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+.sim-legend{
+  font-size: .9rem;
+  margin: 4px 0 8px;
+  color: var(--muted);
+}
+
+/* Colores por materia en resultados (sobrescribe verde default) */
+.calendar .exam-card.status-valid{
+  background: var(--card-bg, rgba(56,189,248,.28)) !important;
+}
+.calendar .exam-card .exam-status-strip{
+  background: var(--card-strip, rgba(56,189,248,.9)) !important;
+}
+
+/* Ajustes visuales para ghost minimal */
+.ghost-min{
+  opacity: .6;
+}
