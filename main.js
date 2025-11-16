@@ -329,9 +329,9 @@
             /* Micro */
             { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
             { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
-            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Tercer parcial", officialDate: "2026-05-02", officialTime: "08:00" },
-            { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
-            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-30", officialTime: "08:00" },
+            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-02", officialTime: "08:00" },
+            { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
+            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Extraordinario", officialDate: "2026-05-30", officialTime: "08:00" },
         ]
     };
 
