@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="resultados 5.0" />
+    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="resultados 6.0" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,7 +87,7 @@
       <workItem from="1763323599477" duration="32000" />
       <workItem from="1763325744489" duration="237000" />
       <workItem from="1763327805599" duration="751000" />
-      <workItem from="1763331684041" duration="4005000" />
+      <workItem from="1763331684041" duration="4470000" />
     </task>
     <task id="LOCAL-00001" summary="micro extra">
       <option name="closed" value="true" />
@@ -153,7 +153,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763336644531</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="resultados 5.0">
+      <option name="closed" value="true" />
+      <created>1763336872030</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1763336872030</updated>
+    </task>
+    <task id="LOCAL-00010" summary="resultados 6.0">
+      <option name="closed" value="true" />
+      <created>1763337110818</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1763337110818</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,7 +183,8 @@
     <MESSAGE value="resultados 3.0" />
     <MESSAGE value="resultados 4.0" />
     <MESSAGE value="resultados 5.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="resultados 5.0" />
+    <MESSAGE value="resultados 6.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="resultados 6.0" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/repres_page_facmed$renombra_propuestas.coverage" NAME="renombra_propuestas Coverage Results" MODIFIED="1763323295020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Sube aquí tu documento realizado por el programa enviado_ (File responses)" />
