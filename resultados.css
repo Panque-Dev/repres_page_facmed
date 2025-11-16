@@ -106,6 +106,19 @@
   box-shadow: 0 10px 24px rgba(0,0,0,.45);
 }
 
+.similarity-panel{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-xl);
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+.sim-legend{
+  font-size: .9rem;
+  margin: 4px 0 8px;
+  color: var(--muted);
+}
+
 .ribbon-results-section{ padding: 12px 14px; }
 .results-section-header h2{ margin: 0 0 8px; font-size: 1.05rem; font-weight: 900; }
 
@@ -113,12 +126,6 @@
 
 .calendar-wrap{ display:grid; grid-template-columns: 1fr; gap: 12px; }
 
-.similarity-wrap{
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: var(--radius-xl);
-  padding: 10px 12px;
-}
 .sim-title{ margin: 0 0 6px; font-size: .98rem; }
 
 .similarity-list{
@@ -137,73 +144,8 @@
 .sim-item .gid{ font-weight: 800; }
 .sim-item .pct{ font-variant-numeric: tabular-nums; }
 
-/* help long lists inside cards (grupos que votaron) */
-.card-groups{
-  font-size: .74rem;
-  color: #cfd7e4;
-  background: rgba(0,0,0,.18);
-  border: 1px dashed rgba(255,255,255,.15);
-  border-radius: 10px;
-  padding: 6px;
-  max-height: 120px;
-  overflow: auto;
-}
+/* tarjetas dentro del calendario coloreadas por materia */
+.calendar .exam-card.status-valid{ background: var(--card-bg, rgba(56,189,248,.28)) !important; }
+.calendar .exam-card .exam-status-strip{ background: var(--card-strip, rgba(56,189,248,.95)) !important; }
 
-
-/* Overrides de color por tarjeta (Resultados) */
-.exam-card.status-valid{
-  background: var(--card-bg, rgba(22,163,74,.32)) !important;
-}
-.exam-status-strip{
-  background: var(--strip-bg, rgba(200, 209, 222, .85)) !important;
-}
-
-
-/* Visual de lista de similitud con barra */
-.sim-legend{
-  margin-bottom: 8px;
-  font-size: .9rem;
-  font-weight: 800;
-  color: #dbe7ff;
-}
-.similarity-list .sim-item{
-  position: relative;
-  overflow: hidden;
-}
-.similarity-list .sim-item::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: var(--pct, 0%);
-  background: rgba(56,189,248,.25);
-  border-right: 1px solid rgba(56,189,248,.55);
-  pointer-events: none;
-}
-
-
-/* Similaridad bajo selector de grado */
-.similarity-panel{
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: var(--radius-xl);
-  padding: 10px 12px;
-  margin-top: 10px;
-}
-.sim-legend{
-  font-size: .9rem;
-  margin: 4px 0 8px;
-  color: var(--muted);
-}
-
-/* Colores por materia en resultados (sobrescribe verde default) */
-.calendar .exam-card.status-valid{
-  background: var(--card-bg, rgba(56,189,248,.28)) !important;
-}
-.calendar .exam-card .exam-status-strip{
-  background: var(--card-strip, rgba(56,189,248,.9)) !important;
-}
-
-/* Ajustes visuales para ghost minimal */
-.ghost-min{
-  opacity: .6;
-}
+.ghost-min{ opacity: .6; }
