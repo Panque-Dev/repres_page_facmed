@@ -1109,9 +1109,11 @@
     async function onCapture(){
         const removeAfter = ()=>{
             cleanupPerPagePrintHeaders();
+            document.body.classList.remove("desktop-snapshot");
             window.removeEventListener("afterprint", removeAfter);
         };
         window.addEventListener("afterprint", removeAfter);
+        document.body.classList.add("desktop-snapshot");
         try{
             if(resultsMode || !currentGroupId){
                 buildPerPagePrintHeaders();

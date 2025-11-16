@@ -1659,3 +1659,42 @@ body {
 .calendar .day-cell .exam-list  { z-index: 3; }
 .exam-card.is-ghost { pointer-events: none; }
 .day-cell.has-own .ghost-date { display: none; }
+
+
+/* ===== Forzar layout de escritorio durante capturas ===== */
+body.desktop-snapshot .exam-head2{
+  grid-template-columns: auto 1fr !important;
+  justify-items: start !important;
+  gap: 8px !important;
+}
+
+body.desktop-snapshot .exam-title{
+  align-items: flex-start !important;
+  gap: 3px !important;
+}
+
+/* volver a mostrar la sigla y todas las líneas de detalle */
+body.desktop-snapshot .exam-sigla{
+  display: block !important;
+}
+body.desktop-snapshot .exam-card .exam-line{
+  display: flex !important;
+}
+
+/* fantasmas: tercera fila grupos en fila y con etiqueta visible */
+body.desktop-snapshot .exam-card.is-ghost .exam-line.upper{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+  margin-top: 0 !important;
+}
+body.desktop-snapshot .exam-card.is-ghost .exam-line.upper .line-label{
+  display: inline !important;
+}
+body.desktop-snapshot .exam-card.is-ghost .exam-line.upper .line-value{
+  display: inline !important;
+  text-align: right !important;
+  font-weight: 800 !important;
+}
+
