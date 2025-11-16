@@ -34,24 +34,14 @@
   };
 // Colores por materia (ajusta si tus íconos difieren)
 const SUBJECT_COLORS = {
-  "Anatomía": "#d94141",
-  "Bioquímica y Biología Molecular": "#6b5bd2",
-  "Biología Celular e Histología Médica": "#27a0b7",
-  "Embriología Humana": "#f59e0b",
-  "Informática Biomédica I": "#22c55e",
-  "Informática Biomédica II": "#10b981",
-  "Integración Básico Clínica I": "#3b82f6",
-  "Integración Básico Clínica II": "#2563eb",
-  "Salud Pública y Comunidad": "#14b8a6",
-  "Introducción a la Salud Mental": "#ef4444",
-  "Fisiología": "#7c3aed",
-  "Farmacología": "#0ea5e9",
-  "Inmunología": "#06b6d4",
-  "Microbiología y Parasitología": "#ef476f",
-  "Introducción a la Cirugía": "#8b5cf6",
-  "Promoción de la Salud en el Ciclo de Vida": "#eab308"
+  ANA:"#A8003D", BQM:"#1D7464", HIS:"#8E117C", EMB:"#E48090", SPC:"#2C7C8E", ISM:"#641C74",
+  IBC1:"#22d3ee", IBC2:"#06b6d4", IB1:"#00b4d8", IB2:"#0072A8",
+  FIS:"#F44F32", FAR:"#DA74B8", INM:"#A84DDA", MyP:"#A89C1C", ICR:"#1D98A8", PCV:"#8E004F"
 };
-function subjectColor(sub){ return SUBJECT_COLORS[sub] || "#59b2ff"; }
+function subjectColor(sub){
+  const sig = getSigla(sub).display.replace(/\s+/g,\"\");
+  return SUBJECT_COLORS[sig] || "#4ecaff";
+}
 function hexToRGBA(hex, alpha=0.28){
   const h = hex.replace("#","");
   const r = parseInt(h.substring(0,2), 16);
@@ -379,12 +369,26 @@ function hexToRGBA(hex, alpha=0.28){
 
   /* ========= Render ========= */
   function renderExamModes(year, modes){
-    const simBlock = document.querySelector(".ribbon.ribbon-sim-block"); if(simBlock) simBlock.classList.add("hide");
-
-    const wrap = $id("results-exam-modes");
-    wrap.innerHTML="";
-    modes.forEach(r=>{
-      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters });
+  const simBlock = document.querySelector(".ribbon.ribbon-sim-block"); if(simBlock) simBlock.classList.remove("hide");
+  const wrap = $id("results-exam-modes");
+  wrap.innerHTML="";
+  modes.forEach(r=>{
+    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters });
+    const holder = document.createElement("div"); holder.className="stat-card";
+    const col = subjectColor(r.exam.subject); holder.style.setProperty("--subj-tint", hexToRGBA(col, .22));
+    holder.appendChild(card); wrap.appendChild(holder);
+  });
+  wrap.classList.remove("hide"); $id("results-title").textContent = "Propuesta por Moda por Examen";
+  const calRoot = $id("results-calendar"); buildCalendars(calRoot);
+  const proposals = {}; for(const r of modes){ proposals[r.exam.id] = r.date; const c = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters }); placeCard(r.date, c, calRoot);} 
+  $id("calendar-wrap").classList.remove("hide");
+  const list = $id("similarity-list"); list.innerHTML="";
+  const groupsData = cache.get(year)?.groups || [];
+  const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, proposals, g.proposals||{}) }));
+  all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
+  const hi = all.filter(x=>x.pct>=90).length; const legend = $id("high-sim-count"); if(legend) legend.textContent = String(hi);
+  for(const it of all){ const row=document.createElement("div"); row.className="sim-item"; row.style.setProperty("--pct", it.pct+"%"); row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`; list.appendChild(row);} 
+});
       const holder = document.createElement("div");
       holder.className="stat-card";
       // reusar estructura de card principal directamente
