@@ -491,7 +491,7 @@
         sampleIcon(img,.5,fallback,(rgba)=>card.style.setProperty("--subj-tint",rgba));
 
         card.appendChild(lineStacked("fecha original:", formatShort(approvedDate || exam.officialDate)));
-        card.appendChild(lineStacked("propuesta ganadora:", formatShort(suggestionDate || exam.officialDate)));
+        card.appendChild(lineStacked("propuesta en tendencia:", formatShort(suggestionDate || exam.officialDate)));
         card.appendChild(line("último examen:", prev!=null? `${prev} días atrás`:"—"));
         card.appendChild(line("próximo examen:", next!=null? `${next} días`:"—"));
 
