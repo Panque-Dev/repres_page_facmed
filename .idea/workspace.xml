@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="resultados">
+      <change beforePath="$PROJECT_DIR$/resultados.html" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mauriciosvcq&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Panque-Dev/repres_page_facmed.git&quot;,
+    &quot;accountId&quot;: &quot;406e5000-6140-4564-94a2-5df9841f220f&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="35ZZBmCHVb3ViwtoZqXnefoLzUz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.renombra_propuestas.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/mauri/WebstormProjects/repres_page_facmed",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/mauri/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/25.2.0/node",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\mauri\WebstormProjects\repres_page_facmed" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.27397.92" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="" />
+      <created>1763319421325</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763319421325</updated>
+      <workItem from="1763319422437" duration="735000" />
+      <workItem from="1763320209186" duration="490000" />
+      <workItem from="1763322356207" duration="85000" />
+      <workItem from="1763322785653" duration="531000" />
+      <workItem from="1763323599477" duration="32000" />
+      <workItem from="1763325744489" duration="237000" />
+      <workItem from="1763327805599" duration="751000" />
+      <workItem from="1763331684041" duration="2306000" />
+    </task>
+    <task id="LOCAL-00001" summary="micro extra">
+      <option name="closed" value="true" />
+      <created>1763320422485</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763320422485</updated>
+    </task>
+    <task id="LOCAL-00002" summary="tendencias">
+      <option name="closed" value="true" />
+      <created>1763325821338</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763325821338</updated>
+    </task>
+    <task id="LOCAL-00003" summary="resultados">
+      <option name="closed" value="true" />
+      <created>1763331777274</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763331777274</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="micro extra" />
+    <MESSAGE value="tendencias" />
+    <MESSAGE value="resultados" />
+    <option name="LAST_COMMIT_MESSAGE" value="resultados" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/repres_page_facmed$renombra_propuestas.coverage" NAME="renombra_propuestas Coverage Results" MODIFIED="1763323295020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Sube aquí tu documento realizado por el programa enviado_ (File responses)" />
+  </component>
+</project>

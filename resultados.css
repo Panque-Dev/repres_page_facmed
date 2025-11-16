@@ -1,0 +1,150 @@
+/* ====== Resultados extras (usa variables y componentes de main.css) ====== */
+.results-ribbon-wrap { margin-bottom: 12px; }
+.ribbon-results { padding: 12px 14px; }
+
+.results-counter .counter-line{
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.countup { font-variant-numeric: tabular-nums; padding: 0 .25rem; }
+
+.bars-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 800px){
+  .bars-row{ grid-template-columns: 1fr; }
+}
+
+.bar-card{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-xl);
+  padding: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.35);
+}
+
+.bar-title{ font-weight: 800; margin-bottom: 8px; }
+
+.progress{
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.25);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.15);
+}
+.progress .fill{
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(56,189,248,.95), rgba(2,132,199,.95));
+  transition: width 2s ease-out;
+}
+.progress .fill.slow{ transition: width 3s ease-in-out; }
+
+.progress-meta{
+  margin-top: 6px;
+  font-size: .86rem;
+  color: var(--muted);
+}
+
+.ribbon-chooser{ padding: 12px 14px; margin-bottom: 12px; }
+
+.choos er{ display:flex; flex-direction:column; gap:10px; }
+
+.chooser-title{ text-align: center; font-weight: 900; }
+
+.year-toggle{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  overflow: hidden;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.year-toggle input{ display:none; }
+.year-toggle label{
+  text-align:center;
+  padding: 10px 12px;
+  font-weight: 800;
+  cursor: pointer;
+  z-index: 2;
+}
+.year-toggle .knob{
+  position:absolute; inset:2px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: rgba(56,189,248,.25);
+  border: 1px solid rgba(56,189,248,.45);
+  transform: translateX(0%);
+  transition: transform .25s ease;
+  z-index: 1;
+}
+#yr2:checked ~ label[for="yr1"]{ color: var(--muted); }
+#yr1:checked ~ label[for="yr2"]{ color: var(--muted); }
+#yr2:checked ~ .knob{ transform: translateX(100%); }
+
+.result-actions{
+  display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:10px;
+}
+.result-btn{
+  background: linear-gradient(180deg, rgba(56,189,248,.95), rgba(2,132,199,.95));
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #02101f; font-weight: 900; cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0,0,0,.45);
+}
+
+.ribbon-results-section{ padding: 12px 14px; }
+.results-section-header h2{ margin: 0 0 8px; font-size: 1.05rem; font-weight: 900; }
+
+.hide{ display:none !important; }
+
+.calendar-wrap{ display:grid; grid-template-columns: 1fr; gap: 12px; }
+
+.similarity-wrap{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-xl);
+  padding: 10px 12px;
+}
+.sim-title{ margin: 0 0 6px; font-size: .98rem; }
+
+.similarity-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px;
+}
+.sim-item{
+  background: rgba(0,0,0,.2);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: .86rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sim-item .gid{ font-weight: 800; }
+.sim-item .pct{ font-variant-numeric: tabular-nums; }
+
+/* help long lists inside cards (grupos que votaron) */
+.card-groups{
+  font-size: .74rem;
+  color: #cfd7e4;
+  background: rgba(0,0,0,.18);
+  border: 1px dashed rgba(255,255,255,.15);
+  border-radius: 10px;
+  padding: 6px;
+  max-height: 120px;
+  overflow: auto;
+}
