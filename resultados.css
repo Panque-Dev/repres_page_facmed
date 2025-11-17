@@ -180,3 +180,27 @@
 .calendar .exam-card .exam-status-strip{ background: var(--card-strip, rgba(56,189,248,.95)) !important; }
 
 .ghost-min{ opacity: .6; }
+
+
+/* Grid for cards when they are direct children */
+#moda-cards.stats-ribbon-cards{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+/* If any .stat-card remains, make it transparent in Moda */
+#moda-cards .stat-card{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Ensure exam cards outside calendars use subject color background */
+#moda-cards .exam-card.status-valid{
+  background: var(--card-bg, rgba(56,189,248,.28)) !important;
+}
+#moda-cards .exam-card .exam-status-strip{
+  background: var(--card-strip, rgba(56,189,248,.95)) !important;
+}
