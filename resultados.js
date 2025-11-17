@@ -41,7 +41,6 @@
 
   // Catálogo de exámenes por año (fechas fieles al principal)
   const EXAMS_BY_YEAR = {
-
         1: [
             { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
             { id: "1-ANAT-P2", subject: "Anatomía", type: "Segundo parcial", officialDate: "2025-11-29", officialTime: "08:00" },
@@ -290,33 +289,7 @@
       default: return {badge:t, meaning:t};
     }
   }
-  // === Filtro: ignorar grupos sin cambios reales respecto al calendario oficial ===
-  // Un grupo solo cuenta si en AL MENOS un examen propuso una fecha distinta a la oficial.
-  // Si su JSON está incompleto pero todo lo que trae coincide con la oficial, NO cuenta.
-  function groupHasAnyChange(year, proposalsMap = {}) {
-    const exams = EXAMS_BY_YEAR[year] || [];
-    for (const ex of exams) {
-      const off = ex.officialDate || null;
-      const prop = (proposalsMap && proposalsMap[ex.id]) || null;
-      if (prop && off && prop !== off) return true;
-    }
-    return false;
-  }
-
-  // === Filtro: ignorar grupos sin cambios reales respecto al calendario oficial ===
-  // Un grupo solo cuenta si en AL MENOS un examen propuso una fecha distinta a la oficial.
-  // Si su JSON está incompleto pero todo lo que trae coincide con la oficial, NO cuenta.
-) {
-    const exams = EXAMS_BY_YEAR[year] || [];
-    for (const ex of exams) {
-      const off = ex.officialDate || null;
-      const prop = (proposalsMap && proposalsMap[ex.id]) || null;
-      if (prop && off && prop !== off) return true;
-    }
-    return false;
-  }
-
-function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
+  function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
   function colorForExam(exam){
     const sig = getSigla(exam.subject).display;
     const key = sig.replace(/\s+/g,"");
@@ -337,107 +310,19 @@ function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").ma
     return wrap;
   }
 
-  
-  // ===== Result helpers for winner cards =====
-  const EXAM_ORDER = [
-    "Primer parcial","Segundo parcial","Tercer parcial","Cuarto parcial",
-    "Primer ordinario","Segundo ordinario","Extraordinario"
-  ];
-  const examIdToObj = {};
-  const subjectChains = { 1: {}, 2: {} };
-
-  function buildResultIndices(){
-    [1,2].forEach(yr=>{
-      const bySubject = {};
-      (EXAMS_BY_YEAR[yr]||[]).forEach(ex=>{
-        examIdToObj[ex.id] = ex;
-        (bySubject[ex.subject] ||= []).push(ex);
-      });
-      Object.keys(bySubject).forEach(sub=>{
-        bySubject[sub].sort((a,b)=>{
-          const t = EXAM_ORDER.indexOf(a.type) - EXAM_ORDER.indexOf(b.type);
-          if(t!==0) return t;
-          return (a.officialDate||'').localeCompare(b.officialDate||'');
-        });
-        subjectChains[yr][sub] = bySubject[sub].map(e=>e.id);
-      });
-    });
-  }
-  buildResultIndices();
-
-  function diffDays(a,b){
-    if(!a||!b) return null;
-    const A = parseDate(a), B = parseDate(b);
-    return Math.round(Math.abs(B-A)/86400000);
-  }
-  function dateForExamInMap(examId, proposalsMap){
-    const ex = examIdToObj[examId];
-    if(!ex) return null;
-    return (proposalsMap && proposalsMap[examId]) || ex.officialDate || null;
-  }
-  function nearestBeforeFromMap(year, base, thisExamId, proposalsMap){
-    if(!base) return null;
-    let best=null;
-    const list = EXAMS_BY_YEAR[year] || [];
-    for(const ex of list){
-      if(ex.id===thisExamId) continue;
-      const d = dateForExamInMap(ex.id, proposalsMap);
-      if(!d) continue;
-      if(d<base){
-        const dd = diffDays(d, base);
-        if(best==null || dd<best) best = dd;
-      }
-    }
-    return best;
-  }
-  function nearestAfterFromMap(year, base, thisExamId, proposalsMap){
-    if(!base) return null;
-    let best=null;
-    const list = EXAMS_BY_YEAR[year] || [];
-    for(const ex of list){
-      if(ex.id===thisExamId) continue;
-      const d = dateForExamInMap(ex.id, proposalsMap);
-      if(!d) continue;
-      if(d>base){
-        const dd = diffDays(base, d);
-        if(best==null || dd<best) best = dd;
-      }
-    }
-    return best;
-  }
-  function weeksToNextSameResult(year, examId, proposalsMap){
-    const ex = examIdToObj[examId]; if(!ex) return null;
-    const chain = (subjectChains[year]||{})[ex.subject] || [];
-    const idx = chain.indexOf(examId);
-    if(idx===-1 || idx===chain.length-1) return null;
-    const nextId = chain[idx+1]; const next = examIdToObj[nextId]; if(!next) return null;
-    const from = dateForExamInMap(examId, proposalsMap);
-    const to   = dateForExamInMap(nextId, proposalsMap);
-    if(!from || !to) return null;
-    return Math.round((diffDays(from, to)/7)*10)/10;
-  }
-  function lineRow(label, value){
-    const row=document.createElement("div"); row.className="exam-line";
-    const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
-    const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
-    row.appendChild(l); row.appendChild(v); return row;
-  }
-// ===== UI Builders =====
+  // ===== UI Builders =====
   function lineStacked(label, value){
     const row=document.createElement("div"); row.className="exam-line stacked";
     const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
     const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
     row.appendChild(l); row.appendChild(v); return row;
   }
-  
   function createResultCard(exam, opts={}){
-    const { approvedDate, suggestionDate, voters=[], proposalsMap=null } = opts;
+    const { approvedDate, suggestionDate, voters=[] } = opts;
     const sig=getSigla(exam.subject); const badge=shortType(exam.type);
 
-    const moved = !!suggestionDate && suggestionDate !== exam.officialDate;
-
     const card=document.createElement("div");
-    card.className="exam-card " + (moved ? "status-valid" : "status-original");
+    card.className="exam-card status-valid";
     const __col = colorForExam(exam);
     card.style.setProperty('--card-bg', hexToRgba(__col, .30));
     card.style.setProperty('--card-strip', hexToRgba(__col, .95));
@@ -455,32 +340,21 @@ function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").ma
     const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
     title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
 
-    // líneas principales
     const appText = formatShort(approvedDate || exam.officialDate);
     const sugText = formatShort(suggestionDate || exam.officialDate);
-    card.appendChild(lineStacked("última fecha aprobada:", appText));
-    card.appendChild(lineStacked("sugerencia de reprogramación:", sugText));
 
-    // métricas relativas según mapa de propuestas ganadoras
-    const baseDate = suggestionDate || exam.officialDate;
-    const prevDays = nearestBeforeFromMap(currentYear, baseDate, exam.id, proposalsMap);
-    const nextDays = nearestAfterFromMap(currentYear, baseDate, exam.id, proposalsMap);
-    const weeks    = weeksToNextSameResult(currentYear, exam.id, proposalsMap);
-
-    card.appendChild(lineRow("Último departamental según votos:", prevDays != null ? (prevDays + " días atrás") : "—"));
-    card.appendChild(lineRow("Próximo departamental según votos:", nextDays != null ? (nextDays + " días") : "—"));
-    card.appendChild(lineRow("Semanas para cubrir la siguiente unidad:", weeks != null ? (weeks + " semanas") : "—"));
+    card.appendChild(lineStacked("fecha original:", appText));
+    card.appendChild(lineStacked("propuesta en tendencia:", sugText));
 
     if(voters && voters.length){
       const box=document.createElement("div");
       box.className="card-groups";
-      box.textContent = "Votaron: " + voters.slice().sort((a,b)=>a-b).join(", ");
+      box.textContent = "Votaron: " + voters.sort((a,b)=>a-b).join(", ");
       card.appendChild(box);
     }
 
     return card;
   }
-
   function createGhostCard(exam, voters=[]){
     const sig=getSigla(exam.subject); const badge=shortType(exam.type);
     const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
@@ -637,106 +511,63 @@ function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").ma
   }
 
   // ===== Render =====
-  
-  function renderExamModes(year /*, modes ignorados */) {
-  const split = $id("moda-split");
-  const list  = $id("moda-cards");
-  const cal   = $id("moda-calendar");
+  function renderExamModes(year, modes){
+    const split = $id("moda-split");
+    const list  = $id("moda-cards");
+    const cal   = $id("moda-calendar");
+    $id("calendar-wrap").classList.add("hide");
+    // $id("similarity-panel").classList.add("hide");
+    $id("results-title").textContent = "Propuesta por Moda por Examen";
 
-  $id("calendar-wrap").classList.add("hide");
-  $id("results-title").textContent = "Propuesta por Moda por Examen";
-  list.innerHTML = "";
-  cal.innerHTML = "";
-
-  // 1) Filtrar grupos que sí cuentan
-  const allGroups = (cache.get(year)?.groups || []);
-  const considered = allGroups.filter(g => groupHasAnyChange(year, g.proposals));
-  const totalGroups = considered.length;
-
-  // 2) Recalcular modas por examen solo con los grupos considerados
-  const recomputedModes = [];
-  for (const ex of (EXAMS_BY_YEAR[year] || [])) {
-    const tally = new Map(); // fecha -> array de grupos
-    for (const g of considered) {
-      const d = g.proposals?.[ex.id];
-      if (!d) continue; // no votó ese examen
-      if (!tally.has(d)) tally.set(d, []);
-      tally.get(d).push(g.group ?? g.id ?? g.name ?? "¿?");
-    }
-    let winDate = ex.officialDate || null;
-    let voters  = [];
-    if (tally.size > 0) {
-      const official = ex.officialDate || "9999-12-31";
-      const entries = Array.from(tally.entries());
-      entries.sort((a, b) => {
-        const ca = a[1].length, cb = b[1].length;
-        if (cb !== ca) return cb - ca; // más votos primero
-        // desempate: más cercana a la oficial y luego por orden lexicográfico
-        const da = Math.abs(new Date(a[0]) - new Date(official));
-        const db = Math.abs(new Date(b[0]) - new Date(official));
-        if (da !== db) return da - db;
-        return a[0].localeCompare(b[0]);
-      });
-      winDate = entries[0][0];
-      voters  = entries[0][1];
-    }
-    recomputedModes.push({ exam: ex, date: winDate, voters });
-  }
-
-  // 3) Mapa con la fecha ganadora para distancias y semanas
-  const modaMap = {};
-  for (const r of recomputedModes) {
-    if (r && r.exam && r.date) modaMap[r.exam.id] = r.date;
-  }
-
-  // 4) Pintar tarjetas (misma UI) con barras sobre el total considerado
-  const sorted = recomputedModes.slice().sort((a, b) => {
-    if ((a.date || "") !== (b.date || "")) return (a.date || "").localeCompare(b.date || "");
-    if (a.exam.subject !== b.exam.subject) return a.exam.subject.localeCompare(b.exam.subject);
-    return a.exam.id.localeCompare(b.exam.id);
-  });
-
-  for (const r of sorted) {
-    const card = createResultCard(r.exam, {
-      approvedDate: r.exam.officialDate,
-      suggestionDate: r.date,
-      voters: r.voters || [],
-      proposalsMap: modaMap
+    list.innerHTML="";
+    const totalGroups = (cache.get(year)?.groups || []).length;
+    const sortedModes = modes.slice().sort((a,b)=> a.date.localeCompare(b.date) || a.exam.subject.localeCompare(b.exam.subject) || a.exam.id.localeCompare(b.exam.id));
+    sortedModes.forEach(r=>{
+      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
+      const holder = document.createElement("div");
+      holder.className="stat-card";
+      holder.appendChild(card);
+      if(totalGroups>0){
+        const col = colorForExam(r.exam);
+        const bar = makeSupportBar((r.voters?r.voters.length:0), totalGroups, hexToRgba(col, .95));
+        const cap = document.createElement('div'); cap.className='support-caption'; cap.textContent = `${(r.voters?r.voters.length:0)} de ${totalGroups} grupos (${Math.round(100*(r.voters?r.voters.length:0)/totalGroups)}%)`;
+        holder.appendChild(bar);
+        holder.appendChild(cap);
+      }
+      list.appendChild(holder);
     });
 
-    const holder = document.createElement("div");
-    holder.className = "stat-card";
-    holder.appendChild(card);
+    // calendario lateral con ganadoras por moda
+    buildCalendars(cal);
+    sortedModes.forEach(r=>{
+      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
+      placeCard(r.date, card, cal);
+    });
 
-    // barra de soporte usando SOLO los grupos considerados
-    if (totalGroups > 0) {
-      const col = colorForExam(r.exam);
-      const bar = makeSupportBar((r.voters ? r.voters.length : 0), totalGroups, hexToRgba(col, .95));
-      const cap = document.createElement("div");
-      cap.className = "support-caption";
-      const votos = r.voters ? r.voters.length : 0;
-      cap.textContent = `${votos} de ${totalGroups} grupos (${Math.round(100 * votos / totalGroups)}%)`;
-      holder.appendChild(bar);
-      holder.appendChild(cap);
-    }
+    split.classList.remove("hide");
 
-    list.appendChild(holder);
-  }
 
-  // 5) Calendario lateral con mini tarjetas fantasma, solo de ganadores
-  buildCalendars(cal);
-  for (const r of recomputedModes) {
-    const d = r.date || r.exam.officialDate;
-    if (!d) continue;
-    const small = createGhostCard(r.exam, r.voters || []);
-    placeCard(d, small, cal);
-  }
-
-  // Mostrar el split
-  split.classList.remove("hide");
+// Similaridad vs calendario construido por modas ganadoras
+const panel = $id("similarity-panel");
+const listSim = $id("similarity-list");
+const legend = $id("similarity-legend-90");
+listSim.innerHTML="";
+const modaMap = {};
+modes.forEach(r => { modaMap[r.exam.id] = r.date; });
+const groupsData = cache.get(year)?.groups || [];
+const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, modaMap, g.proposals||{}) }));
+all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
+legend.textContent = String(all.filter(x=> x.pct >= 90).length);
+for(const it of all){
+  const row = document.createElement("div");
+  row.className = "sim-item";
+  row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+  row.style.setProperty('--fill', it.pct + '%');
+  listSim.appendChild(row);
 }
+panel.classList.remove("hide");
 
-
+  }
 
   function renderFullCalendar(year, cluster, altCluster){
     const calRoot = $id("results-calendar");
@@ -746,7 +577,7 @@ function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").ma
     for(const ex of EXAMS_BY_YEAR[year]){
       const d = cluster.proposals[ex.id] || ex.officialDate;
       if(!d) continue;
-      const card = createResultCard(ex, { approvedDate: ex.officialDate, suggestionDate: d, proposalsMap: cluster.proposals });
+      const card = createResultCard(ex, { approvedDate: ex.officialDate, suggestionDate: d });
       placeCard(d, card, calRoot);
     }
     // diferencias en fantasma si hay segundo cluster
@@ -805,7 +636,7 @@ function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").ma
 
   // ===== Interacciones =====
   let currentYear = 1;
-  async async function updateView(mode){
+  async function updateView(mode){
     const { groups } = await fetchYear(currentYear);
 
     if(mode==="mode-per-exam"){
