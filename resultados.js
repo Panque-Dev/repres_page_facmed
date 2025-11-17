@@ -41,18 +41,7 @@
 
   // Catálogo de exámenes por año (fechas fieles al principal)
   const EXAMS_BY_YEAR = {
-// === Filtro: ignorar grupos sin cambios reales respecto al calendario oficial ===
-// Un grupo solo cuenta si en AL MENOS un examen propuso una fecha distinta a la oficial.
-// Si su JSON está incompleto pero todo lo que trae coincide con la oficial, NO cuenta.
-function groupHasAnyChange(year, proposalsMap = {}) {
-  const exams = EXAMS_BY_YEAR[year] || [];
-  for (const ex of exams) {
-    const off = ex.officialDate || null;
-    const prop = proposalsMap[ex.id] || null;
-    if (prop && off && prop !== off) return true; // hay un cambio real
-  }
-  return false; // no hay ningún cambio; excluir
-}
+
         1: [
             { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
             { id: "1-ANAT-P2", subject: "Anatomía", type: "Segundo parcial", officialDate: "2025-11-29", officialTime: "08:00" },
@@ -301,7 +290,33 @@ function groupHasAnyChange(year, proposalsMap = {}) {
       default: return {badge:t, meaning:t};
     }
   }
-  function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
+  // === Filtro: ignorar grupos sin cambios reales respecto al calendario oficial ===
+  // Un grupo solo cuenta si en AL MENOS un examen propuso una fecha distinta a la oficial.
+  // Si su JSON está incompleto pero todo lo que trae coincide con la oficial, NO cuenta.
+  function groupHasAnyChange(year, proposalsMap = {}) {
+    const exams = EXAMS_BY_YEAR[year] || [];
+    for (const ex of exams) {
+      const off = ex.officialDate || null;
+      const prop = (proposalsMap && proposalsMap[ex.id]) || null;
+      if (prop && off && prop !== off) return true;
+    }
+    return false;
+  }
+
+  // === Filtro: ignorar grupos sin cambios reales respecto al calendario oficial ===
+  // Un grupo solo cuenta si en AL MENOS un examen propuso una fecha distinta a la oficial.
+  // Si su JSON está incompleto pero todo lo que trae coincide con la oficial, NO cuenta.
+) {
+    const exams = EXAMS_BY_YEAR[year] || [];
+    for (const ex of exams) {
+      const off = ex.officialDate || null;
+      const prop = (proposalsMap && proposalsMap[ex.id]) || null;
+      if (prop && off && prop !== off) return true;
+    }
+    return false;
+  }
+
+function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
   function colorForExam(exam){
     const sig = getSigla(exam.subject).display;
     const key = sig.replace(/\s+/g,"");
@@ -790,7 +805,7 @@ function groupHasAnyChange(year, proposalsMap = {}) {
 
   // ===== Interacciones =====
   let currentYear = 1;
-  async function updateView(mode){
+  async async function updateView(mode){
     const { groups } = await fetchYear(currentYear);
 
     if(mode==="mode-per-exam"){
