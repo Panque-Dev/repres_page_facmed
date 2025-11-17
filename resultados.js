@@ -2,7 +2,7 @@
   "use strict";
 
   // ===== Ajustes visibles =====
-  const TOTAL_RESPONSES = 180;
+  const TOTAL_RESPONSES = 192;
   const BAR_CONFIG = [
     { max: 82, target: 71 }, // primero
     { max: 65, target: 58 }  // segundo
