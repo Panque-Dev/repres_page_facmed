@@ -258,6 +258,20 @@
     return SUBJECT_COLORS[sig] || SUBJECT_COLORS[key] || "#38bdf8";
   }
 
+  function makeSupportBar(value, max, color){
+    const wrap = document.createElement("div");
+    wrap.className = "mini-support";
+    if(color){ wrap.style.setProperty('--bar-color', color); }
+    const fill = document.createElement("div");
+    fill.className = "fill";
+    wrap.appendChild(fill);
+    requestAnimationFrame(()=>{
+      const pct = max ? Math.max(0, Math.min(100, 100*value/max)) : 0;
+      fill.style.width = pct + "%";
+    });
+    return wrap;
+  }
+
   // ===== UI Builders =====
   function lineStacked(label, value){
     const row=document.createElement("div"); row.className="exam-line stacked";
@@ -476,8 +490,8 @@
       holder.appendChild(card);
       if(totalGroups>0){
         const col = colorForExam(r.exam);
-        const bar = makeSupportBar(r.voters.length, totalGroups, hexToRgba(col, .95));
-        const cap = document.createElement('div'); cap.className='support-caption'; cap.textContent = `${r.voters.length} de ${totalGroups} grupos (${Math.round(100*r.voters.length/totalGroups)}%)`;
+        const bar = makeSupportBar((r.voters?r.voters.length:0), totalGroups, hexToRgba(col, .95));
+        const cap = document.createElement('div'); cap.className='support-caption'; cap.textContent = `${(r.voters?r.voters.length:0)} de ${totalGroups} grupos (${Math.round(100*(r.voters?r.voters.length:0)/totalGroups)}%)`;
         holder.appendChild(bar);
         holder.appendChild(cap);
       }
