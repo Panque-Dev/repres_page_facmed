@@ -183,11 +183,7 @@
 
 
 /* Grid for cards when they are direct children */
-#moda-cards.stats-ribbon-cards{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-}
+
 
 /* If any .stat-card remains, make it transparent in Moda */
 #moda-cards .stat-card{
@@ -203,4 +199,20 @@
 }
 #moda-cards .exam-card .exam-status-strip{
   background: var(--card-strip, rgba(56,189,248,.95)) !important;
+}
+
+
+/* Moda: single-row horizontal scroll for cards */
+#moda-cards{
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+#moda-cards .exam-card{
+  flex: 0 0 300px;
+  max-width: 300px;
 }
