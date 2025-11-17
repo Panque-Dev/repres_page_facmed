@@ -41,128 +41,118 @@
 
   // Catálogo de exámenes por año (ids y fechas oficiales)
   const EXAMS_BY_YEAR = {
-        1: [
-            { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
-            { id: "1-ANAT-P2", subject: "Anatomía", type: "Segundo parcial", officialDate: "2025-11-29", officialTime: "08:00" },
-            { id: "1-ANAT-P3", subject: "Anatomía", type: "Tercer parcial", officialDate: "2026-02-28", officialTime: "08:00" },
-            { id: "1-ANAT-P4", subject: "Anatomía", type: "Cuarto parcial", officialDate: "2026-04-25", officialTime: "08:00" },
-            { id: "1-ANAT-O1", subject: "Anatomía", type: "Primer ordinario", officialDate: "2026-05-04", officialTime: "08:00" },
-            { id: "1-ANAT-O2", subject: "Anatomía", type: "Segundo ordinario", officialDate: "2026-05-18", officialTime: "08:00" },
-            { id: "1-ANAT-EX", subject: "Anatomía", type: "Extraordinario", officialDate: "2026-06-03", officialTime: "08:00" },
+    1: [
+      { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25" },
+      { id: "1-ANAT-P2", subject: "Anatomía", type: "Segundo parcial", officialDate: "2025-11-29" },
+      { id: "1-ANAT-P3", subject: "Anatomía", type: "Tercer parcial", officialDate: "2026-02-28" },
+      { id: "1-ANAT-P4", subject: "Anatomía", type: "Cuarto parcial", officialDate: "2026-04-25" },
+      { id: "1-ANAT-O1", subject: "Anatomía", type: "Primer ordinario", officialDate: "2026-05-04" },
+      { id: "1-ANAT-O2", subject: "Anatomía", type: "Segundo ordinario", officialDate: "2026-05-18" },
+      { id: "1-ANAT-EX", subject: "Anatomía", type: "Extraordinario", officialDate: "2026-06-03" },
 
-            { id: "1-BQBM-P1", subject: "Bioquímica y Biología Molecular", type: "Primer parcial", officialDate: "2025-10-18", officialTime: "10:30" },
-            { id: "1-BQBM-P2", subject: "Bioquímica y Biología Molecular", type: "Segundo parcial", officialDate: "2025-12-06", officialTime: "08:00" },
-            { id: "1-BQBM-P3", subject: "Bioquímica y Biología Molecular", type: "Tercer parcial", officialDate: "2026-02-21", officialTime: "08:00" },
-            { id: "1-BQBM-P4", subject: "Bioquímica y Biología Molecular", type: "Cuarto parcial", officialDate: "2026-04-18", officialTime: "08:00" },
-            { id: "1-BQBM-O1", subject: "Bioquímica y Biología Molecular", type: "Primer ordinario", officialDate: "2026-05-07", officialTime: "08:00" },
-            { id: "1-BQBM-O2", subject: "Bioquímica y Biología Molecular", type: "Segundo ordinario", officialDate: "2026-05-26", officialTime: "08:00" },
-            { id: "1-BQBM-EX", subject: "Bioquímica y Biología Molecular", type: "Extraordinario", officialDate: "2026-06-10", officialTime: "08:00" },
+      { id: "1-BQBM-P1", subject: "Bioquímica y Biología Molecular", type: "Primer parcial", officialDate: "2025-10-18" },
+      { id: "1-BQBM-P2", subject: "Bioquímica y Biología Molecular", type: "Segundo parcial", officialDate: "2025-12-06" },
+      { id: "1-BQBM-P3", subject: "Bioquímica y Biología Molecular", type: "Tercer parcial", officialDate: "2026-02-21" },
+      { id: "1-BQBM-P4", subject: "Bioquímica y Biología Molecular", type: "Cuarto parcial", officialDate: "2026-04-18" },
+      { id: "1-BQBM-O1", subject: "Bioquímica y Biología Molecular", type: "Primer ordinario", officialDate: "2026-05-07" },
+      { id: "1-BQBM-O2", subject: "Bioquímica y Biología Molecular", type: "Segundo ordinario", officialDate: "2026-05-26" },
+      { id: "1-BQBM-EX", subject: "Bioquímica y Biología Molecular", type: "Extraordinario", officialDate: "2026-06-10" },
 
-            { id: "1-BCHM-P1", subject: "Biología Celular e Histología Médica", type: "Primer parcial", officialDate: "2025-10-31", officialTime: "08:00" },
-            { id: "1-BCHM-P2", subject: "Biología Celular e Histología Médica", type: "Segundo parcial", officialDate: "2026-01-20", officialTime: "08:00" },
-            { id: "1-BCHM-P3", subject: "Biología Celular e Histología Médica", type: "Tercer parcial", officialDate: "2026-04-21", officialTime: "08:00" },
-            { id: "1-BCHM-O1", subject: "Biología Celular e Histología Médica", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "08:00" },
-            { id: "1-BCHM-O2", subject: "Biología Celular e Histología Médica", type: "Segundo ordinario", officialDate: "2026-05-21", officialTime: "08:00" },
-            { id: "1-BCHM-EX", subject: "Biología Celular e Histología Médica", type: "Extraordinario", officialDate: "2026-06-06", officialTime: "08:00" },
+      { id: "1-BCHM-P1", subject: "Biología Celular e Histología Médica", type: "Primer parcial", officialDate: "2025-10-31" },
+      { id: "1-BCHM-P2", subject: "Biología Celular e Histología Médica", type: "Segundo parcial", officialDate: "2026-01-20" },
+      { id: "1-BCHM-P3", subject: "Biología Celular e Histología Médica", type: "Tercer parcial", officialDate: "2026-04-21" },
+      { id: "1-BCHM-O1", subject: "Biología Celular e Histología Médica", type: "Primer ordinario", officialDate: "2026-05-11" },
+      { id: "1-BCHM-O2", subject: "Biología Celular e Histología Médica", type: "Segundo ordinario", officialDate: "2026-05-21" },
+      { id: "1-BCHM-EX", subject: "Biología Celular e Histología Médica", type: "Extraordinario", officialDate: "2026-06-06" },
 
-            { id: "1-EMBR-P1", subject: "Embriología Humana", type: "Primer parcial", officialDate: "2025-11-08", officialTime: "08:00" },
-            { id: "1-EMBR-P2", subject: "Embriología Humana", type: "Segundo parcial", officialDate: "2026-02-07", officialTime: "08:00" },
-            { id: "1-EMBR-P3", subject: "Embriología Humana", type: "Tercer parcial", officialDate: "2026-04-14", officialTime: "08:00" },
-            { id: "1-EMBR-O1", subject: "Embriología Humana", type: "Primer ordinario", officialDate: "2026-04-30", officialTime: "08:00" },
-            { id: "1-EMBR-O2", subject: "Embriología Humana", type: "Segundo ordinario", officialDate: "2026-05-14", officialTime: "08:00" },
-            { id: "1-EMBR-EX", subject: "Embriología Humana", type: "Extraordinario", officialDate: "2026-05-30", officialTime: "10:30" },
+      { id: "1-EMBR-P1", subject: "Embriología Humana", type: "Primer parcial", officialDate: "2025-11-08" },
+      { id: "1-EMBR-P2", subject: "Embriología Humana", type: "Segundo parcial", officialDate: "2026-02-07" },
+      { id: "1-EMBR-P3", subject: "Embriología Humana", type: "Tercer parcial", officialDate: "2026-04-14" },
+      { id: "1-EMBR-O1", subject: "Embriología Humana", type: "Primer ordinario", officialDate: "2026-04-30" },
+      { id: "1-EMBR-O2", subject: "Embriología Humana", type: "Segundo ordinario", officialDate: "2026-05-14" },
+      { id: "1-EMBR-EX", subject: "Embriología Humana", type: "Extraordinario", officialDate: "2026-05-30" },
 
-            { id: "1-INF1-P1", subject: "Informática Biomédica I", type: "Primer parcial", officialDate: "2026-02-13", officialTime: "09:00" },
-            { id: "1-INF1-P2", subject: "Informática Biomédica I", type: "Segundo parcial", officialDate: "2026-04-16", officialTime: "08:00" },
-            { id: "1-INF1-O1", subject: "Informática Biomédica I", type: "Primer ordinario", officialDate: "2026-04-27", officialTime: "09:00" },
-            { id: "1-INF1-O2", subject: "Informática Biomédica I", type: "Segundo ordinario", officialDate: "2026-05-16", officialTime: "11:00" },
-            { id: "1-INF1-EX", subject: "Informática Biomédica I", type: "Extraordinario", officialDate: "2026-06-01", officialTime: "08:00" },
+      { id: "1-INF1-P1", subject: "Informática Biomédica I", type: "Primer parcial", officialDate: "2026-02-13" },
+      { id: "1-INF1-P2", subject: "Informática Biomédica I", type: "Segundo parcial", officialDate: "2026-04-16" },
+      { id: "1-INF1-O1", subject: "Informática Biomédica I", type: "Primer ordinario", officialDate: "2026-04-27" },
+      { id: "1-INF1-O2", subject: "Informática Biomédica I", type: "Segundo ordinario", officialDate: "2026-05-16" },
+      { id: "1-INF1-EX", subject: "Informática Biomédica I", type: "Extraordinario", officialDate: "2026-06-01" },
 
-            { id: "1-IBC1-P1", subject: "Integración Básico Clínica I", type: "Primer parcial", officialDate: "2026-01-17", officialTime: "09:00" },
-            { id: "1-IBC1-P2", subject: "Integración Básico Clínica I", type: "Segundo parcial", officialDate: "2026-04-23", officialTime: "08:00" },
-            { id: "1-IBC1-O1", subject: "Integración Básico Clínica I", type: "Primer ordinario", officialDate: "2026-05-02", officialTime: "13:00" },
-            { id: "1-IBC1-O2", subject: "Integración Básico Clínica I", type: "Segundo ordinario", officialDate: "2026-05-25", officialTime: "11:00" },
-            { id: "1-IBC1-EX", subject: "Integración Básico Clínica I", type: "Extraordinario", officialDate: "2026-06-09", officialTime: "08:00" },
+      { id: "1-IBC1-P1", subject: "Integración Básico Clínica I", type: "Primer parcial", officialDate: "2026-01-17" },
+      { id: "1-IBC1-P2", subject: "Integración Básico Clínica I", type: "Segundo parcial", officialDate: "2026-04-23" },
+      { id: "1-IBC1-O1", subject: "Integración Básico Clínica I", type: "Primer ordinario", officialDate: "2026-05-02" },
+      { id: "1-IBC1-O2", subject: "Integración Básico Clínica I", type: "Segundo ordinario", officialDate: "2026-05-25" },
+      { id: "1-IBC1-EX", subject: "Integración Básico Clínica I", type: "Extraordinario", officialDate: "2026-06-09" },
 
-            { id: "1-ISM-P1", subject: "Introducción a la Salud Mental", type: "Primer parcial", officialDate: "2026-01-08", officialTime: "09:00" },
-            { id: "1-ISM-P2", subject: "Introducción a la Salud Mental", type: "Segundo parcial", officialDate: "2026-04-08", officialTime: "09:00" },
-            { id: "1-ISM-O1", subject: "Introducción a la Salud Mental", type: "Primer ordinario", officialDate: "2026-05-09", officialTime: "08:00" },
-            { id: "1-ISM-O2", subject: "Introducción a la Salud Mental", type: "Segundo ordinario", officialDate: "2026-05-23", officialTime: "08:00" },
-            { id: "1-ISM-EX", subject: "Introducción a la Salud Mental", type: "Extraordinario", officialDate: "2026-06-08", officialTime: "08:00" },
+      { id: "1-ISM-P1", subject: "Introducción a la Salud Mental", type: "Primer parcial", officialDate: "2026-01-08" },
+      { id: "1-ISM-P2", subject: "Introducción a la Salud Mental", type: "Segundo parcial", officialDate: "2026-04-08" },
+      { id: "1-ISM-O1", subject: "Introducción a la Salud Mental", type: "Primer ordinario", officialDate: "2026-05-09" },
+      { id: "1-ISM-O2", subject: "Introducción a la Salud Mental", type: "Segundo ordinario", officialDate: "2026-05-23" },
+      { id: "1-ISM-EX", subject: "Introducción a la Salud Mental", type: "Extraordinario", officialDate: "2026-06-08" },
 
-            { id: "1-SPC-P1", subject: "Salud Pública y Comunidad", type: "Primer parcial", officialDate: "2025-12-10", officialTime: "15:00" },
-            { id: "1-SPC-P2", subject: "Salud Pública y Comunidad", type: "Segundo parcial", officialDate: "2026-04-10", officialTime: "09:00" },
-            { id: "1-SPC-O1", subject: "Salud Pública y Comunidad", type: "Primer ordinario", officialDate: "2026-05-05", officialTime: "08:00" },
-            { id: "1-SPC-O2", subject: "Salud Pública y Comunidad", type: "Segundo ordinario", officialDate: "2026-05-13", officialTime: "09:00" },
-            { id: "1-SPC-EX", subject: "Salud Pública y Comunidad", type: "Extraordinario", officialDate: "2026-06-04", officialTime: "11:00" }
-        ],
-        2: [
-            { id: "2-FARM-P1", subject: "Farmacología", type: "Primer parcial", officialDate: "2025-10-14", officialTime: "15:00" },
-            { id: "2-FARM-P2", subject: "Farmacología", type: "Segundo parcial", officialDate: "2026-01-24", officialTime: "08:00" },
-            { id: "2-FARM-P3", subject: "Farmacología", type: "Tercer parcial", officialDate: "2026-04-06", officialTime: "15:00" },
-            { id: "2-FARM-O1", subject: "Farmacología", type: "Primer ordinario", officialDate: "2026-05-06", officialTime: "15:00" },
-            { id: "2-FARM-O2", subject: "Farmacología", type: "Segundo ordinario", officialDate: "2026-05-16", officialTime: "08:00" },
-            { id: "2-FARM-EX", subject: "Farmacología", type: "Extraordinario", officialDate: "2026-06-04", officialTime: "08:00" },
+      { id: "1-SPC-P1", subject: "Salud Pública y Comunidad", type: "Primer parcial", officialDate: "2025-12-10" },
+      { id: "1-SPC-P2", subject: "Salud Pública y Comunidad", type: "Segundo parcial", officialDate: "2026-04-10" },
+      { id: "1-SPC-O1", subject: "Salud Pública y Comunidad", type: "Primer ordinario", officialDate: "2026-05-05" },
+      { id: "1-SPC-O2", subject: "Salud Pública y Comunidad", type: "Segundo ordinario", officialDate: "2026-05-13" },
+      { id: "1-SPC-EX", subject: "Salud Pública y Comunidad", type: "Extraordinario", officialDate: "2026-06-04" }
+    ],
+    2: [
+      { id: "2-FARM-P1", subject: "Farmacología", type: "Primer parcial", officialDate: "2025-10-14" },
+      { id: "2-FARM-P2", subject: "Farmacología", type: "Segundo parcial", officialDate: "2026-01-24" },
+      { id: "2-FARM-P3", subject: "Farmacología", type: "Tercer parcial", officialDate: "2026-04-06" },
+      { id: "2-FARM-O1", subject: "Farmacología", type: "Primer ordinario", officialDate: "2026-05-06" },
+      { id: "2-FARM-O2", subject: "Farmacología", type: "Segundo ordinario", officialDate: "2026-05-16" },
+      { id: "2-FARM-EX", subject: "Farmacología", type: "Extraordinario", officialDate: "2026-06-04" },
 
-            { id: "2-FISIO-P1", subject: "Fisiología", type: "Primer parcial", officialDate: "2025-10-24", officialTime: "08:00" },
-            { id: "2-FISIO-P2", subject: "Fisiología", type: "Segundo parcial", officialDate: "2026-02-14", officialTime: "08:00" },
-            { id: "2-FISIO-P3", subject: "Fisiología", type: "Tercer parcial", officialDate: "2026-04-23", officialTime: "13:00" },
-            { id: "2-FISIO-O1", subject: "Fisiología", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "11:00" },
-            { id: "2-FISIO-O2", subject: "Fisiología", type: "Segundo ordinario", officialDate: "2026-05-20", officialTime: "08:00" },
-            { id: "2-FISIO-EX", subject: "Fisiología", type: "Extraordinario", officialDate: "2026-06-09", officialTime: "13:00" },
+      { id: "2-FISIO-P1", subject: "Fisiología", type: "Primer parcial", officialDate: "2025-10-24" },
+      { id: "2-FISIO-P2", subject: "Fisiología", type: "Segundo parcial", officialDate: "2026-02-14" },
+      { id: "2-FISIO-P3", subject: "Fisiología", type: "Tercer parcial", officialDate: "2026-04-23" },
+      { id: "2-FISIO-O1", subject: "Fisiología", type: "Primer ordinario", officialDate: "2026-05-08" },
+      { id: "2-FISIO-O2", subject: "Fisiología", type: "Segundo ordinario", officialDate: "2026-05-20" },
+      { id: "2-FISIO-EX", subject: "Fisiología", type: "Extraordinario", officialDate: "2026-06-09" },
 
-            { id: "2-INMU-P1", subject: "Inmunología", type: "Primer parcial", officialDate: "2025-10-08", officialTime: "13:00" },
-            { id: "2-INMU-P2", subject: "Inmunología", type: "Segundo parcial", officialDate: "2026-01-31", officialTime: "08:00" },
-            { id: "2-INMU-P3", subject: "Inmunología", type: "Tercer parcial", officialDate: "2026-04-17", officialTime: "08:00" },
-            { id: "2-INMU-O1", subject: "Inmunología", type: "Primer ordinario", officialDate: "2026-04-30", officialTime: "14:00" },
-            { id: "2-INMU-O2", subject: "Inmunología", type: "Segundo ordinario", officialDate: "2026-05-25", officialTime: "08:00" },
-            { id: "2-INMU-EX", subject: "Inmunología", type: "Extraordinario", officialDate: "2026-06-01", officialTime: "11:00" },
+      { id: "2-INMU-P1", subject: "Inmunología", type: "Primer parcial", officialDate: "2025-10-08" },
+      { id: "2-INMU-P2", subject: "Inmunología", type: "Segundo parcial", officialDate: "2026-01-31" },
+      { id: "2-INMU-P3", subject: "Inmunología", type: "Tercer parcial", officialDate: "2026-04-17" },
+      { id: "2-INMU-O1", subject: "Inmunología", type: "Primer ordinario", officialDate: "2026-04-30" },
+      { id: "2-INMU-O2", subject: "Inmunología", type: "Segundo ordinario", officialDate: "2026-05-25" },
+      { id: "2-INMU-EX", subject: "Inmunología", type: "Extraordinario", officialDate: "2026-06-01" },
 
-            { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: "2025-11-26", officialTime: "15:00" },
-            { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: "2025-12-02", officialTime: "08:00" },
-            { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08", officialTime: "13:00" },
-            { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02", officialTime: "08:00" },
+      { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: "2025-11-26" },
+      { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: "2025-12-02" },
+      { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: "2025-12-08" },
+      { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: "2026-06-02" },
 
-            /* ===== NUEVO: Integración Básico Clínica II (IBC 2) ===== */
-            { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial",   officialDate: "2025-12-11", officialTime: "09:00" },
-            { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial",  officialDate: "2026-04-25", officialTime: "14:00" },
-            { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
-            { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario",officialDate: "2026-05-26", officialTime: "13:00" },
-            { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario",   officialDate: "2026-06-08", officialTime: "11:00" },
+      { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial", officialDate: "2025-12-11" },
+      { id: "2-IBC2-P2", subject: "Integración Básico Clínica II", type: "Segundo parcial", officialDate: "2026-04-25" },
+      { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08" },
+      { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario", officialDate: "2026-05-26" },
+      { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario", officialDate: "2026-06-08" },
 
-            /* ===== Intro Cirugía (fechas oficiales) ===== */
-            { id: "2-ICR-P1-TEO", subject: "Introducción a la Cirugía", type: "PAR 1 (TEO)", officialDate: "2026-01-10", officialTime: "08:00" },
-            { id: "2-ICR-P1-PRA", subject: "Introducción a la Cirugía", type: "PAR 1 (PRA)", officialDate: "2026-01-12", officialTime: "08:00",
-                multiStart: "2026-01-12", multiEnd: "2026-01-16" },
+      { id: "2-ICR-P1-TEO", subject: "Introducción a la Cirugía", type: "PAR 1 (TEO)", officialDate: "2026-01-10" },
+      { id: "2-ICR-P1-PRA", subject: "Introducción a la Cirugía", type: "PAR 1 (PRA)", officialDate: "2026-01-12" },
+      { id: "2-ICR-P2-TEO", subject: "Introducción a la Cirugía", type: "PAR 2 (TEO)", officialDate: "2026-04-11" },
+      { id: "2-ICR-P2-PRA", subject: "Introducción a la Cirugía", type: "PAR 2 (PRA)", officialDate: "2026-04-06" },
+      { id: "2-ICR-O1-PRA", subject: "Introducción a la Cirugía", type: "ORD 1 (PRA)", officialDate: "2026-04-27" },
+      { id: "2-ICR-O1-TEO", subject: "Introducción a la Cirugía", type: "ORD 1 (TEO)", officialDate: "2026-04-28" },
+      { id: "2-ICR-O2-PRA", subject: "Introducción a la Cirugía", type: "ORD 2 (PRA)", officialDate: "2026-05-21" },
+      { id: "2-ICR-O2-TEO", subject: "Introducción a la Cirugía", type: "ORD 2 (TEO)", officialDate: "2026-05-21" },
+      { id: "2-ICR-EX-TEO", subject: "Introducción a la Cirugía", type: "EXT 1 (TEO)", officialDate: "2026-05-29" },
+      { id: "2-ICR-EX-PRA", subject: "Introducción a la Cirugía", type: "EXT 1 (PRA)", officialDate: "2026-05-29" },
 
-            { id: "2-ICR-P2-TEO", subject: "Introducción a la Cirugía", type: "PAR 2 (TEO)", officialDate: "2026-04-11", officialTime: "08:00" },
-            { id: "2-ICR-P2-PRA", subject: "Introducción a la Cirugía", type: "PAR 2 (PRA)", officialDate: "2026-04-06", officialTime: "08:00",
-                multiStart: "2026-04-06", multiEnd: "2026-04-10" },
+      { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial", officialDate: "2025-11-18" },
+      { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial", officialDate: "2026-04-15" },
+      { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11" },
+      { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-18" },
+      { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario", officialDate: "2026-06-06" },
 
-            { id: "2-ICR-O1-PRA", subject: "Introducción a la Cirugía", type: "ORD 1 (PRA)", officialDate: "2026-04-27", officialTime: "13:00" },
-            { id: "2-ICR-O1-TEO", subject: "Introducción a la Cirugía", type: "ORD 1 (TEO)", officialDate: "2026-04-28", officialTime: "13:00" },
-
-            { id: "2-ICR-O2-PRA", subject: "Introducción a la Cirugía", type: "ORD 2 (PRA)", officialDate: "2026-05-21", officialTime: "12:00" },
-            { id: "2-ICR-O2-TEO", subject: "Introducción a la Cirugía", type: "ORD 2 (TEO)", officialDate: "2026-05-21", officialTime: "12:00" },
-
-            { id: "2-ICR-EX-TEO", subject: "Introducción a la Cirugía", type: "EXT 1 (TEO)", officialDate: "2026-05-29", officialTime: "08:00" },
-            { id: "2-ICR-EX-PRA", subject: "Introducción a la Cirugía", type: "EXT 1 (PRA)", officialDate: "2026-05-29", officialTime: "08:00" },
-
-            /* ===== Promo ===== */
-            { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
-            { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
-            { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-11", officialTime: "15:00" },
-            { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario",officialDate: "2026-05-18", officialTime: "14:00" },
-            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",   officialDate: "2026-06-06", officialTime: "9:00" },
-
-            /* Micro */
-            { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06", officialTime: "13:00" },
-            { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13", officialTime: "15:00" },
-            { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-02", officialTime: "08:00" },
-            { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-13", officialTime: "12:00" },
-            { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Extraordinario", officialDate: "2026-05-30", officialTime: "08:00" },
-        ]
-    };
+      { id: "2-MICRO-P1", subject: "Microbiología y Parasitología", type: "Primer parcial", officialDate: "2025-12-06" },
+      { id: "2-MICRO-P2", subject: "Microbiología y Parasitología", type: "Segundo parcial", officialDate: "2026-04-13" },
+      { id: "2-MICRO-P3", subject: "Microbiología y Parasitología", type: "Primer ordinario", officialDate: "2026-05-02" },
+      { id: "2-MICRO-O1", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-05-13" },
+      { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Extraordinario", officialDate: "2026-05-30" }
+    ]
+  };
 
   // ===== Meta de calendario (vacaciones, paro, Fournier, festividades) =====
   const VACATION_START_DATE = "2025-12-12";
@@ -232,9 +222,6 @@
   const parseDate = (s)=>{ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
   const formatDate = (y,m,d)=> y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
   const formatShort = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
-
-const formatHuman = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0]; };
-
 
   const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
   const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
@@ -473,24 +460,6 @@ function makeSupportBar(value, max, color){
     return list;
   }
   function similarityTo(year, ref, other){
-
-function diffDays(a,b){ return Math.round(Math.abs(parseDate(b)-parseDate(a))/86400000); }
-function prevNextDistancesByMode(items){
-  const arr = items.map(x=>({ id: x.exam.id, subj: x.exam.subject, date: x.date })).sort((a,b)=> a.date.localeCompare(b.date));
-  function nearestPrevDifferentSubject(idx){
-    const base=arr[idx]; let best=null;
-    for(let i=idx-1;i>=0;i--){ if(arr[i].subj!==base.subj){ best = diffDays(arr[i].date, base.date); break; } }
-    return best;
-  }
-  function nearestNextDifferentSubject(idx){
-    const base=arr[idx]; let best=null;
-    for(let i=idx+1;i<arr.length;i++){ if(arr[i].subj!==base.subj){ best = diffDays(base.date, arr[i].date); break; } }
-    return best;
-  }
-  const distMap = {};
-  arr.forEach((row,idx)=>{ distMap[row.id] = { prev: nearestPrevDifferentSubject(idx), next: nearestNextDifferentSubject(idx) }; });
-  return distMap;
-}
     const ids = EXAMS_BY_YEAR[year].map(e=>e.id);
     let same=0, total=0;
     for(const id of ids){
@@ -503,93 +472,30 @@ function prevNextDistancesByMode(items){
   }
 
   // ===== Render =====
-  
-
-function renderExamModes(year, modes){
-  // containers
-  const split = document.getElementById("moda-split");
-  const list  = document.getElementById("moda-cards");
-  const cal   = document.getElementById("moda-calendar");
-
-  // reset/hide other views
-  document.getElementById("calendar-wrap").classList.add("hide");
-  document.getElementById("similarity-panel").classList.add("hide");
-  document.getElementById("results-title").textContent = "Propuesta por Moda por Examen";
-
-  // build list of cards like original results
-  list.innerHTML = "";
-  const totalGroups = (cache.get(year)?.groups || []).length;
-  const items = modes.map(r=>({ exam:r.exam, date:r.date }));
-  const distMap = prevNextDistancesByMode(items);
-
-  modes.forEach(r=>{
-    const d = distMap[r.exam.id] || {prev:null, next:null};
-    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
-    // agrega líneas extra tipo original
-    const prev = document.createElement("div"); prev.className="exam-line"; prev.innerHTML = `<span class="line-label">último examen:</span><span class="line-value">${d.prev!=null? d.prev+" días atrás":"—"}</span>`;
-    const next = document.createElement("div"); next.className="exam-line"; next.innerHTML = `<span class="line-label">próximo examen:</span><span class="line-value">${d.next!=null? d.next+" días":"—"}</span>`;
-    card.appendChild(prev); card.appendChild(next);
-
-    // details con votantes y barrita compacta
-    if(r.voters && r.voters.length){
-      const det=document.createElement("details");
-      det.className="result-voters";
-      const sum=document.createElement("summary");
-      sum.textContent = `ver otras modas más repetidas`;
-      det.appendChild(sum);
-      const p=document.createElement("div");
-      p.className="voters-list";
-      p.textContent = r.voters.slice().sort((a,b)=>a-b).join(", ");
-      det.appendChild(p);
-      card.appendChild(det);
-
-      const col = colorForExam(r.exam);
-      const bar = makeSupportBar(r.voters.length, Math.max(1,totalGroups), hexToRgba(col,.95));
-      card.appendChild(bar);
-      const cap = document.createElement("div"); cap.className="support-caption"; cap.textContent = `${r.voters.length} de ${totalGroups} grupos (${Math.round(100*r.voters.length/Math.max(1,totalGroups))}%)`;
-      card.appendChild(cap);
-    }
-
-    const holder = document.createElement("div");
-    holder.className = "stat-card";
-    holder.style.background="transparent"; holder.style.boxShadow="none"; holder.style.padding="0"; holder.style.border="0"; holder.style.display="block";
-    card.style.width="100%";
-    holder.appendChild(card);
-    list.appendChild(holder);
-  });
-
-  // calendar with solid winning cards on the right
-  buildCalendars(cal);
-  modes.forEach(r=>{
-    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
-    placeCard(r.date, card, cal);
-  });
-
-  // show split view
-  split.classList.remove("hide");
-}
-
-    const holder = document.createElement("div");
-    holder.className="stat-card";
-    holder.style.background="transparent"; holder.style.boxShadow="none"; holder.style.padding="0"; holder.style.border="0"; holder.style.display="block";
-    card.style.width="100%";
-    holder.appendChild(card);
-    wrap.appendChild(holder);
-  });
-
-  // calendario de modas abajo
-  const calRoot = $id("results-calendar");
-  buildCalendars(calRoot);
-  for(const r of modes){
-    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
-    placeCard(r.date, card, calRoot);
+  function renderExamModes(year, modes){
+    const wrap = $id("results-exam-modes");
+    wrap.innerHTML="";
+    const totalGroups = (cache.get(year)?.groups || []).length;
+    modes.forEach(r=>{
+      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters });
+      const holder = document.createElement("div");
+      holder.className="stat-card";
+      holder.appendChild(card);
+      if(totalGroups>0){
+        const col = colorForExam(r.exam);
+        const bar = makeSupportBar(r.voters.length, totalGroups, hexToRgba(col, .95));
+        const cap = document.createElement('div'); cap.className='support-caption'; cap.textContent = `${r.voters.length} de ${totalGroups} grupos (${Math.round(100*r.voters.length/totalGroups)}%)`;
+        holder.appendChild(bar);
+        holder.appendChild(cap);
+      }
+      wrap.appendChild(holder);
+    });
+    $id("calendar-wrap").classList.add("hide");
+    $id("results-title").textContent = "Propuesta por Moda por Examen";
+    $id("similarity-panel").classList.add("hide");
+    wrap.classList.remove("hide");
   }
 
-  qs("#results-title").textContent = "Propuesta por Moda por Examen";
-  $id("calendar-wrap").classList.remove("hide");
-  $id("similarity-panel").classList.add("hide");
-  wrap.classList.remove("hide");
-}
   function renderFullCalendar(year, cluster, altCluster){
     const calRoot = $id("results-calendar");
     buildCalendars(calRoot);
@@ -651,7 +557,7 @@ const bar2 = makeSupportBar(count, totalGroups, 'rgba(56,189,248,.95)');
 sup.appendChild(suppTitle);
 sup.appendChild(bar2);
 
-    document.getElementById("moda-split").classList.add("hide");
+    $id("results-exam-modes").classList.add("hide");
     $id("calendar-wrap").classList.remove("hide");
   }
 
