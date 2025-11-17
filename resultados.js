@@ -483,7 +483,8 @@
 
     list.innerHTML="";
     const totalGroups = (cache.get(year)?.groups || []).length;
-    modes.forEach(r=>{
+    const sortedModes = modes.slice().sort((a,b)=> a.date.localeCompare(b.date) || a.exam.subject.localeCompare(b.exam.subject) || a.exam.id.localeCompare(b.exam.id));
+    sortedModes.forEach(r=>{
       const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
       const holder = document.createElement("div");
       holder.className="stat-card";
@@ -500,7 +501,7 @@
 
     // calendario lateral con ganadoras por moda
     buildCalendars(cal);
-    modes.forEach(r=>{
+    sortedModes.forEach(r=>{
       const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
       placeCard(r.date, card, cal);
     });
