@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="resultados 7">
+    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="resultados 7.3">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resultados.html" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resultados.js" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +23,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="KEEP" />
   </component>
@@ -261,7 +264,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763341912678</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="resultados 7.2">
+      <option name="closed" value="true" />
+      <created>1763343258595</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1763343258595</updated>
+    </task>
+    <task id="LOCAL-00023" summary="resultados 7.3">
+      <option name="closed" value="true" />
+      <created>1763343456086</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1763343456086</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -288,7 +307,9 @@
     <MESSAGE value="resultados 5.0" />
     <MESSAGE value="resultados 6.0" />
     <MESSAGE value="resultados 7" />
-    <option name="LAST_COMMIT_MESSAGE" value="resultados 7" />
+    <MESSAGE value="resultados 7.2" />
+    <MESSAGE value="resultados 7.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="resultados 7.3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/repres_page_facmed$renombra_propuestas.coverage" NAME="renombra_propuestas Coverage Results" MODIFIED="1763323295020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Sube aquí tu documento realizado por el programa enviado_ (File responses)" />

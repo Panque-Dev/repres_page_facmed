@@ -2,7 +2,7 @@
   "use strict";
 
   // ===== Ajustes visibles =====
-  const TOTAL_RESPONSES = 180;
+  const TOTAL_RESPONSES = 195;
   const BAR_CONFIG = [
     { max: 82, target: 71 }, // primero
     { max: 65, target: 58 }  // segundo
@@ -660,7 +660,7 @@ panel.classList.remove("hide");
     const el = $id("total-counter");
     const start = 1;
     const end = TOTAL_RESPONSES;
-    const dur = 1200;
+    const dur = 3600;
     const t0 = performance.now();
     function step(now){
       const k = Math.min(1, (now - t0)/dur);
