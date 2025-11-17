@@ -1,7 +1,7 @@
 (function(){
   "use strict";
 
-  // ===== Ajustes visibles (puedes editar estas constantes) =====
+  // ===== Ajustes visibles =====
   const TOTAL_RESPONSES = 180;
   const BAR_CONFIG = [
     { max: 82, target: 71 }, // primero
@@ -39,7 +39,7 @@
     FIS:"#F44F32", FAR:"#DA74B8", INM:"#A84DDA", MyP:"#A89C1C", ICR:"#1D98A8", PCV:"#8E004F"
   };
 
-  // Catálogo de exámenes por año (ids y fechas oficiales)
+  // Catálogo de exámenes por año (fechas fieles al principal)
   const EXAMS_BY_YEAR = {
     1: [
       { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25" },
@@ -154,7 +154,7 @@
     ]
   };
 
-  // ===== Meta de calendario (vacaciones, paro, Fournier, festividades) =====
+  // ===== Meta de calendario (festividades, paro, Fournier, etc.) =====
   const VACATION_START_DATE = "2025-12-12";
   const VACATION_END_DATE   = "2026-01-04";
   const VACATION_SS_START   = "2026-03-29";
@@ -222,13 +222,12 @@
   const parseDate = (s)=>{ const p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); };
   const formatDate = (y,m,d)=> y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");
   const formatShort = (s)=>{ const p=s.split("-"); return p[2]+"/"+p[1]+"/"+p[0].slice(2); };
-
-  const isWithin = (s)=> s>=CAL_START_DATE && s<=CAL_END_DATE;
-  const isVacation = (s)=> (s>=VACATION_START_DATE && s<=VACATION_END_DATE) || (s>=VACATION_SS_START && s<=VACATION_SS_END) || (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
-  const isStrike = (s)=> s>=STRIKE_START_DATE && s<=STRIKE_END_DATE;
-  const isNoEvaluation = (s)=> s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE;
-  const isSunday = (s)=> parseDate(s).getDay()===0;
-  const getRestriction = (d)=> FOURNIER_RESTRICTIONS[d] || null;
+  function hexToRgba(hex, a){
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if(!m) return `rgba(56,189,248,${a})`;
+    const r = parseInt(m[1],16), g=parseInt(m[2],16), b=parseInt(m[3],16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
 
   function shortType(t){
     switch(t){
@@ -243,35 +242,13 @@
     }
   }
   function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").map(w=>w[0]).join("").slice(0,3).toUpperCase(), file:"GEN"}; }
-  function hexToRgba(hex, a){
-    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if(!m) return `rgba(56,189,248,${a})`;
-    const r = parseInt(m[1],16), g=parseInt(m[2],16), b=parseInt(m[3],16);
-    return `rgba(${r},${g},${b},${a})`;
-  }
-  
-function makeSupportBar(value, max, color){
-  const wrap = document.createElement("div");
-  wrap.className = "mini-support";
-  if(color){ wrap.style.setProperty('--bar-color', color); }
-  const fill = document.createElement("div");
-  fill.className = "fill";
-  wrap.appendChild(fill);
-  // async to allow CSS transition
-  requestAnimationFrame(()=>{
-    const pct = max ? Math.max(0, Math.min(100, 100*value/max)) : 0;
-    fill.style.width = pct + "%";
-  });
-  return wrap;
-}
-
   function colorForExam(exam){
     const sig = getSigla(exam.subject).display;
     const key = sig.replace(/\s+/g,"");
     return SUBJECT_COLORS[sig] || SUBJECT_COLORS[key] || "#38bdf8";
   }
 
-  // ===== UI builders =====
+  // ===== UI Builders =====
   function lineStacked(label, value){
     const row=document.createElement("div"); row.className="exam-line stacked";
     const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
@@ -366,9 +343,9 @@ function makeSupportBar(value, max, color){
         const ds=formatDate(y,m+1,d);
         const cell=document.createElement("div"); cell.className="day-cell"; cell.dataset.date=ds;
         const dow=parseDate(ds).getDay(); if(dow===0) cell.classList.add("weekend");
-        if(isVacation(ds)) cell.classList.add("vacation");
-        if(isStrike(ds))   cell.classList.add("vacation");
-        const fr=getRestriction(ds); if(fr && fr.kind==="blocked") cell.classList.add("vacation");
+        if((ds>=VACATION_START_DATE && ds<=VACATION_END_DATE) || (ds>=VACATION_SS_START && ds<=VACATION_SS_END)) cell.classList.add("vacation");
+        if(ds>=STRIKE_START_DATE && ds<=STRIKE_END_DATE)   cell.classList.add("vacation");
+        const fr=FOURNIER_RESTRICTIONS[ds]; if(fr && fr.kind==="blocked") cell.classList.add("vacation");
 
         const hdr=document.createElement("div"); hdr.className="day-header";
         const n=document.createElement("span"); n.className="day-number"; n.textContent=String(d);
@@ -379,9 +356,9 @@ function makeSupportBar(value, max, color){
         else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
         else if(fr && fr.kind==="partial_after") meta.textContent="Fournier desde "+(fr.freeFrom||"15:00");
         else if(fr && fr.kind==="partial_until") meta.textContent="Fournier hasta "+(fr.freeUntil||"16:00");
-        else if(isStrike(ds)) meta.textContent = "Paro";
-        else if(isNoEvaluation(ds)) meta.textContent = "Clases sin evaluación";
-        else if(isVacation(ds)) meta.textContent="Vacaciones";
+        else if(ds>=STRIKE_START_DATE && ds<=STRIKE_END_DATE) meta.textContent = "Paro";
+        else if(ds>=NOEVAL_START_DATE && ds<=NOEVAL_END_DATE) meta.textContent = "Clases sin evaluación";
+        else if((ds>=VACATION_START_DATE && ds<=VACATION_END_DATE) || (ds>=VACATION_SS_START && ds<=VACATION_SS_END)) meta.textContent="Vacaciones";
         else if(dow===0) meta.textContent="Fin de semana";
         else if(SPECIAL_DAY_LABELS[ds]) meta.textContent = SPECIAL_DAY_LABELS[ds];
         else meta.textContent = "Fournier libre";
@@ -419,7 +396,7 @@ function makeSupportBar(value, max, color){
       if(raw){
         const json = JSON.parse(raw);
         cache.set(year, json);
-        console.warn("Usando snapshot local de resultados:", e && e.message ? e.message : e);
+        console.warn("Usando snapshot local de resultados:", e?.message||e);
         return json;
       }
       throw e;
@@ -473,8 +450,14 @@ function makeSupportBar(value, max, color){
 
   // ===== Render =====
   function renderExamModes(year, modes){
-    const wrap = $id("results-exam-modes");
-    wrap.innerHTML="";
+    const split = $id("moda-split");
+    const list  = $id("moda-cards");
+    const cal   = $id("moda-calendar");
+    $id("calendar-wrap").classList.add("hide");
+    $id("similarity-panel").classList.add("hide");
+    $id("results-title").textContent = "Propuesta por Moda por Examen";
+
+    list.innerHTML="";
     const totalGroups = (cache.get(year)?.groups || []).length;
     modes.forEach(r=>{
       const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters });
@@ -488,12 +471,17 @@ function makeSupportBar(value, max, color){
         holder.appendChild(bar);
         holder.appendChild(cap);
       }
-      wrap.appendChild(holder);
+      list.appendChild(holder);
     });
-    $id("calendar-wrap").classList.add("hide");
-    $id("results-title").textContent = "Propuesta por Moda por Examen";
-    $id("similarity-panel").classList.add("hide");
-    wrap.classList.remove("hide");
+
+    // calendario lateral con ganadoras por moda
+    buildCalendars(cal);
+    modes.forEach(r=>{
+      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
+      placeCard(r.date, card, cal);
+    });
+
+    split.classList.remove("hide");
   }
 
   function renderFullCalendar(year, cluster, altCluster){
@@ -537,27 +525,27 @@ function makeSupportBar(value, max, color){
     }
     panel.classList.remove("hide");
 
-    // resumen de apoyo a la propuesta
-const calWrap = $id("calendar-wrap");
-let sup = qs("#cluster-support");
-if(!sup){
-  sup = document.createElement("div");
-  sup.id = "cluster-support";
-  sup.className = "bar-card"; // reusar estilo de tarjeta simple
-  calWrap.insertBefore(sup, calWrap.firstChild);
-}
-sup.innerHTML = "";
-const totalGroups = groupsData.length;
-const suppTitle = document.createElement("div");
-suppTitle.className = "bar-title";
-const count = (cluster && cluster.groups) ? cluster.groups.length : 0;
-const pct = totalGroups ? Math.round(100*count/totalGroups) : 0;
-suppTitle.textContent = `Apoyo total a esta propuesta: ${count} de ${totalGroups} grupos (${pct}%)`;
-const bar2 = makeSupportBar(count, totalGroups, 'rgba(56,189,248,.95)');
-sup.appendChild(suppTitle);
-sup.appendChild(bar2);
+    // resumen de apoyo
+    const calWrap = $id("calendar-wrap");
+    let sup = qs("#cluster-support");
+    if(!sup){
+      sup = document.createElement("div");
+      sup.id = "cluster-support";
+      sup.className = "bar-card";
+      calWrap.insertBefore(sup, calWrap.firstChild);
+    }
+    sup.innerHTML = "";
+    const totalGroups = groupsData.length;
+    const suppTitle = document.createElement("div");
+    suppTitle.className = "bar-title";
+    const count = (cluster && cluster.groups) ? cluster.groups.length : 0;
+    const pct = totalGroups ? Math.round(100*count/totalGroups) : 0;
+    suppTitle.textContent = `Apoyo total a esta propuesta: ${count} de ${totalGroups} grupos (${pct}%)`;
+    const bar2 = (function(){ const w=document.createElement('div'); w.className='mini-support'; const f=document.createElement('div'); f.className='fill'; w.appendChild(f); requestAnimationFrame(()=>{ f.style.width = (totalGroups? (100*count/totalGroups):0) + '%'; }); return w; })();
+    sup.appendChild(suppTitle);
+    sup.appendChild(bar2);
 
-    $id("results-exam-modes").classList.add("hide");
+    $id("moda-split").classList.add("hide");
     $id("calendar-wrap").classList.remove("hide");
   }
 
