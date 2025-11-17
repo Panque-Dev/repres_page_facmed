@@ -504,25 +504,38 @@ function prevNextDistancesByMode(items){
 
   // ===== Render =====
   
-function renderExamModes(year, modes){
-  const wrap = $id("results-exam-modes");
-  wrap.innerHTML="";
-  // compute prev/next distances among moda winners
-  const items = modes.map(r=>({ exam: r.exam, date: r.date }));
-  const distMap = prevNextDistancesByMode(items);
 
+function renderExamModes(year, modes){
+  // containers
+  const split = document.getElementById("moda-split");
+  const list  = document.getElementById("moda-cards");
+  const cal   = document.getElementById("moda-calendar");
+
+  // reset/hide other views
+  document.getElementById("calendar-wrap").classList.add("hide");
+  document.getElementById("similarity-panel").classList.add("hide");
+  document.getElementById("results-title").textContent = "Propuesta por Moda por Examen";
+
+  // build list of cards like original results
+  list.innerHTML = "";
   const totalGroups = (cache.get(year)?.groups || []).length;
+  const items = modes.map(r=>({ exam:r.exam, date:r.date }));
+  const distMap = prevNextDistancesByMode(items);
 
   modes.forEach(r=>{
     const d = distMap[r.exam.id] || {prev:null, next:null};
-    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, prev: d.prev, next: d.next });
+    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
+    // agrega líneas extra tipo original
+    const prev = document.createElement("div"); prev.className="exam-line"; prev.innerHTML = `<span class="line-label">último examen:</span><span class="line-value">${d.prev!=null? d.prev+" días atrás":"—"}</span>`;
+    const next = document.createElement("div"); next.className="exam-line"; next.innerHTML = `<span class="line-label">próximo examen:</span><span class="line-value">${d.next!=null? d.next+" días":"—"}</span>`;
+    card.appendChild(prev); card.appendChild(next);
 
-    // detalles de votantes plegables
+    // details con votantes y barrita compacta
     if(r.voters && r.voters.length){
       const det=document.createElement("details");
       det.className="result-voters";
       const sum=document.createElement("summary");
-      sum.textContent = `Votaron ${r.voters.length} de ${totalGroups} grupos (${Math.round(100*r.voters.length/Math.max(1,totalGroups))}%)`;
+      sum.textContent = `ver otras modas más repetidas`;
       det.appendChild(sum);
       const p=document.createElement("div");
       p.className="voters-list";
@@ -530,11 +543,31 @@ function renderExamModes(year, modes){
       det.appendChild(p);
       card.appendChild(det);
 
-      // barrita compacta (reusa makeSupportBar)
       const col = colorForExam(r.exam);
       const bar = makeSupportBar(r.voters.length, Math.max(1,totalGroups), hexToRgba(col,.95));
       card.appendChild(bar);
+      const cap = document.createElement("div"); cap.className="support-caption"; cap.textContent = `${r.voters.length} de ${totalGroups} grupos (${Math.round(100*r.voters.length/Math.max(1,totalGroups))}%)`;
+      card.appendChild(cap);
     }
+
+    const holder = document.createElement("div");
+    holder.className = "stat-card";
+    holder.style.background="transparent"; holder.style.boxShadow="none"; holder.style.padding="0"; holder.style.border="0"; holder.style.display="block";
+    card.style.width="100%";
+    holder.appendChild(card);
+    list.appendChild(holder);
+  });
+
+  // calendar with solid winning cards on the right
+  buildCalendars(cal);
+  modes.forEach(r=>{
+    const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
+    placeCard(r.date, card, cal);
+  });
+
+  // show split view
+  split.classList.remove("hide");
+}
 
     const holder = document.createElement("div");
     holder.className="stat-card";
@@ -618,7 +651,7 @@ const bar2 = makeSupportBar(count, totalGroups, 'rgba(56,189,248,.95)');
 sup.appendChild(suppTitle);
 sup.appendChild(bar2);
 
-    $id("results-exam-modes").classList.add("hide");
+    document.getElementById("moda-split").classList.add("hide");
     $id("calendar-wrap").classList.remove("hide");
   }
 
