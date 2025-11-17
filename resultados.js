@@ -805,7 +805,7 @@ function getSigla(sub){ return SUBJECT_SIGLAS[sub] || {display:sub.split(" ").ma
 
   // ===== Interacciones =====
   let currentYear = 1;
-  async function updateView(mode){
+  async async function updateView(mode){
     const { groups } = await fetchYear(currentYear);
 
     if(mode==="mode-per-exam"){
