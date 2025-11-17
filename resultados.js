@@ -478,13 +478,13 @@
     const list  = $id("moda-cards");
     const cal   = $id("moda-calendar");
     $id("calendar-wrap").classList.add("hide");
-    $id("similarity-panel").classList.add("hide");
+    // $id("similarity-panel").classList.add("hide");
     $id("results-title").textContent = "Propuesta por Moda por Examen";
 
     list.innerHTML="";
     const totalGroups = (cache.get(year)?.groups || []).length;
     modes.forEach(r=>{
-      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, voters: r.voters });
+      const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
       const holder = document.createElement("div");
       holder.className="stat-card";
       holder.appendChild(card);
@@ -506,6 +506,28 @@
     });
 
     split.classList.remove("hide");
+
+
+// Similaridad vs calendario construido por modas ganadoras
+const panel = $id("similarity-panel");
+const listSim = $id("similarity-list");
+const legend = $id("similarity-legend-90");
+listSim.innerHTML="";
+const modaMap = {};
+modes.forEach(r => { modaMap[r.exam.id] = r.date; });
+const groupsData = cache.get(year)?.groups || [];
+const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, modaMap, g.proposals||{}) }));
+all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
+legend.textContent = String(all.filter(x=> x.pct >= 90).length);
+for(const it of all){
+  const row = document.createElement("div");
+  row.className = "sim-item";
+  row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+  row.style.setProperty('--fill', it.pct + '%');
+  listSim.appendChild(row);
+}
+panel.classList.remove("hide");
+
   }
 
   function renderFullCalendar(year, cluster, altCluster){

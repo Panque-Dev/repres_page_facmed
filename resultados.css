@@ -171,16 +171,10 @@
 .sim-item > *{ position: relative; z-index: 1; }
 
 /* Split view for Moda: cards + calendar side by side */
-.moda-split{
-  display:grid;
-  grid-template-columns: 1.1fr 1fr;
+.moda-split{ display:grid; grid-template-columns: 1fr;
   gap: 12px;
   align-items: start;
 }
-@media (max-width: 1100px){
-  .moda-split{ grid-template-columns: 1fr; }
-}
-
 /* tarjetas dentro del calendario coloreadas por materia */
 .calendar .exam-card.status-valid{ background: var(--card-bg, rgba(56,189,248,.28)) !important; }
 .calendar .exam-card .exam-status-strip{ background: var(--card-strip, rgba(56,189,248,.95)) !important; }
