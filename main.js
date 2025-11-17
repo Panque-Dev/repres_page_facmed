@@ -424,7 +424,7 @@
     function createExamCard(exam, viewDate, statusClass, forced, opts={}){
         const { approvedDate, suggestionDate, isOwn, groupProposals } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-        const card=document.createElement("div"); card.className="exam-card "+statusClass; card.draggable=true; card.dataset.examId=exam.id;
+        const card=document.createElement("div"); card.className="exam-card "+statusClass; card.draggable=false; card.dataset.examId=exam.id;
         if(forced) card.classList.add("forced");
         if(isOwn) card.classList.add("own-proposal-solid");
 
