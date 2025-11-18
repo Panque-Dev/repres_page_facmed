@@ -13,18 +13,16 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    // ===== Bloqueos del calendario (recuperado) =====
-    // fines de semana + festivos MX dentro del rango; soporte para "fournier" y rangos personalizados
+    // ===== Bloqueos del calendario =====
     const HOLIDAYS_SET = new Set([
-        "2025-11-17", // Revolución (tercer lunes de nov 2025)
-        "2025-12-25", // Navidad
-        "2026-01-01", // Año Nuevo
-        "2026-02-02", // Constitución (primer lunes feb 2026)
-        "2026-03-16", // Natalicio de Benito Juárez (tercer lunes mar 2026)
-        "2026-05-01", // Día del Trabajo
-        "2026-05-05"  // Batalla de Puebla
+        "2025-11-17",
+        "2025-12-25",
+        "2026-01-01",
+        "2026-02-02",
+        "2026-03-16",
+        "2026-05-01",
+        "2026-05-05"
     ]);
-    // si necesitas más, añade aquí; o define window.CALENDAR_BLOCKS = { dates:[...], ranges:[{start,end,label}], fournier:[...]}
     function isWeekend(d){ const k=d.getDay(); return k===0 || k===6; }
     function iso(d){ return d.toISOString().slice(0,10); }
     function expandRange(a,b){
@@ -35,24 +33,19 @@
     function getCustomBlocks(){
         const cfg = (typeof window!=="undefined" && window.CALENDAR_BLOCKS) ? window.CALENDAR_BLOCKS : null;
         const dates = new Set();
-        const labels = new Map(); // iso -> label
+        const labels = new Map();
         if(!cfg) return { dates, labels };
-        if(Array.isArray(cfg.dates)){
-            cfg.dates.forEach(s=>{ dates.add(s); labels.set(s, "custom"); });
-        }
-        if(Array.isArray(cfg.fournier)){
-            cfg.fournier.forEach(s=>{ dates.add(s); labels.set(s, "fournier"); });
-        }
+        if(Array.isArray(cfg.dates)){ cfg.dates.forEach(s=>{ dates.add(s); labels.set(s, "custom"); }); }
+        if(Array.isArray(cfg.fournier)){ cfg.fournier.forEach(s=>{ dates.add(s); labels.set(s, "fournier"); }); }
         if(Array.isArray(cfg.ranges)){
             cfg.ranges.forEach(r=>{
-                const arr = expandRange(r.start, r.end);
-                arr.forEach(s=>{ dates.add(s); labels.set(s, r.label||"custom"); });
+                expandRange(r.start, r.end).forEach(s=>{ dates.add(s); labels.set(s, r.label||"custom"); });
             });
         }
         return { dates, labels };
     }
 
-    // Materias abreviadas e íconos ya usados en el proyecto
+    // Materias e íconos
     const SUBJECT_SIGLAS = {
         "Embriología Humana": { display: "EMB", file: "EMB" },
         "Anatomía": { display: "ANA", file: "ANA" },
@@ -69,14 +62,14 @@
         "Inmunología": { display: "INM", file: "INM" },
         "Microbiología y Parasitología": { display: "MyP", file: "MyP" },
         "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
-        "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" },
-        "Informática Biomédica II": { display: "IB2", file: "IB2" } // redundante explícito
+        "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
     };
 
     const SUBJECT_COLORS = {
         ANA:"#A8003D", BQM:"#1D7464", HIS:"#8E117C", EMB:"#E48090", SPC:"#2C7C8E", ISM:"#641C74",
         IBC1:"#22d3ee", IBC2:"#06b6d4", IB1:"#00b4d8", IB2:"#0072A8",
-        FIS:"#F44F32", FAR:"#DA74B8", INM:"#A84DDA", MyP:"#A89C1C", ICR:"#1D98A8", PCV:"#8E004F"
+        FIS:"#F44F32", FAR:"#DA74B8", INM:"#A84DDA", MyP:"#A89C1C", MYP:"#A89C1C",
+        ICR:"#1D98A8", PCV:"#8E004F"
     };
 
     // Catálogo de exámenes por año
@@ -186,7 +179,7 @@
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
             { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
 
-            // añadido: INFORMÁTICA BIOMÉDICA II (IB II) para Propuesta 3
+            // IB II para la propuesta 3
             { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
@@ -195,19 +188,22 @@
         ]
     };
 
-    // ===== utilidades menores / helpers =====
+    // ===== helpers =====
     const qs = (s, r=document)=> r.querySelector(s);
     const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
     const $id = (id)=> document.getElementById(id);
     const parseDate = (s)=> new Date(s+"T00:00:00");
 
-    // Distintivo: PAR, ORD, EXT + número
+    // Distintivo PAR, ORD, EXT con número; en ICR conserva (TEO)/(PRA)
     function shortType(t){
-        const s = String(t||"").toLowerCase();
+        const s = String(t||"");
+        const lower = s.toLowerCase();
+        const modMatch = s.match(/\(([^)]+)\)/);
+        const mod = modMatch ? ` (${modMatch[1].trim()})` : "";
         const n1 = /primer/i.test(s) ? "1" : /segundo/i.test(s) ? "2" : /tercer/i.test(s) ? "3" : /cuarto/i.test(s) ? "4" : "";
-        if(s.includes("ordinario")) return { badge: "ORD" + (n1? " "+n1 : ""), meaning:t };
-        if(s.includes("extra"))     return { badge: "EXT", meaning:t };
-        if(s.includes("parcial"))   return { badge: "PAR" + (n1? " "+n1 : ""), meaning:t };
+        if(lower.includes("ordinario")) return { badge: "ORD" + (n1? " "+n1 : ""), meaning:t };
+        if(lower.includes("extra"))     return { badge: "EXT", meaning:t };
+        if(lower.includes("parcial"))   return { badge: "PAR" + (n1? " "+n1 : "") + mod, meaning:t };
         return { badge:t||"—", meaning:t||"—" };
     }
     function getSigla(subject){
@@ -219,9 +215,9 @@
         return `rgba(${r},${g},${bl},${a})`;
     }
     function colorForExam(exam){
-        const sig = getSigla(exam.subject).display;
-        const key = sig.replace(/\s+/g,'').toUpperCase();
-        return SUBJECT_COLORS[key] || "#334155";
+        const disp = getSigla(exam.subject).display;
+        const key = disp.replace(/\s+/g,'');
+        return SUBJECT_COLORS[key] || SUBJECT_COLORS[key.toUpperCase()] || SUBJECT_COLORS[key.toLowerCase()] || "#334155";
     }
 
     // dd-mes-aaaa
@@ -278,7 +274,7 @@
         const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(exam.officialDate || "");
 
         if(approvedDate || exam.officialDate) card.appendChild(lineStacked("fecha original:", appText));
-        card.appendChild(lineStacked("propuesta en tendencia:", sugText));
+        card.appendChild(lineStacked("propuesta:", sugText)); // ← cambio solicitado
 
         if(metrics){
             const { prevAllDays, nextAllDays, nextSameDays } = metrics;
@@ -341,41 +337,28 @@
         while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
         return out;
     }
-
     function applyCalendarBlocks(section, y, m){
         const custom = getCustomBlocks();
         const grid = section.querySelector(".month-grid");
         const first = new Date(y,m,1), last = new Date(y,m+1,0);
         let start=first.getDay(); if(start===0) start=7;
-        // índice base de celdas de día real
         const base = 7 + (start - 1);
         for(let d=1; d<=last.getDate(); d++){
             const cell = grid.children[base + (d-1)];
             const dt = new Date(y, m, d);
             const k = iso(dt);
             let blocked = false;
-            if(isWeekend(dt)){
-                blocked = true;
-                cell.classList.add("blocked", "blocked-weekend");
-            }
-            if(HOLIDAYS_SET.has(k)){
-                blocked = true;
-                cell.classList.add("blocked", "blocked-holiday");
-            }
+            if(isWeekend(dt)){ blocked = true; cell.classList.add("blocked","blocked-weekend"); }
+            if(HOLIDAYS_SET.has(k)){ blocked = true; cell.classList.add("blocked","blocked-holiday"); }
             if(custom.dates.has(k)){
                 blocked = true;
                 const label = custom.labels.get(k) || "custom";
                 cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
                 cell.dataset.blockLabel = label;
             }
-            // puedes estilizar .blocked-* en resultados.css como ya lo tenías
-            if(blocked){
-                const head = cell.querySelector(".day-header");
-                head && head.classList.add("is-blocked");
-            }
+            if(blocked){ const head = cell.querySelector(".day-header"); head && head.classList.add("is-blocked"); }
         }
     }
-
     function buildCalendars(container){
         container.innerHTML="";
         monthList().forEach(({y,m})=>{
@@ -401,14 +384,10 @@
                 grid.appendChild(cell);
             }
             section.appendChild(grid);
-
-            // aplicar bloqueos recuperados
             applyCalendarBlocks(section, y, m);
-
             container.appendChild(section);
         });
     }
-
     function placeCard(isoStr, card, container){
         const d=parseDate(isoStr);
         const month = container.querySelectorAll(".month")[ (d.getFullYear()-parseDate(CAL_START_DATE).getFullYear())*12 + d.getMonth() - parseDate(CAL_START_DATE).getMonth() ];
@@ -421,11 +400,9 @@
         const list = cell.querySelector(".exam-list");
         list.appendChild(card);
     }
-    function placeGhost(isoStr, card, container){
-        placeCard(isoStr, card, container);
-    }
+    function placeGhost(isoStr, card, container){ placeCard(isoStr, card, container); }
 
-    // cache de resultados
+    // cache
     const cache = new Map();
 
     async function fetchYear(year){
@@ -453,7 +430,7 @@
     function computeExamModes(year, groups){
         const results = [];
         for(const exam of EXAMS_BY_YEAR[year]){
-            const counter = new Map(); // date -> array groups
+            const counter = new Map();
             for(const g of groups){
                 const d = g.proposals?.[exam.id];
                 if(!d) continue;
@@ -473,7 +450,7 @@
         return ids.map(id=> proposals?.[id] ? `${id}:${proposals[id]}` : `${id}:-`).join("|");
     }
     function clusterCalendars(year, groups){
-        const clusters = new Map(); // key -> { groups:[], proposals:{} }
+        const clusters = new Map();
         for(const g of groups){
             const key = canonicalKeyFor(year, g.proposals||{});
             if(!clusters.has(key)) clusters.set(key, { groups:[], proposals: g.proposals||{} });
@@ -502,7 +479,7 @@
         }
         entries.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
 
-        const prevNextGlobal = new Map(); // id -> {prevDays, nextDays}
+        const prevNextGlobal = new Map();
         for(let i=0;i<entries.length;i++){
             const cur = entries[i];
             const prev = entries[i-1] || null;
@@ -518,7 +495,7 @@
             if(!bySubj.has(e.subject)) bySubj.set(e.subject, []);
             bySubj.get(e.subject).push(e);
         }
-        const subjNext = new Map(); // id -> { nextSameDays }
+        const subjNext = new Map();
         for(const [, arr] of bySubj.entries()){
             arr.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
             for(let i=0;i<arr.length;i++){
@@ -543,7 +520,7 @@
         return out;
     }
 
-    // ===== Render genérico de "panel similar": tarjetas + calendario =====
+    // ===== Panel dividido genérico =====
     function normalizeForSimilarity(map){
         const out={};
         for(const [k,v] of Object.entries(map||{})){
@@ -551,7 +528,6 @@
         }
         return out;
     }
-
     function renderSplit(title, year, proposalsMap, perExamSupportMap=null, altProposalsMap=null){
         const split = $id("moda-split");
         const list  = $id("moda-cards");
@@ -566,7 +542,6 @@
 
         const metricsById = computeScheduleMetrics(year, proposalsMap);
 
-        // ordenar por fecha y materia usando la fecha principal si hay array
         const present = EXAMS_BY_YEAR[year]
             .filter(ex=> proposalsMap[ex.id])
             .map(ex=>{
@@ -598,7 +573,6 @@
             holder.appendChild(card);
             list.appendChild(holder);
 
-            // colocar en calendario cada fecha de ese examen
             r.dates.forEach(d=>{
                 const cardCal = createResultCard(r.ex, {
                     approvedDate: r.ex.officialDate,
@@ -609,7 +583,6 @@
             });
         });
 
-        // fantasmas si hay propuesta alternativa
         if(altProposalsMap){
             for(const ex of EXAMS_BY_YEAR[year]){
                 const raw1 = proposalsMap[ex.id];
@@ -623,7 +596,6 @@
             }
         }
 
-        // Similaridad
         const panel = $id("similarity-panel");
         const listSim = $id("similarity-list");
         const legend = $id("similarity-legend-90");
@@ -643,7 +615,7 @@
         panel.classList.remove("hide");
     }
 
-    // ===== Render específico para "por examen" (modas) =====
+    // ===== Vistas =====
     function renderExamModes(year, modes){
         const modaMap = {};
         const supportMap = {};
@@ -656,15 +628,12 @@
 
         renderSplit("Propuesta por Moda por Examen", year, modaMap, supportMap, null);
     }
-
-    // ===== Render de "calendario completo" usando el panel similar =====
     function renderFullAsSplit(title, year, cluster, altCluster){
         const proposals = cluster?.proposals || {};
         const alt = altCluster?.proposals || null;
         renderSplit(title, year, proposals, null, alt);
     }
 
-    // ===== Cambiar vistas / UI =====
     let currentYear = 1;
 
     async function updateView(mode){
@@ -735,7 +704,6 @@
         });
     }
 
-    // ===== Init =====
     document.addEventListener("DOMContentLoaded", ()=>{
         const el = $id("total-counter");
         if(el) el.classList.add("countup");
@@ -746,12 +714,10 @@
     });
 
     /* ===========================================================
-       BLOQUE: Propuesta de representantes (tercer botón)
+       BLOQUE: Propuesta de la Última Mesa de Diálogo (tercer botón)
        =========================================================== */
-    // Propuesta 3: listas exactas dadas por ti.
     function __presetProposalsFor(year){
         if(year===1){
-            // mantenemos la propuesta previa de Primero
             return {
                 "1-BQBM-P1": "2025-11-28",
                 "1-BCHM-P1": "2025-12-05",
@@ -769,28 +735,25 @@
                 "1-BQBM-P3": "2026-03-21"
             };
         }else{
-            // SEGUNDO: incluye parciales, ordinarios de IB II y rangos de Ciru práctico
             return {
-                "2-INF2-P2":    "2025-11-26",                          // IB II B2
-                "2-INMU-P1":    "2025-11-28",                          // Inmuno B1
-                "2-INF2-O1":    "2025-12-02",                          // IB II Primer ordinario
-                "2-INF2-O2":    "2025-12-08",                          // IB II Segundo ordinario
-                "2-FARM-P1":    "2025-12-10",                          // Farma B1
-                "2-FISIO-P1":   "2026-01-10",                          // Fisio B1
-                "2-MICRO-P1":   "2026-01-17",                          // Micro B1
-                "2-IBC2-P1":    "2026-01-21",                          // IBC II B1
-                "2-PCSV-P1":    "2026-01-29",                          // Promo B1
-                "2-ICR-P1-PRA": ["2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13"], // Ciru práctico B1 9–13 feb
-                "2-ICR-P1-TEO": "2026-02-14",                          // Ciru teórico B1
-                "2-FARM-P2":    "2026-02-21",                          // Farma B2
-                "2-INMU-P2":    "2026-02-26",                          // Inmuno B2
-                "2-FISIO-P2":   "2026-03-07"                           // Fisio B2
+                "2-INF2-P2":    "2025-11-26",
+                "2-INMU-P1":    "2025-11-28",
+                "2-INF2-O1":    "2025-12-02",
+                "2-INF2-O2":    "2025-12-08",
+                "2-FARM-P1":    "2025-12-10",
+                "2-FISIO-P1":   "2026-01-10",
+                "2-MICRO-P1":   "2026-01-17",
+                "2-IBC2-P1":    "2026-01-21",
+                "2-PCSV-P1":    "2026-01-29",
+                "2-ICR-P1-PRA": ["2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13"],
+                "2-ICR-P1-TEO": "2026-02-14",
+                "2-FARM-P2":    "2026-02-21",
+                "2-INMU-P2":    "2026-02-26",
+                "2-FISIO-P2":   "2026-03-07"
             };
         }
     }
-
     function __buildPresetSupportMap(year, proposals, groups){
-        // soporte por examen: cuenta grupos que coinciden EXACTO; si la propuesta es rango, cuenta si el grupo está dentro del rango
         const map = {};
         for(const ex of EXAMS_BY_YEAR[year]){
             const raw = proposals[ex.id];
@@ -805,7 +768,6 @@
         }
         return map;
     }
-
     function __showPreset(){
         try{
             const sel = document.querySelector('input[name="yr"]:checked');
@@ -813,13 +775,12 @@
             const proposals = __presetProposalsFor(year);
             const groupsData = (typeof cache!=="undefined" && cache.get(year)?.groups) ? cache.get(year).groups : [];
             const supportMap = __buildPresetSupportMap(year, proposals, groupsData);
-            const title = (year===1? "Propuesta de representantes (Primero)" : "Propuesta de representantes (Segundo)");
+            const title = (year===1? "Propuesta de la Última Mesa de Diálogo (Primero)" : "Propuesta de la Última Mesa de Diálogo (Segundo)");
             renderSplit(title, year, proposals, supportMap, null);
         }catch(e){
-            console.error("No se pudo mostrar la propuesta de representantes:", e);
+            console.error("No se pudo mostrar la propuesta de la Última Mesa de Diálogo:", e);
         }
     }
-
     document.addEventListener("DOMContentLoaded", ()=>{
         const btn = document.getElementById("btn-preset3");
         if(btn){
