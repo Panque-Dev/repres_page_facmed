@@ -1,7 +1,7 @@
 (function(){
     "use strict";
 
-    /* ================= CONFIG ================= */
+    // ================= CONFIG =================
     const YEAR1_RANGE = { min: 1101, max: 1182 };
     const YEAR2_RANGE = { min: 2201, max: 2265 };
 
@@ -27,8 +27,9 @@
         "2025-12-24": "Nochebuena",
         "2025-12-25": "Navidad",
         "2026-01-01": "Año Nuevo",
-        "2026-02-02": "Día de la Constitución",
+        "2026-02-02": "Día de la Constitución"
     };
+    const HOLIDAYS_SET = new Set(Object.keys(SPECIAL_DAY_LABELS));
 
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
@@ -113,10 +114,10 @@
         "2026-04-27": { kind: "blocked" },
         "2026-04-28": { kind: "blocked" },
         "2026-04-29": { kind: "blocked" },
-        "2026-04-30": { kind: "blocked" },
+        "2026-04-30": { kind: "blocked" }
     };
 
-    // ===== Ajustes visibles (sin tocar tu UI)
+    // ===== Ajustes visibles
     const TOTAL_RESPONSES = 202;
     const BAR_CONFIG = [
         { max: 82, target: 79 }, // primero
@@ -127,7 +128,7 @@
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const iso = (d)=> d.toISOString().slice(0,10);
     const parseDate = (s)=> new Date(s+"T00:00:00");
-    const isSunday = (d)=> d.getDay()===0; // igual al main
+    const isSunday = (d)=> d.getDay()===0;
     const within = (s, a, b)=> s>=a && s<=b;
 
     // custom blocks opcionales
@@ -285,7 +286,6 @@
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
             { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
 
-            // IB II para preset de la 3a propuesta
             { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
@@ -294,7 +294,7 @@
         ]
     };
 
-    // ===== helpers UI y render (sin mover tu lógica previa)
+    // ===== helpers UI y render
     const qs = (s, r=document)=> r.querySelector(s);
     const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
     const $id = (id)=> document.getElementById(id);
@@ -344,6 +344,119 @@
         const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
         row.appendChild(l); row.appendChild(v); return row;
     }
+
+    // ===== Calendario
+    function monthList(){
+        const out=[]; const s=parseDate(CAL_START_DATE), e=parseDate(CAL_END_DATE);
+        let c=new Date(s.getFullYear(), s.getMonth(), 1);
+        while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
+        return out;
+    }
+
+    // Prioridad de rótulos: festivo > Fournier parcial > Fournier bloqueado/vacaciones > no eval/paro > fin de semana > custom
+    function applyCalendarBlocks(section, y, m){
+        const custom = getCustomBlocks();
+        const grid = section.querySelector(".month-grid");
+        const first = new Date(y,m,1), last = new Date(y,m+1,0);
+        let start=first.getDay(); if(start===0) start=7;
+        const base = 7 + (start - 1);
+
+        for(let d=1; d<=last.getDate(); d++){
+            const cell = grid.children[base + (d-1)];
+            const dt = new Date(y, m, d);
+            const ds = iso(dt);
+
+            const header = cell.querySelector(".day-header");
+            let meta = header.querySelector(".day-meta");
+            if(!meta){ meta = document.createElement("span"); meta.className="day-meta"; header.appendChild(meta); }
+
+            // Flags de estado
+            const isWE   = isSunday(dt);
+            const inVac  = within(ds, VACATION_START_DATE, VACATION_END_DATE) || within(ds, VACATION_SS_START, VACATION_SS_END);
+            const inStrike = within(ds, STRIKE_START_DATE, STRIKE_END_DATE);
+            const inNoEval = within(ds, NOEVAL_START_DATE, NOEVAL_END_DATE);
+            const isHoliday = HOLIDAYS_SET.has(ds);
+            const fr = FOURNIER_RESTRICTIONS[ds] || null;
+
+            // Clases visuales
+            if(isWE) cell.classList.add("weekend","blocked","blocked-weekend");
+            if(inVac) cell.classList.add("vacation","blocked","blocked-vacation");
+            if(isHoliday) cell.classList.add("blocked","blocked-holiday");
+            if(inStrike) cell.classList.add("blocked-partial");
+            if(inNoEval) cell.classList.add("blocked-partial");
+
+            if(fr){
+                if(fr.kind==="blocked"){
+                    cell.classList.add("vacation","blocked","blocked-fournier");
+                }else if(fr.kind==="vac"){
+                    cell.classList.add("vacation","blocked","blocked-fournier");
+                }else if(fr.kind==="partial_after"){
+                    cell.classList.add("blocked-partial","blocked-fournier-after");
+                }else if(fr.kind==="partial_until"){
+                    cell.classList.add("blocked-partial","blocked-fournier-until");
+                }
+            }
+
+            // Selección de etiqueta con prioridad
+            let label = "";
+            // 1) Festivo
+            if(isHoliday) label = SPECIAL_DAY_LABELS[ds] || "Festivo";
+            // 2) Fournier parcial (solo si no es festivo)
+            else if(fr && (fr.kind==="partial_after" || fr.kind==="partial_until")){
+                label = fr.kind==="partial_after" ? `Fournier desde ${fr.freeFrom||"15:00"}`
+                    : `Fournier hasta ${fr.freeUntil||"16:00"}`;
+            }
+            // 3) Vacaciones o Fournier bloqueado (si no es festivo)
+            else if(inVac || (fr && (fr.kind==="blocked" || fr.kind==="vac"))){
+                label = inVac ? "Vacaciones" : "Fournier ocupado";
+            }
+            // 4) Paro o sin evaluación
+            else if(inStrike) label = "Paro";
+            else if(inNoEval) label = "Clases sin evaluación";
+            // 5) Fin de semana
+            else if(isWE) label = "Fin de semana";
+            // 6) Custom del HTML
+            if(!label && custom.dates.has(ds)){
+                cell.classList.add("blocked","blocked-custom","vacation");
+                label = custom.labels.get(ds) || "Bloqueado";
+            }
+
+            if(label){ meta.textContent = label; header.classList.add("is-blocked"); }
+        }
+    }
+
+    function buildCalendars(container){
+        container.innerHTML="";
+        monthList().forEach(({y,m})=>{
+            const section=document.createElement("section"); section.className="month";
+            const header=document.createElement("header"); header.className="month-header";
+            const t=document.createElement("h3");
+            t.textContent=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][m]+" "+y;
+            header.appendChild(t);
+            section.appendChild(header);
+
+            const grid=document.createElement("div"); grid.className="month-grid";
+            DAY_NAMES.forEach(d=>{ const el=document.createElement("div"); el.className="day-name"; el.textContent=d; grid.appendChild(el); });
+
+            const first=new Date(y,m,1), last=new Date(y,m+1,0);
+            let start=first.getDay(); if(start===0) start=7;
+            for(let i=1;i<start;i++){ const empty=document.createElement("div"); empty.className="day-cell empty"; grid.appendChild(empty); }
+            for(let d=1; d<=last.getDate(); d++){
+                const cell=document.createElement("div"); cell.className="day-cell";
+                const head=document.createElement("div"); head.className="day-header";
+                const num=document.createElement("div"); num.className="day-number"; num.textContent=d;
+                head.appendChild(num);
+                const meta=document.createElement("span"); meta.className="day-meta"; head.appendChild(meta);
+                cell.appendChild(head);
+                const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
+                grid.appendChild(cell);
+            }
+            section.appendChild(grid);
+            applyCalendarBlocks(section, y, m);
+            container.appendChild(section);
+        });
+    }
+
     function createResultCard(exam, opts={}){
         const { approvedDate, suggestionDate, voters=[], metrics=null, support=null } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
@@ -430,119 +543,6 @@
         return card;
     }
 
-    function monthList(){
-        const out=[]; const s=parseDate(CAL_START_DATE), e=parseDate(CAL_END_DATE);
-        let c=new Date(s.getFullYear(), s.getMonth(), 1);
-        while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
-        return out;
-    }
-
-    // ===== BLOQUEOS: mismos días y clases que el main; compatible con resultados.css
-    function applyCalendarBlocks(section, y, m){
-        const custom = getCustomBlocks();
-        const grid = section.querySelector(".month-grid");
-        const first = new Date(y,m,1), last = new Date(y,m+1,0);
-        let start=first.getDay(); if(start===0) start=7;
-        const base = 7 + (start - 1);
-
-        for(let d=1; d<=last.getDate(); d++){
-            const cell = grid.children[base + (d-1)];
-            const dt = new Date(y, m, d);
-            const ds = iso(dt);
-
-            const header = cell.querySelector(".day-header");
-            let meta = header.querySelector(".day-meta");
-            if(!meta){ meta = document.createElement("span"); meta.className="day-meta"; header.appendChild(meta); }
-            let label = "";
-
-            // fin de semana (domingo) → weekend y blocked-weekend
-            if(isSunday(dt)){
-                cell.classList.add("weekend","blocked","blocked-weekend");
-                label = label || "Fin de semana";
-            }
-
-            // vacaciones/intersemestral → vacation y blocked-vacation
-            if(within(ds, VACATION_START_DATE, VACATION_END_DATE) || within(ds, VACATION_SS_START, VACATION_SS_END)){
-                cell.classList.add("vacation","blocked","blocked-vacation");
-                label = label || "Vacaciones";
-            }
-
-            // paro y clases sin evaluación → leyenda, sin bloquear duro
-            if(within(ds, STRIKE_START_DATE, STRIKE_END_DATE)){
-                label = label || "Paro";
-                cell.classList.add("blocked-partial");
-            }
-            if(within(ds, NOEVAL_START_DATE, NOEVAL_END_DATE)){
-                label = label || "Clases sin evaluación";
-                cell.classList.add("blocked-partial");
-            }
-
-            // festivos
-            if(HOLIDAYS_SET.has(ds)){
-                cell.classList.add("blocked","blocked-holiday");
-                label = label || (SPECIAL_DAY_LABELS[ds] || "Festivo");
-            }
-
-            // Fournier
-            const fr = FOURNIER_RESTRICTIONS[ds] || null;
-            if(fr){
-                if(fr.kind==="blocked"){
-                    cell.classList.add("vacation","blocked","blocked-fournier");
-                    label = "Fournier ocupado";
-                }else if(fr.kind==="vac"){
-                    cell.classList.add("vacation","blocked","blocked-fournier");
-                    label = "Vacaciones";
-                }else if(fr.kind==="partial_after"){
-                    cell.classList.add("blocked-partial","blocked-fournier-after");
-                    label = `Fournier desde ${fr.freeFrom||"15:00"}`;
-                }else if(fr.kind==="partial_until"){
-                    cell.classList.add("blocked-partial","blocked-fournier-until");
-                    label = `Fournier hasta ${fr.freeUntil||"16:00"}`;
-                }
-            }
-
-            // custom del HTML
-            if(custom.dates.has(ds)){
-                cell.classList.add("blocked","blocked-custom","vacation");
-                label = label || (custom.labels.get(ds) || "Bloqueado");
-            }
-
-            if(label){ meta.textContent = label; header.classList.add("is-blocked"); }
-        }
-    }
-
-    function buildCalendars(container){
-        container.innerHTML="";
-        monthList().forEach(({y,m})=>{
-            const section=document.createElement("section"); section.className="month";
-            const header=document.createElement("header"); header.className="month-header";
-            const t=document.createElement("h3");
-            t.textContent=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][m]+" "+y;
-            header.appendChild(t);
-            section.appendChild(header);
-
-            const grid=document.createElement("div"); grid.className="month-grid";
-            DAY_NAMES.forEach(d=>{ const el=document.createElement("div"); el.className="day-name"; el.textContent=d; grid.appendChild(el); });
-
-            const first=new Date(y,m,1), last=new Date(y,m+1,0);
-            let start=first.getDay(); if(start===0) start=7;
-            for(let i=1;i<start;i++){ const empty=document.createElement("div"); empty.className="day-cell empty"; grid.appendChild(empty); }
-            for(let d=1; d<=last.getDate(); d++){
-                const cell=document.createElement("div"); cell.className="day-cell";
-                const head=document.createElement("div"); head.className="day-header";
-                const num=document.createElement("div"); num.className="day-number"; num.textContent=d;
-                head.appendChild(num);
-                const meta=document.createElement("span"); meta.className="day-meta"; head.appendChild(meta);
-                cell.appendChild(head);
-                const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
-                grid.appendChild(cell);
-            }
-            section.appendChild(grid);
-            applyCalendarBlocks(section, y, m);
-            container.appendChild(section);
-        });
-    }
-
     function placeCard(isoStr, card, container){
         const d=parseDate(isoStr);
         const start = parseDate(CAL_START_DATE);
@@ -583,7 +583,7 @@
         }
     }
 
-    // ===== Cómputos (sin cambios)
+    // ===== Cómputos
     function computeExamModes(year, groups){
         const results = [];
         for(const exam of EXAMS_BY_YEAR[year]){
@@ -787,10 +787,8 @@
     }
     function renderFullAsSplit(title, year, cluster, altCluster){
         const proposals = cluster?.proposals || {};
-        theAlt: {
-            const alt = altCluster?.proposals || null;
-            renderSplit(title, year, proposals, null, alt);
-        }
+        const alt = altCluster?.proposals || null;
+        renderSplit(title, year, proposals, null, alt);
     }
 
     let currentYear = 1;
