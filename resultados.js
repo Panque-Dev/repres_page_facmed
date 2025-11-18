@@ -178,11 +178,14 @@
         return SUBJECT_COLORS[key] || "#334155";
     }
 
+    // AHORA: dd-mes-aaaa siempre
     function formatShort(iso){
         try{
             const d = parseDate(iso);
-            const fmt = d.toLocaleDateString("es-MX", { day:"2-digit", month:"short" });
-            return fmt.replace(/\.$/,"");
+            const dd = d.toLocaleDateString("es-MX", { day:"2-digit" });
+            const mon = d.toLocaleDateString("es-MX", { month:"short" }).replace(/\.$/,"");
+            const yy = d.getFullYear();
+            return `${dd}-${mon}-${yy}`;
         }catch(_){ return iso || "—"; }
     }
 
@@ -502,6 +505,11 @@
     function renderFullCalendar(year, cluster, altCluster){
         const calRoot = $id("results-calendar");
         buildCalendars(calRoot);
+
+        // si existiera un panel de apoyo viejo, elimínalo
+        const oldSupport = qs("#cluster-support");
+        if(oldSupport && oldSupport.parentElement){ oldSupport.parentElement.removeChild(oldSupport); }
+
         const metricsById = computeScheduleMetrics(year, cluster.proposals||{});
 
         // ganadores sólidos
@@ -541,36 +549,7 @@
         }
         panel.classList.remove("hide");
 
-        // resumen de apoyo
-        const calWrap = $id("calendar-wrap");
-        let sup = qs("#cluster-support");
-        if(!sup){
-            sup = document.createElement("div");
-            sup.id = "cluster-support";
-            sup.className = "bar-card";
-            calWrap.insertBefore(sup, calWrap.firstChild);
-        }
-        sup.innerHTML = "";
-        const totalGroups = groupsData.length;
-        const suppTitle = document.createElement("div");
-        suppTitle.className = "bar-title";
-        const count = (cluster && cluster.groups) ? cluster.groups.length : 0;
-        const pct = totalGroups ? Math.round(100*count/totalGroups) : 0;
-        suppTitle.textContent = `Apoyo total a esta propuesta: ${count} de ${totalGroups} grupos (${pct}%)`;
-        const bar2 = (function(){
-            const w=document.createElement('div');
-            w.className="progress";
-            w.dataset.max=String(totalGroups);
-            w.dataset.target=String(count);
-            const f=document.createElement('div');
-            f.className="fill";
-            w.appendChild(f);
-            setTimeout(()=>{ f.style.width = (totalGroups? (100*count/totalGroups):0) + '%'; });
-            return w;
-        })();
-        sup.appendChild(suppTitle);
-        sup.appendChild(bar2);
-
+        // Quitado el panel de “Apoyo total a esta propuesta”
         $id("moda-split").classList.add("hide");
         $id("calendar-wrap").classList.remove("hide");
     }
