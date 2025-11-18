@@ -1,19 +1,14 @@
 (function(){
     "use strict";
 
-    // ===== Ajustes visibles =====
-    const TOTAL_RESPONSES = 202;
-    const BAR_CONFIG = [
-        { max: 82, target: 79 }, // primero
-        { max: 65, target: 58 }  // segundo
-    ];
-
-    // ===== Calendario base =====
+    // ==========================
+    //     CONSTANTES GLOBALES
+    // ==========================
     const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    // ===== Bloqueos del calendario =====
+    // Festivos sueltos (compat)
     const HOLIDAYS_SET = new Set([
         "2025-11-17",
         "2025-12-25",
@@ -23,37 +18,18 @@
         "2026-05-01",
         "2026-05-05"
     ]);
-    function isWeekend(d){ const k=d.getDay(); return k===0; }
-    function iso(d){ return d.toISOString().slice(0,10); }
-    function expandRange(a,b){
-        const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
-        while(d<=e){ out.push(iso(d)); d.setDate(d.getDate()+1); }
-        return out;
-    }
-    function getCustomBlocks(){
-        const cfg = (typeof window!=="undefined" && window.CALENDAR_BLOCKS) ? window.CALENDAR_BLOCKS : null;
-        const dates = new Set();
-        const labels = new Map();
-        if(!cfg) return { dates, labels };
-        if(Array.isArray(cfg.dates)){ cfg.dates.forEach(s=>{ dates.add(s); labels.set(s, "custom"); }); }
-        if(Array.isArray(cfg.fournier)){ cfg.fournier.forEach(s=>{ dates.add(s); labels.set(s, "fournier"); }); }
-        if(Array.isArray(cfg.ranges)){
-            cfg.ranges.forEach(r=>{
-                expandRange(r.start, r.end).forEach(s=>{ dates.add(s); labels.set(s, r.label||"custom"); });
-            });
-        }
-        return { dates, labels };
-    }
 
-    // ===== Reglas adicionales (copiadas de main.js) =====
+    // ====== BLOQUEOS (copiados de main.js) ======
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
+    // Paro
     const STRIKE_START_DATE   = "2025-11-01";
     const STRIKE_END_DATE     = "2025-11-18";
 
+    // Clases sin evaluación
     const NOEVAL_START_DATE   = "2025-11-19";
     const NOEVAL_END_DATE     = "2025-11-22";
 
@@ -63,7 +39,7 @@
         "2025-12-24": "Nochebuena",
         "2025-12-25": "Navidad",
         "2026-01-01": "Año Nuevo",
-        "2026-02-02": "Día de la Constitución",
+        "2026-02-02": "Día de la Constitución"
     };
 
     const FOURNIER_RESTRICTIONS = {
@@ -136,19 +112,53 @@
         "2026-04-27": { kind: "blocked" },
         "2026-04-28": { kind: "blocked" },
         "2026-04-29": { kind: "blocked" },
-        "2026-04-30": { kind: "blocked" },
+        "2026-04-30": { kind: "blocked" }
     };
 
-    function isVacationStr(s){
-        return (s>=VACATION_START_DATE && s<=VACATION_END_DATE) ||
-            (s>=VACATION_SS_START && s<=VACATION_SS_END) ||
-            (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
-    }
-    function isStrikeStr(s){ return s>=STRIKE_START_DATE && s<=STRIKE_END_DATE; }
-    function isNoEvaluationStr(s){ return s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE; }
-    function getRestrictionStr(s){ return FOURNIER_RESTRICTIONS[s] || null; }
+    // ==========================
+    //         HELPERS
+    // ==========================
+    const qs  = (s, r=document)=> r.querySelector(s);
+    const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
+    const $id = (id)=> document.getElementById(id);
+    const iso = d => d.toISOString().slice(0,10);
+    const parseDate = s => new Date(s+"T00:00:00");
 
-    // Materias e íconos
+    function expandRange(a,b){
+        const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
+        while(d<=e){ out.push(iso(d)); d.setDate(d.getDate()+1); }
+        return out;
+    }
+
+    // Lee bloqueos externos si existen (opcional)
+    function getCustomBlocks(){
+        const cfg = (typeof window!=="undefined" && window.CALENDAR_BLOCKS) ? window.CALENDAR_BLOCKS : null;
+        const dates = new Set();
+        const labels = new Map();
+        if(!cfg) return { dates, labels };
+        if(Array.isArray(cfg.dates)){ cfg.dates.forEach(s=>{ dates.add(s); labels.set(s, "custom"); }); }
+        if(Array.isArray(cfg.fournier)){ cfg.fournier.forEach(s=>{ dates.add(s); labels.set(s, "fournier"); }); }
+        if(Array.isArray(cfg.ranges)){
+            cfg.ranges.forEach(r=>{
+                expandRange(r.start, r.end).forEach(s=>{ dates.add(s); labels.set(s, r.label||"custom"); });
+            });
+        }
+        return { dates, labels };
+    }
+
+    // Helpers de restricción por string ISO (YYYY-MM-DD)
+    const isVacationStr   = s =>
+        (s>=VACATION_START_DATE && s<=VACATION_END_DATE) ||
+        (s>=VACATION_SS_START   && s<=VACATION_SS_END)   ||
+        (FOURNIER_RESTRICTIONS[s]?.kind === "vac");
+
+    const isStrikeStr       = s => s>=STRIKE_START_DATE && s<=STRIKE_END_DATE;
+    const isNoEvaluationStr = s => s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE;
+    const getRestrictionStr = s => FOURNIER_RESTRICTIONS[s] || null;
+
+    // ==========================
+    //      CATALOGO MATERIAS
+    // ==========================
     const SUBJECT_SIGLAS = {
         "Embriología Humana": { display: "EMB", file: "EMB" },
         "Anatomía": { display: "ANA", file: "ANA" },
@@ -175,7 +185,36 @@
         ICR:"#1D98A8", PCV:"#8E004F"
     };
 
-    // Catálogo de exámenes por año
+    function getSigla(subject){
+        return SUBJECT_SIGLAS[subject] || { display: subject, file: "GEN" };
+    }
+    function hexToRgba(hex, a){
+        const b = (hex||"#334155").replace("#",""); const n=parseInt(b,16);
+        const r = (n>>16)&255, g=(n>>8)&255, bl=n&255;
+        return `rgba(${r},${g},${bl},${a})`;
+    }
+
+    function shortType(t){
+        const s = String(t||"");
+        const lower = s.toLowerCase();
+        const modMatch = s.match(/\(([^)]+)\)/);
+        const mod = modMatch ? ` (${modMatch[1].trim()})` : "";
+        const n1 = /primer/i.test(s) ? "1" : /segundo/i.test(s) ? "2" : /tercer/i.test(s) ? "3" : /cuarto/i.test(s) ? "4" : "";
+        if(lower.includes("ordinario")) return { badge: "ORD" + (n1? " "+n1 : ""), meaning:t };
+        if(lower.includes("extra"))     return { badge: "EXT", meaning:t };
+        if(lower.includes("parcial"))   return { badge: "PAR" + (n1? " "+n1 : "") + mod, meaning:t };
+        return { badge:t||"—", meaning:t||"—" };
+    }
+
+    function colorForExam(exam){
+        const disp = getSigla(exam.subject).display;
+        const key = disp.replace(/\s+/g,'');
+        return SUBJECT_COLORS[key] || SUBJECT_COLORS[key.toUpperCase()] || SUBJECT_COLORS[key.toLowerCase()] || "#334155";
+    }
+
+    // ==========================
+    //      CATALOGO EXAMENES
+    // ==========================
     const EXAMS_BY_YEAR = {
         1: [
             { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "08:00" },
@@ -282,7 +321,7 @@
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
             { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
 
-            // IB II para la propuesta 3
+            // Placeholders para IB II (si aplica a propuestas)
             { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
@@ -291,39 +330,9 @@
         ]
     };
 
-    // ===== helpers =====
-    const qs = (s, r=document)=> r.querySelector(s);
-    const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
-    const $id = (id)=> document.getElementById(id);
-    const parseDate = (s)=> new Date(s+"T00:00:00");
-
-    // Distintivo PAR, ORD, EXT con número; en ICR conserva (TEO)/(PRA)
-    function shortType(t){
-        const s = String(t||"");
-        const lower = s.toLowerCase();
-        const modMatch = s.match(/\(([^)]+)\)/);
-        const mod = modMatch ? ` (${modMatch[1].trim()})` : "";
-        const n1 = /primer/i.test(s) ? "1" : /segundo/i.test(s) ? "2" : /tercer/i.test(s) ? "3" : /cuarto/i.test(s) ? "4" : "";
-        if(lower.includes("ordinario")) return { badge: "ORD" + (n1? " "+n1 : ""), meaning:t };
-        if(lower.includes("extra"))     return { badge: "EXT", meaning:t };
-        if(lower.includes("parcial"))   return { badge: "PAR" + (n1? " "+n1 : "") + mod, meaning:t };
-        return { badge:t||"—", meaning:t||"—" };
-    }
-    function getSigla(subject){
-        return SUBJECT_SIGLAS[subject] || { display: subject, file: "GEN" };
-    }
-    function hexToRgba(hex, a){
-        const b = (hex||"#334155").replace("#",""); const n=parseInt(b,16);
-        const r = (n>>16)&255, g=(n>>8)&255, bl=n&255;
-        return `rgba(${r},${g},${bl},${a})`;
-    }
-    function colorForExam(exam){
-        const disp = getSigla(exam.subject).display;
-        const key = disp.replace(/\s+/g,'');
-        return SUBJECT_COLORS[key] || SUBJECT_COLORS[key.toUpperCase()] || SUBJECT_COLORS[key.toLowerCase()] || "#334155";
-    }
-
-    // dd-mes-aaaa
+    // ==========================
+    //        UI HELPERS
+    // ==========================
     function formatShort(isoStr){
         try{
             const d = parseDate(isoStr);
@@ -377,7 +386,7 @@
         const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(exam.officialDate || "");
 
         if(approvedDate || exam.officialDate) card.appendChild(lineStacked("fecha original:", appText));
-        card.appendChild(lineStacked("propuesta:", sugText)); // ← cambio solicitado
+        card.appendChild(lineStacked("propuesta:", sugText));
 
         if(metrics){
             const { prevAllDays, nextAllDays, nextSameDays } = metrics;
@@ -412,6 +421,7 @@
 
         return card;
     }
+
     function createGhostCard(exam){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
@@ -434,81 +444,25 @@
         return card;
     }
 
+    // ==========================
+    //        CALENDARIO
+    // ==========================
     function monthList(){
         const out=[]; const s=parseDate(CAL_START_DATE), e=parseDate(CAL_END_DATE);
         let c=new Date(s.getFullYear(), s.getMonth(), 1);
         while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
         return out;
     }
-    function applyCalendarBlocks(section, y, m){
-        const custom = getCustomBlocks();
-        const grid = section.querySelector(".month-grid");
-        const first = new Date(y,m,1), last = new Date(y,m+1,0);
-        let start=first.getDay(); if(start===0) start=7;
-        const base = 7 + (start - 1);
-        for(let d=1; d<=last.getDate(); d++){
-            const cell = grid.children[base + (d-1)];
-            const dt = new Date(y, m, d);
-            const k = iso(dt);
-            const dow = dt.getDay();
 
-            // ensure meta element exists
-            const head = cell.querySelector(".day-header");
-            let meta = head ? head.querySelector(".day-meta") : null;
-            if(head && !meta){ meta = document.createElement("span"); meta.className="day-meta"; head.appendChild(meta); }
-
-            // reset classes set by previous renders
-            cell.classList.remove("blocked","blocked-weekend","blocked-holiday","blocked-fournier","blocked-custom","vacation","weekend");
-            if(head) head.classList.remove("is-blocked");
-
-            // weekend (domingo) como en main.js
-            if(dow===0){ cell.classList.add("weekend"); }
-
-            // vacaciones, paro, no evaluación y restricciones de fournier
-            const fr = getRestrictionStr(k);
-            if(isVacationStr(k)) cell.classList.add("vacation");
-            if(isStrikeStr(k))   cell.classList.add("vacation");
-            if(fr && fr.kind==="blocked") cell.classList.add("vacation");
-
-            // compatibilidad con bloqueos personalizados
-            if(custom.dates.has(k)){
-                const label = custom.labels.get(k) || "custom";
-                if(label==="fournier") cell.classList.add("vacation"); // coincide con estilo de main.js
-                cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
-                cell.dataset.blockLabel = label;
-                if(head) head.classList.add("is-blocked");
-            }
-
-            // festivos antiguos (por compat), mantén etiqueta
-            if(HOLIDAYS_SET.has(k)){
-                cell.classList.add("vacation");
-                if(head) head.classList.add("is-blocked");
-            }
-
-            // Etiquetas de meta como en main.js
-            if(meta){
-                if(k===CAL_START_DATE) meta.textContent="Inicio";
-                else if(k===CAL_END_DATE) meta.textContent="Fin";
-                else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
-                else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
-                else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
-                else if(isStrikeStr(k)) meta.textContent="Paro";
-                else if(isNoEvaluationStr(k)) meta.textContent="Clases sin evaluación";
-                else if(isVacationStr(k)) meta.textContent="Vacaciones";
-                else if(dow===0) meta.textContent="Fin de semana";
-                if(SPECIAL_DAY_LABELS[k]) meta.textContent = SPECIAL_DAY_LABELS[k];
-            }
-        }
-    }
     function buildCalendars(container){
         container.innerHTML="";
         monthList().forEach(({y,m})=>{
             const section=document.createElement("section"); section.className="month";
+
             const header=document.createElement("header"); header.className="month-header";
             const t=document.createElement("h3");
             t.textContent=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][m]+" "+y;
-            header.appendChild(t);
-            section.appendChild(header);
+            header.appendChild(t); section.appendChild(header);
 
             const grid=document.createElement("div"); grid.className="month-grid";
             DAY_NAMES.forEach(d=>{ const el=document.createElement("div"); el.className="day-name"; el.textContent=d; grid.appendChild(el); });
@@ -529,21 +483,99 @@
             container.appendChild(section);
         });
     }
+
+    function applyCalendarBlocks(section, y, m){
+        const custom = getCustomBlocks();
+        const grid = section.querySelector(".month-grid");
+        const first = new Date(y,m,1), last = new Date(y,m+1,0);
+        let start=first.getDay(); if(start===0) start=7; // lunes a domingo
+        const base = 7 + (start - 1);
+
+        for(let d=1; d<=last.getDate(); d++){
+            const cell = grid.children[base + (d-1)];
+            const dt = new Date(y, m, d);
+            const k = iso(dt);
+            const dow = dt.getDay();
+
+            // header y meta
+            const head = cell.querySelector(".day-header") || (()=> {
+                const h=document.createElement("div"); h.className="day-header";
+                const num=document.createElement("div"); num.className="day-number"; num.textContent=d;
+                h.appendChild(num); cell.prepend(h); return h;
+            })();
+            let meta = head.querySelector(".day-meta");
+            if(!meta){ meta = document.createElement("span"); meta.className="day-meta"; head.appendChild(meta); }
+
+            // limpiar marcas previas
+            cell.classList.remove("blocked","blocked-weekend","blocked-holiday","blocked-fournier","blocked-custom","vacation","weekend");
+            head.classList.remove("is-blocked");
+            delete cell.dataset.blockLabel;
+
+            // domingo como fin de semana
+            if(dow===0){ cell.classList.add("weekend"); }
+
+            // restricciones fournier y periodos especiales
+            const fr = getRestrictionStr(k);
+            if(isVacationStr(k)) cell.classList.add("vacation");
+            if(isStrikeStr(k))   cell.classList.add("vacation");
+            if(isNoEvaluationStr(k)) cell.classList.add("vacation");
+            if(fr && fr.kind==="blocked") cell.classList.add("vacation");
+
+            // bloqueos personalizados (si existieran)
+            if(custom.dates.has(k)){
+                const label = custom.labels.get(k) || "custom";
+                cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
+                cell.dataset.blockLabel = label;
+                head.classList.add("is-blocked");
+            }
+
+            // festivos sueltos previos
+            if(HOLIDAYS_SET && HOLIDAYS_SET.has(k)){
+                cell.classList.add("vacation");
+                head.classList.add("is-blocked");
+            }
+
+            // textos meta
+            if(k===CAL_START_DATE)        meta.textContent="Inicio";
+            else if(k===CAL_END_DATE)     meta.textContent="Fin";
+            else if(fr && fr.kind==="blocked")      meta.textContent="Fournier ocupado";
+            else if(fr && fr.kind==="partial_after")meta.textContent=`Fournier desde ${fr.freeFrom||"15:00"}`;
+            else if(fr && fr.kind==="partial_until")meta.textContent=`Fournier hasta ${fr.freeUntil||"16:00"}`;
+            else if(isStrikeStr(k))       meta.textContent="Paro";
+            else if(isNoEvaluationStr(k)) meta.textContent="Clases sin evaluación";
+            else if(isVacationStr(k))     meta.textContent="Vacaciones";
+            else if(dow===0)              meta.textContent="Fin de semana";
+            if(SPECIAL_DAY_LABELS[k])     meta.textContent = SPECIAL_DAY_LABELS[k];
+        }
+    }
+
+    function monthIndexFromStart(d){
+        const s = parseDate(CAL_START_DATE);
+        return (d.getFullYear()-s.getFullYear())*12 + d.getMonth()-s.getMonth();
+    }
+
     function placeCard(isoStr, card, container){
+        if(!isoStr) return;
         const d=parseDate(isoStr);
-        const month = container.querySelectorAll(".month")[ (d.getFullYear()-parseDate(CAL_START_DATE).getFullYear())*12 + d.getMonth() - parseDate(CAL_START_DATE).getMonth() ];
+        const idx = monthIndexFromStart(d);
+        const months = container.querySelectorAll(".month");
+        const month = months[idx];
         if(!month) return;
         const grid = month.querySelector(".month-grid");
         const first = new Date(d.getFullYear(), d.getMonth(), 1);
         let start=first.getDay(); if(start===0) start=7;
         const index = 7 + (d.getDate() + start - 2);
         const cell = grid.children[index];
-        const list = cell.querySelector(".exam-list");
+        if(!cell) return;
+        const list = cell.querySelector(".exam-list") || cell;
         list.appendChild(card);
     }
+
     function placeGhost(isoStr, card, container){ placeCard(isoStr, card, container); }
 
-    // cache
+    // ==========================
+    //       DATOS REMOTOS
+    // ==========================
     const cache = new Map();
 
     async function fetchYear(year){
@@ -567,7 +599,9 @@
         }
     }
 
-    // ===== Cómputos =====
+    // ==========================
+    //       CÁLCULOS MODA
+    // ==========================
     function computeExamModes(year, groups){
         const results = [];
         for(const exam of EXAMS_BY_YEAR[year]){
@@ -586,10 +620,12 @@
         }
         return results;
     }
+
     function canonicalKeyFor(year, proposals){
         const ids = EXAMS_BY_YEAR[year].map(e=>e.id);
         return ids.map(id=> proposals?.[id] ? `${id}:${proposals[id]}` : `${id}:-`).join("|");
     }
+
     function clusterCalendars(year, groups){
         const clusters = new Map();
         for(const g of groups){
@@ -602,10 +638,13 @@
         return arr;
     }
 
+    // ==========================
+    //         RENDER
+    // ==========================
     function buildResultsForYear(container, year, groups){
         container.innerHTML="";
 
-        // Modas por examen
+        // Encabezado por moda
         const header1 = document.createElement("h2");
         header1.textContent = "Propuesta por Moda por Examen";
         container.appendChild(header1);
@@ -623,7 +662,7 @@
         });
         container.appendChild(list1);
 
-        // Calendarios completos
+        // Calendarios completos más repetidos
         const header2 = document.createElement("h2");
         header2.textContent = "Calendarios Completos más Repetidos";
         container.appendChild(header2);
@@ -661,15 +700,15 @@
     }
 
     async function main(){
-        const container = document.getElementById("results-root");
-        if(!container) return;
+        const container =
+            $id("results-root") ||
+            $id("root") ||
+            qs("[data-results-root]") ||
+            document.body;
 
         try{
             const year1 = await fetchYear(1);
             const year2 = await fetchYear(2);
-
-            const mid = document.createElement("div");
-            mid.className="mid-sep";
 
             const sec1 = document.createElement("section");
             sec1.className="results-year";
