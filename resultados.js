@@ -13,7 +13,8 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    // ===== Bloqueos del calendario =====
+    // ===== Bloqueos del calendario (alineados con main.js) =====
+    // Festivos “duros”
     const HOLIDAYS_SET = new Set([
         "2025-11-17",
         "2025-12-25",
@@ -23,8 +24,106 @@
         "2026-05-01",
         "2026-05-05"
     ]);
-    function isWeekend(d){ const k=d.getDay(); return k===0 || k===6; }
+    // Vacaciones, paro, días sin evaluación
+    const VACATION_START_DATE = "2025-12-12";
+    const VACATION_END_DATE   = "2026-01-04";
+    const VACATION_SS_START   = "2026-03-29";
+    const VACATION_SS_END     = "2026-04-05";
+
+    const STRIKE_START_DATE   = "2025-11-01";
+    const STRIKE_END_DATE     = "2025-11-18";
+
+    const NOEVAL_START_DATE   = "2025-11-19";
+    const NOEVAL_END_DATE     = "2025-11-22";
+
+    const SPECIAL_DAY_LABELS = {
+        "2025-11-17": "Día de la Revolución",
+        "2025-12-12": "Virgen de Guadalupe (ya no asisten los trabajadores)",
+        "2025-12-24": "Nochebuena",
+        "2025-12-25": "Navidad",
+        "2026-01-01": "Año Nuevo",
+        "2026-02-02": "Día de la Constitución"
+    };
+
+    // Restricciones detalladas del Fournier
+    const FOURNIER_RESTRICTIONS = {
+        "2025-11-24": { kind: "blocked" },
+
+        "2025-12-01": { kind: "blocked" },
+        "2025-12-02": { kind: "blocked" },
+        "2025-12-03": { kind: "blocked" },
+        "2025-12-04": { kind: "blocked" },
+        "2025-12-08": { kind: "blocked" },
+
+        "2026-01-06": { kind: "blocked" },
+        "2026-01-07": { kind: "blocked" },
+        "2026-01-13": { kind: "blocked" },
+        "2026-01-14": { kind: "blocked" },
+        "2026-01-15": { kind: "blocked" },
+        "2026-01-19": { kind: "partial_after", freeFrom: "15:00" },
+        "2026-01-21": { kind: "blocked" },
+        "2026-01-22": { kind: "blocked" },
+        "2026-01-23": { kind: "blocked" },
+        "2026-01-26": { kind: "blocked" },
+        "2026-01-27": { kind: "blocked" },
+        "2026-01-28": { kind: "blocked" },
+        "2026-01-30": { kind: "blocked" },
+
+        "2026-02-02": { kind: "vac" },
+        "2026-02-03": { kind: "blocked" },
+        "2026-02-04": { kind: "blocked" },
+        "2026-02-05": { kind: "blocked" },
+        "2026-02-06": { kind: "blocked" },
+        "2026-02-09": { kind: "blocked" },
+        "2026-02-10": { kind: "blocked" },
+        "2026-02-11": { kind: "blocked" },
+        "2026-02-12": { kind: "blocked" },
+        "2026-02-17": { kind: "blocked" },
+        "2026-02-18": { kind: "blocked" },
+        "2026-02-19": { kind: "blocked" },
+        "2026-02-20": { kind: "blocked" },
+        "2026-02-23": { kind: "blocked" },
+        "2026-02-24": { kind: "blocked" },
+        "2026-02-25": { kind: "free" },
+        "2026-02-26": { kind: "free" },
+        "2026-02-27": { kind: "free" },
+        "2026-02-28": { kind: "free" },
+
+        "2026-03-02": { kind: "blocked" },
+        "2026-03-04": { kind: "partial_until", freeUntil: "16:00" },
+        "2026-03-05": { kind: "blocked" },
+        "2026-03-06": { kind: "blocked" },
+        "2026-03-10": { kind: "blocked" },
+        "2026-03-11": { kind: "blocked" },
+        "2026-03-12": { kind: "blocked" },
+        "2026-03-13": { kind: "blocked" },
+        "2026-03-17": { kind: "blocked" },
+        "2026-03-18": { kind: "blocked" },
+        "2026-03-19": { kind: "blocked" },
+        "2026-03-20": { kind: "blocked" },
+        "2026-03-23": { kind: "blocked" },
+        "2026-03-24": { kind: "blocked" },
+        "2026-03-25": { kind: "blocked" },
+        "2026-03-26": { kind: "blocked" },
+        "2026-03-27": { kind: "blocked" },
+        "2026-03-30": { kind: "vac" },
+        "2026-03-31": { kind: "vac" },
+
+        "2026-04-07": { kind: "blocked" },
+        "2026-04-15": { kind: "blocked" },
+        "2026-04-22": { kind: "blocked" },
+        "2026-04-24": { kind: "blocked" },
+        "2026-04-27": { kind: "blocked" },
+        "2026-04-28": { kind: "blocked" },
+        "2026-04-29": { kind: "blocked" },
+        "2026-04-30": { kind: "blocked" }
+    };
+
+    // utilidades locales para bloqueos
+    function isSunday(d){ return d.getDay()===0; } // igual que en main: solo domingo
     function iso(d){ return d.toISOString().slice(0,10); }
+    function within(s, a, b){ return s>=a && s<=b; }
+
     function expandRange(a,b){
         const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
         while(d<=e){ out.push(iso(d)); d.setDate(d.getDate()+1); }
@@ -179,7 +278,7 @@
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
             { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
 
-            // IB II para la propuesta 3
+            // IB II para la propuesta 3 (sin oficiales; solo para mostrar preset)
             { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
@@ -274,7 +373,7 @@
         const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(exam.officialDate || "");
 
         if(approvedDate || exam.officialDate) card.appendChild(lineStacked("fecha original:", appText));
-        card.appendChild(lineStacked("propuesta:", sugText)); // ← cambio solicitado
+        card.appendChild(lineStacked("propuesta:", sugText)); // mantiene dd-mes-aaaa
 
         if(metrics){
             const { prevAllDays, nextAllDays, nextSameDays } = metrics;
@@ -338,77 +437,73 @@
         return out;
     }
 
-    // === NUEVO: util mínimo para meta y fondo, sin tocar la lógica ===
-    function __ensureMeta(head){
-        let meta = head.querySelector(".day-meta");
-        if(!meta){
-            meta = document.createElement("span");
-            meta.className = "day-meta";
-            head.appendChild(meta);
-        }
-        return meta;
-    }
-    function __paint(cell, kind){
-        // usa variables CSS si existen; si no, aplica un tinte muy sutil
-        const map = {
-            weekend:  "var(--cal-bg-weekend, rgba(0,0,0,0.035))",
-            holiday:  "var(--cal-bg-holiday, rgba(255,0,0,0.06))",
-            fournier: "var(--cal-bg-fournier, rgba(37,99,235,0.08))",
-            custom:   "var(--cal-bg-custom, rgba(0,0,0,0.045))"
-        };
-        cell.style.background = map[kind] || "var(--cal-bg, transparent)";
-    }
-
     function applyCalendarBlocks(section, y, m){
         const custom = getCustomBlocks();
         const grid = section.querySelector(".month-grid");
         const first = new Date(y,m,1), last = new Date(y,m+1,0);
         let start=first.getDay(); if(start===0) start=7;
         const base = 7 + (start - 1);
+
         for(let d=1; d<=last.getDate(); d++){
             const cell = grid.children[base + (d-1)];
             const dt = new Date(y, m, d);
-            const k = iso(dt);
+            const ds = iso(dt);
 
             let blocked = false;
-            // fondo neutro por si venía de otro render
-            cell.style.background = "";
 
-            if(isWeekend(dt)){
-                blocked = true;
-                cell.classList.add("blocked","blocked-weekend");
-                const head = cell.querySelector(".day-header"); head && head.classList.add("is-blocked");
-                if(head){ __ensureMeta(head).textContent = "Fin de semana"; }
-                __paint(cell, "weekend");
+            // domingo (igual que main.js)
+            if(isSunday(dt)){ blocked = true; cell.classList.add("blocked","blocked-weekend"); }
+
+            // vacaciones e intersemestral
+            if(within(ds, VACATION_START_DATE, VACATION_END_DATE) || within(ds, VACATION_SS_START, VACATION_SS_END)){
+                blocked = true; cell.classList.add("blocked","blocked-vacation");
             }
-            if(HOLIDAYS_SET.has(k)){
-                blocked = true;
-                cell.classList.add("blocked","blocked-holiday");
-                const head = cell.querySelector(".day-header"); head && head.classList.add("is-blocked");
-                if(head){ __ensureMeta(head).textContent = "Festivo"; }
-                __paint(cell, "holiday");
+
+            // paro
+            if(within(ds, STRIKE_START_DATE, STRIKE_END_DATE)){
+                blocked = true; cell.classList.add("blocked","blocked-strike");
             }
-            if(custom.dates.has(k)){
+
+            // días sin evaluación
+            if(within(ds, NOEVAL_START_DATE, NOEVAL_END_DATE)){
+                blocked = true; cell.classList.add("blocked","blocked-noeval");
+            }
+
+            // etiquetas “festivo” o especiales
+            if(HOLIDAYS_SET.has(ds) || Object.prototype.hasOwnProperty.call(SPECIAL_DAY_LABELS, ds)){
+                blocked = true; cell.classList.add("blocked","blocked-holiday");
+            }
+
+            // restricciones del Fournier
+            const fr = FOURNIER_RESTRICTIONS[ds] || null;
+            if(fr){
+                if(fr.kind === "blocked"){
+                    blocked = true; cell.classList.add("blocked","blocked-fournier");
+                }else if(fr.kind === "vac"){
+                    blocked = true; cell.classList.add("blocked","blocked-vacation");
+                }else if(fr.kind === "partial_after"){
+                    // no bloquea del todo, pero marcamos como “condicionado”
+                    cell.classList.add("blocked-partial","blocked-fournier-after");
+                    cell.dataset.blockLabel = "Fournier desde " + (fr.freeFrom||"15:00");
+                }else if(fr.kind === "partial_until"){
+                    cell.classList.add("blocked-partial","blocked-fournier-until");
+                    cell.dataset.blockLabel = "Fournier hasta " + (fr.freeUntil||"16:00");
+                }else if(fr.kind === "free"){
+                    // explícitamente libre
+                }
+            }
+
+            // bloques personalizados (si el HTML define window.CALENDAR_BLOCKS)
+            if(custom.dates.has(ds)){
                 blocked = true;
-                const label = custom.labels.get(k) || "custom";
+                const label = custom.labels.get(ds) || "custom";
                 cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
                 cell.dataset.blockLabel = label;
-                const head = cell.querySelector(".day-header"); head && head.classList.add("is-blocked");
-                if(head){
-                    const meta = __ensureMeta(head);
-                    meta.textContent = label==="fournier" ? "Fournier" : "Bloqueado";
-                }
-                __paint(cell, label==="fournier" ? "fournier" : "custom");
             }
 
-            // si no está bloqueado, asegúrate de retirar meta previa
-            if(!blocked){
+            if(blocked){
                 const head = cell.querySelector(".day-header");
-                if(head){
-                    const meta = head.querySelector(".day-meta");
-                    if(meta) meta.textContent = "";
-                    head.classList.remove("is-blocked");
-                }
+                head && head.classList.add("is-blocked");
             }
         }
     }
@@ -438,10 +533,6 @@
                 grid.appendChild(cell);
             }
             section.appendChild(grid);
-
-            // fondo general muy sutil del mes (no interfiere con celdas)
-            section.style.background = "var(--calendar-bg, transparent)";
-
             applyCalendarBlocks(section, y, m);
             container.appendChild(section);
         });
@@ -589,88 +680,90 @@
     function renderSplit(title, year, proposalsMap, perExamSupportMap=null, altProposalsMap=null){
         const split = $id("moda-split");
         const list  = $id("moda-cards");
-        const cal   = $id("moda-calendar");
+        theCal: {
+            const cal   = $id("moda-calendar");
 
-        $id("results-title").textContent = title;
-        $id("calendar-wrap").classList.add("hide");
-        split.classList.remove("hide");
+            $id("results-title").textContent = title;
+            $id("calendar-wrap").classList.add("hide");
+            split.classList.remove("hide");
 
-        list.innerHTML="";
-        buildCalendars(cal);
+            list.innerHTML="";
+            buildCalendars(cal);
 
-        const metricsById = computeScheduleMetrics(year, proposalsMap);
+            const metricsById = computeScheduleMetrics(year, proposalsMap);
 
-        const present = EXAMS_BY_YEAR[year]
-            .filter(ex=> proposalsMap[ex.id])
-            .map(ex=>{
-                const raw = proposalsMap[ex.id];
-                const arr = Array.isArray(raw) ? raw.slice() : [raw];
-                return { ex, dates: arr, main: arr[0] };
-            })
-            .sort((a,b)=> a.main.localeCompare(b.main) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
+            const present = EXAMS_BY_YEAR[year]
+                .filter(ex=> proposalsMap[ex.id])
+                .map(ex=>{
+                    const raw = proposalsMap[ex.id];
+                    const arr = Array.isArray(raw) ? raw.slice() : [raw];
+                    return { ex, dates: arr, main: arr[0] };
+                })
+                .sort((a,b)=> a.main.localeCompare(b.main) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
 
-        const totalGroups = (cache.get(year)?.groups || []).length;
+            const totalGroups = (cache.get(year)?.groups || []).length;
 
-        present.forEach(r=>{
-            const support = perExamSupportMap && perExamSupportMap[r.ex.id]
-                ? { count: perExamSupportMap[r.ex.id].count, total: totalGroups }
-                : null;
+            present.forEach(r=>{
+                const support = perExamSupportMap && perExamSupportMap[r.ex.id]
+                    ? { count: perExamSupportMap[r.ex.id].count, total: totalGroups }
+                    : null;
 
-            const card = createResultCard(r.ex, {
-                approvedDate: r.ex.officialDate,
-                suggestionDate: r.main,
-                metrics: metricsById[r.ex.id],
-                support
-            });
-
-            const holder = document.createElement("div");
-            holder.className="stat-card";
-            holder.style.minHeight = "0";
-            holder.style.height = "auto";
-            holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.ex), .12));
-            holder.appendChild(card);
-            list.appendChild(holder);
-
-            r.dates.forEach(d=>{
-                const cardCal = createResultCard(r.ex, {
+                const card = createResultCard(r.ex, {
                     approvedDate: r.ex.officialDate,
-                    suggestionDate: d,
-                    metrics: metricsById[r.ex.id]
+                    suggestionDate: r.main,
+                    metrics: metricsById[r.ex.id],
+                    support
                 });
-                placeCard(d, cardCal, cal);
-            });
-        });
 
-        if(altProposalsMap){
-            for(const ex of EXAMS_BY_YEAR[year]){
-                const raw1 = proposalsMap[ex.id];
-                const raw2 = altProposalsMap[ex.id];
-                const d1 = Array.isArray(raw1)? raw1[0] : raw1;
-                const d2 = Array.isArray(raw2)? raw2[0] : raw2;
-                if(d1 && d2 && d1!==d2){
-                    const ghost = createGhostCard(ex);
-                    placeGhost(d2, ghost, cal);
+                const holder = document.createElement("div");
+                holder.className="stat-card";
+                holder.style.minHeight = "0";
+                holder.style.height = "auto";
+                holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.ex), .12));
+                holder.appendChild(card);
+                list.appendChild(holder);
+
+                r.dates.forEach(d=>{
+                    const cardCal = createResultCard(r.ex, {
+                        approvedDate: r.ex.officialDate,
+                        suggestionDate: d,
+                        metrics: metricsById[r.ex.id]
+                    });
+                    placeCard(d, cardCal, cal);
+                });
+            });
+
+            if(altProposalsMap){
+                for(const ex of EXAMS_BY_YEAR[year]){
+                    const raw1 = proposalsMap[ex.id];
+                    const raw2 = altProposalsMap[ex.id];
+                    const d1 = Array.isArray(raw1)? raw1[0] : raw1;
+                    const d2 = Array.isArray(raw2)? raw2[0] : raw2;
+                    if(d1 && d2 && d1!==d2){
+                        const ghost = createGhostCard(ex);
+                        placeGhost(d2, ghost, cal);
+                    }
                 }
             }
-        }
 
-        const panel = $id("similarity-panel");
-        const listSim = $id("similarity-list");
-        const legend = $id("similarity-legend-90");
-        listSim.innerHTML="";
-        const groupsData = cache.get(year)?.groups || [];
-        const simpleMap = normalizeForSimilarity(proposalsMap);
-        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, simpleMap, g.proposals||{}) }));
-        all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-        legend.textContent = String(all.filter(x=> x.pct >= 90).length);
-        for(const it of all){
-            const row = document.createElement("div");
-            row.className = "sim-item";
-            row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
-            row.style.setProperty('--fill', it.pct + '%');
-            listSim.appendChild(row);
+            const panel = $id("similarity-panel");
+            const listSim = $id("similarity-list");
+            const legend = $id("similarity-legend-90");
+            listSim.innerHTML="";
+            const groupsData = cache.get(year)?.groups || [];
+            const simpleMap = normalizeForSimilarity(proposalsMap);
+            const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, simpleMap, g.proposals||{}) }));
+            all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
+            legend.textContent = String(all.filter(x=> x.pct >= 90).length);
+            for(const it of all){
+                const row = document.createElement("div");
+                row.className = "sim-item";
+                row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+                row.style.setProperty('--fill', it.pct + '%');
+                listSim.appendChild(row);
+            }
+            panel.classList.remove("hide");
         }
-        panel.classList.remove("hide");
     }
 
     // ===== Vistas =====
