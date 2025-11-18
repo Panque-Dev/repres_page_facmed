@@ -240,7 +240,7 @@
             { id: "2-FISIO-P1", subject: "Fisiología", type: "Primer parcial", officialDate: "2025-11-07", officialTime: "08:00" },
             { id: "2-FISIO-P2", subject: "Fisiología", type: "Segundo parcial", officialDate: "2026-02-20", officialTime: "08:00" },
             { id: "2-FISIO-P3", subject: "Fisiología", type: "Tercer parcial", officialDate: "2026-04-24", officialTime: "08:00" },
-            { id: "2-FISIO-O1", subject: "Fisiología", type: "Primer ordinario", officialDate: "2026-05-12", officialTime: "08:00" },
+            { id: "2-FISIO-O1", subject: "Fisiología", type: "Primer ordinario", officialDate: "2026-05-09", officialTime: "08:00" },
             { id: "2-FISIO-O2", subject: "Fisiología", type: "Segundo ordinario", officialDate: "2026-05-26", officialTime: "08:00" },
             { id: "2-FISIO-EX", subject: "Fisiología", type: "Extraordinario", officialDate: "2026-06-10", officialTime: "08:00" },
 
@@ -265,7 +265,7 @@
             { id: "2-MICRO-O2", subject: "Microbiología y Parasitología", type: "Segundo ordinario", officialDate: "2026-06-03", officialTime: "08:00" },
 
             { id: "2-IBC2-P1", subject: "Integración Básico Clínica II", type: "Primer parcial", officialDate: "2025-12-11", officialTime: "09:00" },
-            { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-16", officialTime: "08:00" },
+            { id: "2-IBC2-O1", subject: "Integración Básico Clínica II", type: "Primer ordinario", officialDate: "2026-05-08", officialTime: "08:00" },
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario", officialDate: "2026-06-02", officialTime: "08:00" },
             { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario", officialDate: "2026-06-11", officialTime: "08:00" },
 
@@ -885,7 +885,7 @@
                 "1-ANAT-P2": "2026-01-24",
                 "1-ISM-P1":  "2026-01-29",
                 "1-BCHM-P2": "2026-02-07",
-                "1-EMBR-P2": "2026-02-17",
+                "1-EMBR-P2": "2026-02-14",
                 "1-BQBM-P2": "2026-02-21",
                 "1-INF1-P1": "2026-02-27",
                 "1-ANAT-P3": "2026-03-07",
@@ -906,7 +906,17 @@
                 "2-ICR-P1-TEO": "2026-02-14",
                 "2-FARM-P2":    "2026-02-21",
                 "2-INMU-P2":    "2026-02-26",
-                "2-FISIO-P2":   "2026-03-07"
+                "2-FISIO-P2":   "2026-03-07",
+                "2-MICRO-P2":   "2026-04-13",
+                "2-IBC2-P2":    "2026-04-25",
+                "2-PCSV-P2":    "2026-04-15",
+                "2-FARMM-O3":    "2026-04-06",
+                "2-ICR-P2-TEO": "2026-04-11",
+                "2-ICR-P2-PRA": ["2026-04-04","2026-04-05","2026-04-06","2026-04-07","2026-04-08"],
+                "2-PCV-P2":    "2026-04-14",
+                "2-MICRO-P3":  "2026-05-02",
+                "2-INMU-P3":   "2026-04-17",
+
             };
         }
     }
