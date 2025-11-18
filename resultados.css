@@ -1,4 +1,12 @@
 /* ====== Resultados extras (usa variables y componentes de main.css) ====== */
+:root{
+    --cal-bg-weekend: rgba(0,0,0,.035);
+    --cal-bg-holiday: rgba(255,0,0,.06);
+    --cal-bg-fournier: rgba(37,99,235,.08);
+    --cal-bg-custom: rgba(0,0,0,.045);
+    --calendar-bg: transparent;
+}
+
 .results-ribbon-wrap { margin-bottom: 12px; }
 .ribbon-results { padding: 12px 14px; }
 

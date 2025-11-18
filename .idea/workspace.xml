@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="detallitos de resultados 5" />
+    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="detallitos de resultados 7">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resultados.css" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resultados.js" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -95,6 +99,7 @@
       <workItem from="1763352256123" duration="234000" />
       <workItem from="1763409220534" duration="1000" />
       <workItem from="1763432511765" duration="3812000" />
+      <workItem from="1763437145535" duration="968000" />
     </task>
     <task id="LOCAL-00001" summary="micro extra">
       <option name="closed" value="true" />
@@ -408,7 +413,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763436349716</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="detallitos de resultados 7">
+      <option name="closed" value="true" />
+      <created>1763437180824</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1763437180824</updated>
+    </task>
+    <task id="LOCAL-00041" summary="detallitos de resultados 7">
+      <option name="closed" value="true" />
+      <created>1763437819792</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1763437819792</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -450,7 +471,8 @@
     <MESSAGE value="detallitos de resultados 3" />
     <MESSAGE value="detallitos de resultados 4" />
     <MESSAGE value="detallitos de resultados 5" />
-    <option name="LAST_COMMIT_MESSAGE" value="detallitos de resultados 5" />
+    <MESSAGE value="detallitos de resultados 7" />
+    <option name="LAST_COMMIT_MESSAGE" value="detallitos de resultados 7" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/repres_page_facmed$renombra_propuestas.coverage" NAME="renombra_propuestas Coverage Results" MODIFIED="1763323295020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Sube aquí tu documento realizado por el programa enviado_ (File responses)" />
