@@ -13,6 +13,45 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
+    // ===== Bloqueos del calendario (recuperado) =====
+    // fines de semana + festivos MX dentro del rango; soporte para "fournier" y rangos personalizados
+    const HOLIDAYS_SET = new Set([
+        "2025-11-17", // Revolución (tercer lunes de nov 2025)
+        "2025-12-25", // Navidad
+        "2026-01-01", // Año Nuevo
+        "2026-02-02", // Constitución (primer lunes feb 2026)
+        "2026-03-16", // Natalicio de Benito Juárez (tercer lunes mar 2026)
+        "2026-05-01", // Día del Trabajo
+        "2026-05-05"  // Batalla de Puebla
+    ]);
+    // si necesitas más, añade aquí; o define window.CALENDAR_BLOCKS = { dates:[...], ranges:[{start,end,label}], fournier:[...]}
+    function isWeekend(d){ const k=d.getDay(); return k===0 || k===6; }
+    function iso(d){ return d.toISOString().slice(0,10); }
+    function expandRange(a,b){
+        const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
+        while(d<=e){ out.push(iso(d)); d.setDate(d.getDate()+1); }
+        return out;
+    }
+    function getCustomBlocks(){
+        const cfg = (typeof window!=="undefined" && window.CALENDAR_BLOCKS) ? window.CALENDAR_BLOCKS : null;
+        const dates = new Set();
+        const labels = new Map(); // iso -> label
+        if(!cfg) return { dates, labels };
+        if(Array.isArray(cfg.dates)){
+            cfg.dates.forEach(s=>{ dates.add(s); labels.set(s, "custom"); });
+        }
+        if(Array.isArray(cfg.fournier)){
+            cfg.fournier.forEach(s=>{ dates.add(s); labels.set(s, "fournier"); });
+        }
+        if(Array.isArray(cfg.ranges)){
+            cfg.ranges.forEach(r=>{
+                const arr = expandRange(r.start, r.end);
+                arr.forEach(s=>{ dates.add(s); labels.set(s, r.label||"custom"); });
+            });
+        }
+        return { dates, labels };
+    }
+
     // Materias abreviadas e íconos ya usados en el proyecto
     const SUBJECT_SIGLAS = {
         "Embriología Humana": { display: "EMB", file: "EMB" },
@@ -30,7 +69,8 @@
         "Inmunología": { display: "INM", file: "INM" },
         "Microbiología y Parasitología": { display: "MyP", file: "MyP" },
         "Introducción a la Cirugía": { display: "ICR", file: "ICR" },
-        "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" }
+        "Promoción de la Salud en el Ciclo de Vida": { display: "PCV", file: "PCV" },
+        "Informática Biomédica II": { display: "IB2", file: "IB2" } // redundante explícito
     };
 
     const SUBJECT_COLORS = {
@@ -144,7 +184,14 @@
             { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
             { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-15", officialTime: "15:00" },
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
-            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" }
+            { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
+
+            // añadido: INFORMÁTICA BIOMÉDICA II (IB II) para Propuesta 3
+            { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
+            { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
+            { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
+            { id: "2-INF2-O2", subject: "Informática Biomédica II", type: "Segundo ordinario", officialDate: null, officialTime: null },
+            { id: "2-INF2-EX", subject: "Informática Biomédica II", type: "Extraordinario", officialDate: null, officialTime: null }
         ]
     };
 
@@ -154,19 +201,20 @@
     const $id = (id)=> document.getElementById(id);
     const parseDate = (s)=> new Date(s+"T00:00:00");
 
-    // Distintivo: PAR, ORD, EXT
+    // Distintivo: PAR, ORD, EXT + número
     function shortType(t){
         const s = String(t||"").toLowerCase();
-        if(s.includes("ordinario")) return { badge:"ORD", meaning:t };
-        if(s.includes("extra"))     return { badge:"EXT", meaning:t };
-        if(s.includes("parcial"))   return { badge:"PAR", meaning:t };
+        const n1 = /primer/i.test(s) ? "1" : /segundo/i.test(s) ? "2" : /tercer/i.test(s) ? "3" : /cuarto/i.test(s) ? "4" : "";
+        if(s.includes("ordinario")) return { badge: "ORD" + (n1? " "+n1 : ""), meaning:t };
+        if(s.includes("extra"))     return { badge: "EXT", meaning:t };
+        if(s.includes("parcial"))   return { badge: "PAR" + (n1? " "+n1 : ""), meaning:t };
         return { badge:t||"—", meaning:t||"—" };
     }
     function getSigla(subject){
         return SUBJECT_SIGLAS[subject] || { display: subject, file: "GEN" };
     }
     function hexToRgba(hex, a){
-        const b = hex.replace("#",""); const n=parseInt(b,16);
+        const b = (hex||"#334155").replace("#",""); const n=parseInt(b,16);
         const r = (n>>16)&255, g=(n>>8)&255, bl=n&255;
         return `rgba(${r},${g},${bl},${a})`;
     }
@@ -177,14 +225,14 @@
     }
 
     // dd-mes-aaaa
-    function formatShort(iso){
+    function formatShort(isoStr){
         try{
-            const d = parseDate(iso);
+            const d = parseDate(isoStr);
             const dd = d.toLocaleDateString("es-MX", { day:"2-digit" });
             const mon = d.toLocaleDateString("es-MX", { month:"short" }).replace(/\.$/,"");
             const yy = d.getFullYear();
             return `${dd}-${mon}-${yy}`;
-        }catch(_){ return iso || "—"; }
+        }catch(_){ return isoStr || "—"; }
     }
 
     function makeSupportBar(n, total, color){
@@ -293,6 +341,41 @@
         while(c<=e){ out.push({y:c.getFullYear(), m:c.getMonth()}); c.setMonth(c.getMonth()+1); }
         return out;
     }
+
+    function applyCalendarBlocks(section, y, m){
+        const custom = getCustomBlocks();
+        const grid = section.querySelector(".month-grid");
+        const first = new Date(y,m,1), last = new Date(y,m+1,0);
+        let start=first.getDay(); if(start===0) start=7;
+        // índice base de celdas de día real
+        const base = 7 + (start - 1);
+        for(let d=1; d<=last.getDate(); d++){
+            const cell = grid.children[base + (d-1)];
+            const dt = new Date(y, m, d);
+            const k = iso(dt);
+            let blocked = false;
+            if(isWeekend(dt)){
+                blocked = true;
+                cell.classList.add("blocked", "blocked-weekend");
+            }
+            if(HOLIDAYS_SET.has(k)){
+                blocked = true;
+                cell.classList.add("blocked", "blocked-holiday");
+            }
+            if(custom.dates.has(k)){
+                blocked = true;
+                const label = custom.labels.get(k) || "custom";
+                cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
+                cell.dataset.blockLabel = label;
+            }
+            // puedes estilizar .blocked-* en resultados.css como ya lo tenías
+            if(blocked){
+                const head = cell.querySelector(".day-header");
+                head && head.classList.add("is-blocked");
+            }
+        }
+    }
+
     function buildCalendars(container){
         container.innerHTML="";
         monthList().forEach(({y,m})=>{
@@ -318,11 +401,16 @@
                 grid.appendChild(cell);
             }
             section.appendChild(grid);
+
+            // aplicar bloqueos recuperados
+            applyCalendarBlocks(section, y, m);
+
             container.appendChild(section);
         });
     }
-    function placeCard(iso, card, container){
-        const d=parseDate(iso);
+
+    function placeCard(isoStr, card, container){
+        const d=parseDate(isoStr);
         const month = container.querySelectorAll(".month")[ (d.getFullYear()-parseDate(CAL_START_DATE).getFullYear())*12 + d.getMonth() - parseDate(CAL_START_DATE).getMonth() ];
         if(!month) return;
         const grid = month.querySelector(".month-grid");
@@ -333,8 +421,8 @@
         const list = cell.querySelector(".exam-list");
         list.appendChild(card);
     }
-    function placeGhost(iso, card, container){
-        placeCard(iso, card, container);
+    function placeGhost(isoStr, card, container){
+        placeCard(isoStr, card, container);
     }
 
     // cache de resultados
@@ -408,7 +496,8 @@
     function computeScheduleMetrics(year, proposalsMap){
         const entries = [];
         for(const ex of EXAMS_BY_YEAR[year]){
-            const d = proposalsMap[ex.id];
+            const raw = proposalsMap[ex.id];
+            const d = Array.isArray(raw) ? raw[0] : raw;
             if(d) entries.push({ id: ex.id, subject: ex.subject, date: d });
         }
         entries.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
@@ -455,6 +544,14 @@
     }
 
     // ===== Render genérico de "panel similar": tarjetas + calendario =====
+    function normalizeForSimilarity(map){
+        const out={};
+        for(const [k,v] of Object.entries(map||{})){
+            out[k] = Array.isArray(v)? v[0] : v;
+        }
+        return out;
+    }
+
     function renderSplit(title, year, proposalsMap, perExamSupportMap=null, altProposalsMap=null){
         const split = $id("moda-split");
         const list  = $id("moda-cards");
@@ -469,11 +566,15 @@
 
         const metricsById = computeScheduleMetrics(year, proposalsMap);
 
-        // ordenar por fecha y materia
+        // ordenar por fecha y materia usando la fecha principal si hay array
         const present = EXAMS_BY_YEAR[year]
             .filter(ex=> proposalsMap[ex.id])
-            .map(ex=> ({ ex, date: proposalsMap[ex.id] }))
-            .sort((a,b)=> a.date.localeCompare(b.date) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
+            .map(ex=>{
+                const raw = proposalsMap[ex.id];
+                const arr = Array.isArray(raw) ? raw.slice() : [raw];
+                return { ex, dates: arr, main: arr[0] };
+            })
+            .sort((a,b)=> a.main.localeCompare(b.main) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
 
         const totalGroups = (cache.get(year)?.groups || []).length;
 
@@ -484,7 +585,7 @@
 
             const card = createResultCard(r.ex, {
                 approvedDate: r.ex.officialDate,
-                suggestionDate: r.date,
+                suggestionDate: r.main,
                 metrics: metricsById[r.ex.id],
                 support
             });
@@ -497,20 +598,24 @@
             holder.appendChild(card);
             list.appendChild(holder);
 
-            // colocar en calendario
-            const cardCal = createResultCard(r.ex, {
-                approvedDate: r.ex.officialDate,
-                suggestionDate: r.date,
-                metrics: metricsById[r.ex.id]
+            // colocar en calendario cada fecha de ese examen
+            r.dates.forEach(d=>{
+                const cardCal = createResultCard(r.ex, {
+                    approvedDate: r.ex.officialDate,
+                    suggestionDate: d,
+                    metrics: metricsById[r.ex.id]
+                });
+                placeCard(d, cardCal, cal);
             });
-            placeCard(r.date, cardCal, cal);
         });
 
         // fantasmas si hay propuesta alternativa
         if(altProposalsMap){
             for(const ex of EXAMS_BY_YEAR[year]){
-                const d1 = proposalsMap[ex.id];
-                const d2 = altProposalsMap[ex.id];
+                const raw1 = proposalsMap[ex.id];
+                const raw2 = altProposalsMap[ex.id];
+                const d1 = Array.isArray(raw1)? raw1[0] : raw1;
+                const d2 = Array.isArray(raw2)? raw2[0] : raw2;
                 if(d1 && d2 && d1!==d2){
                     const ghost = createGhostCard(ex);
                     placeGhost(d2, ghost, cal);
@@ -524,7 +629,8 @@
         const legend = $id("similarity-legend-90");
         listSim.innerHTML="";
         const groupsData = cache.get(year)?.groups || [];
-        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, proposalsMap, g.proposals||{}) }));
+        const simpleMap = normalizeForSimilarity(proposalsMap);
+        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, simpleMap, g.proposals||{}) }));
         all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
         legend.textContent = String(all.filter(x=> x.pct >= 90).length);
         for(const it of all){
@@ -537,9 +643,8 @@
         panel.classList.remove("hide");
     }
 
-    // ===== Render específico previo para "por examen" (modas) =====
+    // ===== Render específico para "por examen" (modas) =====
     function renderExamModes(year, modes){
-        // construir mapa de propuestas y soporte por examen
         const modaMap = {};
         const supportMap = {};
         const totalGroups = (cache.get(year)?.groups || []).length;
@@ -643,8 +748,10 @@
     /* ===========================================================
        BLOQUE: Propuesta de representantes (tercer botón)
        =========================================================== */
+    // Propuesta 3: listas exactas dadas por ti.
     function __presetProposalsFor(year){
         if(year===1){
+            // mantenemos la propuesta previa de Primero
             return {
                 "1-BQBM-P1": "2025-11-28",
                 "1-BCHM-P1": "2025-12-05",
@@ -662,47 +769,52 @@
                 "1-BQBM-P3": "2026-03-21"
             };
         }else{
+            // SEGUNDO: incluye parciales, ordinarios de IB II y rangos de Ciru práctico
             return {
-                "2-INF2-P2":    "2025-11-26",
-                "2-INMU-P1":    "2025-11-28",
-                "2-INF2-O1":    "2025-12-02",
-                "2-INF2-O2":    "2025-12-08",
-                "2-FARM-P1":    "2025-12-10",
-                "2-FISIO-P1":   "2026-01-10",
-                "2-MICRO-P1":   "2026-01-17",
-                "2-IBC2-P1":    "2026-01-21",
-                "2-PCSV-P1":    "2026-01-29",
-                "2-ICR-P1-PRA": "2026-02-09",
-                "2-ICR-P1-TEO": "2026-02-14",
-                "2-FARM-P2":    "2026-02-21",
-                "2-INMU-P2":    "2026-02-26",
-                "2-FISIO-P2":   "2026-03-07"
+                "2-INF2-P2":    "2025-11-26",                          // IB II B2
+                "2-INMU-P1":    "2025-11-28",                          // Inmuno B1
+                "2-INF2-O1":    "2025-12-02",                          // IB II Primer ordinario
+                "2-INF2-O2":    "2025-12-08",                          // IB II Segundo ordinario
+                "2-FARM-P1":    "2025-12-10",                          // Farma B1
+                "2-FISIO-P1":   "2026-01-10",                          // Fisio B1
+                "2-MICRO-P1":   "2026-01-17",                          // Micro B1
+                "2-IBC2-P1":    "2026-01-21",                          // IBC II B1
+                "2-PCSV-P1":    "2026-01-29",                          // Promo B1
+                "2-ICR-P1-PRA": ["2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13"], // Ciru práctico B1 9–13 feb
+                "2-ICR-P1-TEO": "2026-02-14",                          // Ciru teórico B1
+                "2-FARM-P2":    "2026-02-21",                          // Farma B2
+                "2-INMU-P2":    "2026-02-26",                          // Inmuno B2
+                "2-FISIO-P2":   "2026-03-07"                           // Fisio B2
             };
         }
     }
 
-    function __buildPresetCluster(year){
-        const proposals = __presetProposalsFor(year);
-        const groupsData = (typeof cache!=="undefined" && cache.get(year)?.groups) ? cache.get(year).groups : [];
-        const supporters = [];
-        for(const g of groupsData){
-            let ok = true;
-            for(const [id,date] of Object.entries(proposals)){
-                const d = g.proposals ? g.proposals[id] : null;
-                if(d !== date){ ok = false; break; }
+    function __buildPresetSupportMap(year, proposals, groups){
+        // soporte por examen: cuenta grupos que coinciden EXACTO; si la propuesta es rango, cuenta si el grupo está dentro del rango
+        const map = {};
+        for(const ex of EXAMS_BY_YEAR[year]){
+            const raw = proposals[ex.id];
+            if(!raw) continue;
+            const arr = Array.isArray(raw) ? raw : [raw];
+            let c = 0;
+            for(const g of groups){
+                const d = g.proposals ? g.proposals[ex.id] : null;
+                if(d && arr.includes(d)) c++;
             }
-            if(ok) supporters.push(g.group_id);
+            map[ex.id] = { count: c };
         }
-        return { groups: supporters, proposals };
+        return map;
     }
 
     function __showPreset(){
         try{
             const sel = document.querySelector('input[name="yr"]:checked');
             const year = sel ? Number(sel.value) : 1;
-            const cluster = __buildPresetCluster(year);
+            const proposals = __presetProposalsFor(year);
+            const groupsData = (typeof cache!=="undefined" && cache.get(year)?.groups) ? cache.get(year).groups : [];
+            const supportMap = __buildPresetSupportMap(year, proposals, groupsData);
             const title = (year===1? "Propuesta de representantes (Primero)" : "Propuesta de representantes (Segundo)");
-            renderFullAsSplit(title, year, { proposals: cluster.proposals }, null);
+            renderSplit(title, year, proposals, supportMap, null);
         }catch(e){
             console.error("No se pudo mostrar la propuesta de representantes:", e);
         }
