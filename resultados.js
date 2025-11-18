@@ -13,7 +13,7 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    // Materias abreviadas e íconos
+    // Materias abreviadas e íconos ya usados en el proyecto
     const SUBJECT_SIGLAS = {
         "Embriología Humana": { display: "EMB", file: "EMB" },
         "Anatomía": { display: "ANA", file: "ANA" },
@@ -148,21 +148,19 @@
         ]
     };
 
-    // ===== helpers =====
+    // ===== utilidades menores / helpers =====
     const qs = (s, r=document)=> r.querySelector(s);
     const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
     const $id = (id)=> document.getElementById(id);
     const parseDate = (s)=> new Date(s+"T00:00:00");
 
+    // Distintivo: PAR, ORD, EXT
     function shortType(t){
-        if(/Primer/i.test(t)) return { badge:"P1", meaning:t };
-        if(/Segundo/i.test(t)) return { badge:"P2", meaning:t };
-        if(/Tercer/i.test(t)) return { badge:"P3", meaning:t };
-        if(/Cuarto/i.test(t)) return { badge:"P4", meaning:t };
-        if(/Ordinario.*1/.test(t)) return { badge:"O1", meaning:t };
-        if(/Ordinario.*2/.test(t)) return { badge:"O2", meaning:t };
-        if(/Extra/i.test(t)) return { badge:"EX", meaning:t };
-        return { badge:t, meaning:t };
+        const s = String(t||"").toLowerCase();
+        if(s.includes("ordinario")) return { badge:"ORD", meaning:t };
+        if(s.includes("extra"))     return { badge:"EXT", meaning:t };
+        if(s.includes("parcial"))   return { badge:"PAR", meaning:t };
+        return { badge:t||"—", meaning:t||"—" };
     }
     function getSigla(subject){
         return SUBJECT_SIGLAS[subject] || { display: subject, file: "GEN" };
@@ -203,7 +201,6 @@
         row.appendChild(l); row.appendChild(v); return row;
     }
 
-    // tarjeta base; ahora puede incluir la barrita de apoyo DENTRO
     function createResultCard(exam, opts={}){
         const { approvedDate, suggestionDate, voters=[], metrics=null, support=null } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
@@ -213,9 +210,9 @@
         const __col = colorForExam(exam);
         card.style.setProperty('--card-bg', hexToRgba(__col, .30));
         card.style.setProperty('--card-strip', hexToRgba(__col, .95));
-        // forzar ajuste al contenido
         card.style.minHeight = "0";
         card.style.height = "auto";
+        card.draggable=false; card.dataset.examId=exam.id;
 
         const strip=document.createElement("div"); strip.className="exam-status-strip"; card.appendChild(strip);
 
@@ -235,7 +232,6 @@
         if(approvedDate || exam.officialDate) card.appendChild(lineStacked("fecha original:", appText));
         card.appendChild(lineStacked("propuesta en tendencia:", sugText));
 
-        // métricas de tiempos
         if(metrics){
             const { prevAllDays, nextAllDays, nextSameDays } = metrics;
             if(prevAllDays!=null) card.appendChild(lineStacked("desde último examen:", prevAllDays + " días"));
@@ -246,7 +242,6 @@
             }
         }
 
-        // barrita de apoyo dentro de la tarjeta
         if(support && typeof support.total==="number"){
             const box = document.createElement("div");
             box.className = "card-support";
@@ -270,14 +265,12 @@
 
         return card;
     }
-
-    function createGhostCard(exam, voters=[]){
+    function createGhostCard(exam){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
-        const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min";
+        const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
         const __col = colorForExam(exam);
         card.style.setProperty('--card-bg', hexToRgba(__col, .14));
         card.style.setProperty('--card-strip', hexToRgba(__col, .6));
-        // ajuste
         card.style.minHeight = "0";
         card.style.height = "auto";
 
@@ -344,7 +337,7 @@
         placeCard(iso, card, container);
     }
 
-    // cache
+    // cache de resultados
     const cache = new Map();
 
     async function fetchYear(year){
@@ -392,7 +385,7 @@
         return ids.map(id=> proposals?.[id] ? `${id}:${proposals[id]}` : `${id}:-`).join("|");
     }
     function clusterCalendars(year, groups){
-        const clusters = new Map();
+        const clusters = new Map(); // key -> { groups:[], proposals:{} }
         for(const g of groups){
             const key = canonicalKeyFor(year, g.proposals||{});
             if(!clusters.has(key)) clusters.set(key, { groups:[], proposals: g.proposals||{} });
@@ -420,7 +413,7 @@
         }
         entries.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
 
-        const prevNextGlobal = new Map();
+        const prevNextGlobal = new Map(); // id -> {prevDays, nextDays}
         for(let i=0;i<entries.length;i++){
             const cur = entries[i];
             const prev = entries[i-1] || null;
@@ -436,8 +429,8 @@
             if(!bySubj.has(e.subject)) bySubj.set(e.subject, []);
             bySubj.get(e.subject).push(e);
         }
-        const subjNext = new Map();
-        for(const [subj, arr] of bySubj.entries()){
+        const subjNext = new Map(); // id -> { nextSameDays }
+        for(const [, arr] of bySubj.entries()){
             arr.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
             for(let i=0;i<arr.length;i++){
                 const cur = arr[i];
@@ -461,66 +454,77 @@
         return out;
     }
 
-    // ===== Render =====
-    function renderExamModes(year, modes){
+    // ===== Render genérico de "panel similar": tarjetas + calendario =====
+    function renderSplit(title, year, proposalsMap, perExamSupportMap=null, altProposalsMap=null){
         const split = $id("moda-split");
         const list  = $id("moda-cards");
         const cal   = $id("moda-calendar");
+
+        $id("results-title").textContent = title;
         $id("calendar-wrap").classList.add("hide");
-        $id("results-title").textContent = "Propuesta por Moda por Examen";
+        split.classList.remove("hide");
 
         list.innerHTML="";
+        buildCalendars(cal);
+
+        const metricsById = computeScheduleMetrics(year, proposalsMap);
+
+        // ordenar por fecha y materia
+        const present = EXAMS_BY_YEAR[year]
+            .filter(ex=> proposalsMap[ex.id])
+            .map(ex=> ({ ex, date: proposalsMap[ex.id] }))
+            .sort((a,b)=> a.date.localeCompare(b.date) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
+
         const totalGroups = (cache.get(year)?.groups || []).length;
-        const sortedModes = modes.slice().sort((a,b)=> a.date.localeCompare(b.date) || a.exam.subject.localeCompare(b.exam.subject) || a.exam.id.localeCompare(b.exam.id));
 
-        // mapa para métricas del calendario lateral
-        const modaMapCal = {};
-        sortedModes.forEach(r=>{ modaMapCal[r.exam.id] = r.date; });
-        const metricsByIdForModa = computeScheduleMetrics(year, modaMapCal);
+        present.forEach(r=>{
+            const support = perExamSupportMap && perExamSupportMap[r.ex.id]
+                ? { count: perExamSupportMap[r.ex.id].count, total: totalGroups }
+                : null;
 
-        sortedModes.forEach(r=>{
-            const support = totalGroups>0 ? { count:(r.voters?r.voters.length:0), total: totalGroups } : null;
-            const card = createResultCard(r.exam, {
-                approvedDate: r.exam.officialDate,
+            const card = createResultCard(r.ex, {
+                approvedDate: r.ex.officialDate,
                 suggestionDate: r.date,
-                metrics: metricsByIdForModa[r.exam.id],
+                metrics: metricsById[r.ex.id],
                 support
             });
 
-            // contenedor visual sin altura fija
             const holder = document.createElement("div");
             holder.className="stat-card";
             holder.style.minHeight = "0";
             holder.style.height = "auto";
+            holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.ex), .12));
             holder.appendChild(card);
-
-            // tint
-            holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.exam), .12));
             list.appendChild(holder);
-        });
 
-        // calendario lateral con ganadoras por moda
-        buildCalendars(cal);
-        sortedModes.forEach(r=>{
-            const card = createResultCard(r.exam, {
-                approvedDate: r.exam.officialDate,
+            // colocar en calendario
+            const cardCal = createResultCard(r.ex, {
+                approvedDate: r.ex.officialDate,
                 suggestionDate: r.date,
-                metrics: metricsByIdForModa[r.exam.id]
+                metrics: metricsById[r.ex.id]
             });
-            placeCard(r.date, card, cal);
+            placeCard(r.date, cardCal, cal);
         });
 
-        split.classList.remove("hide");
+        // fantasmas si hay propuesta alternativa
+        if(altProposalsMap){
+            for(const ex of EXAMS_BY_YEAR[year]){
+                const d1 = proposalsMap[ex.id];
+                const d2 = altProposalsMap[ex.id];
+                if(d1 && d2 && d1!==d2){
+                    const ghost = createGhostCard(ex);
+                    placeGhost(d2, ghost, cal);
+                }
+            }
+        }
 
-        // Similaridad vs calendario construido por modas ganadoras
+        // Similaridad
         const panel = $id("similarity-panel");
         const listSim = $id("similarity-list");
         const legend = $id("similarity-legend-90");
         listSim.innerHTML="";
-        const modaMap = {};
-        modes.forEach(r => { modaMap[r.exam.id] = r.date; });
         const groupsData = cache.get(year)?.groups || [];
-        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, modaMap, g.proposals||{}) }));
+        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, proposalsMap, g.proposals||{}) }));
         all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
         legend.textContent = String(all.filter(x=> x.pct >= 90).length);
         for(const it of all){
@@ -533,55 +537,26 @@
         panel.classList.remove("hide");
     }
 
-    function renderFullCalendar(year, cluster, altCluster){
-        const calRoot = $id("results-calendar");
-        buildCalendars(calRoot);
+    // ===== Render específico previo para "por examen" (modas) =====
+    function renderExamModes(year, modes){
+        // construir mapa de propuestas y soporte por examen
+        const modaMap = {};
+        const supportMap = {};
+        const totalGroups = (cache.get(year)?.groups || []).length;
 
-        // borrar panel de apoyo si existiera
-        const oldSupport = qs("#cluster-support");
-        if(oldSupport && oldSupport.parentElement){ oldSupport.parentElement.removeChild(oldSupport); }
+        modes.forEach(r=>{
+            modaMap[r.exam.id] = r.date;
+            supportMap[r.exam.id] = { count: (r.voters?r.voters.length:0), total: totalGroups };
+        });
 
-        const metricsById = computeScheduleMetrics(year, cluster.proposals||{});
+        renderSplit("Propuesta por Moda por Examen", year, modaMap, supportMap, null);
+    }
 
-        // sólidos
-        for(const ex of EXAMS_BY_YEAR[year]){
-            const d = cluster.proposals[ex.id] || ex.officialDate;
-            if(!d) continue;
-            const card = createResultCard(ex, { approvedDate: ex.officialDate, suggestionDate: d, metrics: metricsById[ex.id] });
-            placeCard(d, card, calRoot);
-        }
-        // fantasmas de otro cluster
-        if(altCluster){
-            for(const ex of EXAMS_BY_YEAR[year]){
-                const d1 = cluster.proposals[ex.id];
-                const d2 = altCluster.proposals[ex.id];
-                if(d2 && d1 && d2!==d1){
-                    const ghost = createGhostCard(ex, altCluster.groups);
-                    placeGhost(d2, ghost, calRoot);
-                }
-            }
-        }
-
-        // similitudes
-        const panel = $id("similarity-panel");
-        const list = $id("similarity-list");
-        const legend = $id("similarity-legend-90");
-        list.innerHTML="";
-        const groupsData = cache.get(year)?.groups || [];
-        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, cluster.proposals, g.proposals||{}) }));
-        all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-        legend.textContent = String(all.filter(x=>x.pct>=90).length);
-        for(const it of all){
-            const row = document.createElement("div");
-            row.className = "sim-item";
-            row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
-            row.style.setProperty('--fill', it.pct + '%');
-            list.appendChild(row);
-        }
-        panel.classList.remove("hide");
-
-        $id("moda-split").classList.add("hide");
-        $id("calendar-wrap").classList.remove("hide");
+    // ===== Render de "calendario completo" usando el panel similar =====
+    function renderFullAsSplit(title, year, cluster, altCluster){
+        const proposals = cluster?.proposals || {};
+        const alt = altCluster?.proposals || null;
+        renderSplit(title, year, proposals, null, alt);
     }
 
     // ===== Cambiar vistas / UI =====
@@ -599,11 +574,9 @@
             const first = clusters[0];
             const second = clusters[1] || null;
             if(mode==="full-1"){
-                $id("results-title").textContent = "Propuesta de Calendario Completo Más Repetida 1";
-                renderFullCalendar(currentYear, first, second);
+                renderFullAsSplit("Propuesta de Calendario Completo Más Repetida 1", currentYear, first, second);
             }else{
-                $id("results-title").textContent = "Propuesta de Calendario Completo Más Repetida 2";
-                renderFullCalendar(currentYear, second || first, first || null);
+                renderFullAsSplit("Propuesta de Calendario Completo Más Repetida 2", currentYear, second || first, first || null);
             }
         }
     }
@@ -668,7 +641,7 @@
     });
 
     /* ===========================================================
-       BLOQUE NUEVO: Propuesta de representantes (tercer botón)
+       BLOQUE: Propuesta de representantes (tercer botón)
        =========================================================== */
     function __presetProposalsFor(year){
         if(year===1){
@@ -728,9 +701,8 @@
             const sel = document.querySelector('input[name="yr"]:checked');
             const year = sel ? Number(sel.value) : 1;
             const cluster = __buildPresetCluster(year);
-            const ttl = document.getElementById("results-title");
-            ttl && (ttl.textContent = (year===1? "Propuesta de representantes (Primero)" : "Propuesta de representantes (Segundo)"));
-            renderFullCalendar(year, cluster, null);
+            const title = (year===1? "Propuesta de representantes (Primero)" : "Propuesta de representantes (Segundo)");
+            renderFullAsSplit(title, year, { proposals: cluster.proposals }, null);
         }catch(e){
             console.error("No se pudo mostrar la propuesta de representantes:", e);
         }
