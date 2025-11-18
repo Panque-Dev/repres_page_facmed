@@ -1,111 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Resultados</title>
-  <link rel="icon" href="ico/DEPARTAMENTALES.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="main.css" />
-  <link rel="stylesheet" href="resultados.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Resultados</title>
+    <link rel="icon" href="ico/DEPARTAMENTALES.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="resultados.css" />
 </head>
 <body>
-  <div class="app">
+<div class="app">
     <header class="app-header single-ribbon">
-      <div class="ribbon ribbon-header">
-        <div class="header-inner">
-          <div class="app-title-block">
-            <h1>📊 RESULTADOS</h1>
-            <p class="app-subtitle">Estos han sido los resultados de primer y segundo año</p>
-          </div>
-          <div class="header-right">
-            <div class="nav-links" style="margin-left:auto;">
-              <button type="button" class="proposal-btn nav-btn" onclick="location.href='index.html'">Inicio</button>
-              <button type="button" class="proposal-btn nav-btn" onclick="location.href='calendario.html'">Calendario</button>
+        <div class="ribbon ribbon-header">
+            <div class="header-inner">
+                <div class="app-title-block">
+                    <h1>📊 Resultados de propuestas [Le programadore está subiendo la tercera propuesta, puede que se caiga la página]</h1>
+                    <p class="app-subtitle">Se presentan a continuación 3 resultados: modas por examen, propuestas completas más repetidas y propuesta en redes</p>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </header>
 
     <section class="results-ribbon-wrap">
-      <div class="ribbon ribbon-results">
-        <div class="results-counter">
-          <div class="counter-line">
-            Se analizaron: <span id="total-counter" class="countup" aria-live="polite">1</span> respuestas en total de primero y segundo año
-          </div>
-          <div class="bars-row">
-            <div class="bar-card">
-              <div class="bar-title">Participaron 71 grupos de primero</div>
-              <div class="progress" data-max="82" data-target="79">
-                <div class="fill"></div>
-              </div>
-              <div class="progress-meta"><span class="current">0</span> de <span class="max">82</span></div>
+        <div class="ribbon ribbon-results">
+            <div class="results-counter">
+                <div class="counter-line">
+                    Se analizaron: <span id="total-counter" class="counter" aria-live="polite">1</span> respuestas en total de primero y segundo año
+                </div>
+                <div class="bars-row">
+                    <div class="bar-card">
+                        <div class="bar-title">Participaron 71 grupos de primero</div>
+                        <div class="progress" data-max="82" data-target="79">
+                            <div class="fill"></div>
+                        </div>
+                        <div class="progress-meta"><span class="current">0</span> de <span class="max">82</span></div>
+                    </div>
+                    <div class="bar-card">
+                        <div class="bar-title">Participaron 58 grupos de segundo</div>
+                        <div class="progress" data-max="65" data-target="58">
+                            <div class="fill slow"></div>
+                        </div>
+                        <div class="progress-meta"><span class="current">0</span> de <span class="max">65</span></div>
+                    </div>
+                </div>
             </div>
-            <div class="bar-card">
-              <div class="bar-title">Participaron 58 grupos de segundo</div>
-              <div class="progress" data-max="65" data-target="58">
-                <div class="fill slow"></div>
-              </div>
-              <div class="progress-meta"><span class="current">0</span> de <span class="max">65</span></div>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
 
     <section class="ribbon ribbon-chooser">
-      <div class="chooser">
-        <div class="chooser-title">Selecciona tu grado</div>
-        <div class="year-toggle" role="tablist" aria-label="Selecciona grado">
-          <input type="radio" name="yr" id="yr1" value="1" checked aria-controls="year-panels" />
-          <label for="yr1" role="tab" aria-selected="true">Primer Año</label>
-          <input type="radio" name="yr" id="yr2" value="2" aria-controls="year-panels" />
-          <label for="yr2" role="tab" aria-selected="false">Segundo Año</label>
-          <span class="knob" aria-hidden="true"></span>
-        </div>
+        <div class="chooser">
+            <div class="chooser-title">Selecciona tu grado</div>
+            <div class="year-toggle" role="tablist" aria-label="Selecciona grado">
+                <input type="radio" name="yr" id="yr1" value="1" checked aria-controls="year-panels" />
+                <label for="yr1" role="tab" aria-selected="true">Primer Año</label>
+                <input type="radio" name="yr" id="yr2" value="2" aria-controls="year-panels" />
+                <label for="yr2" role="tab" aria-selected="false">Segundo Año</label>
+                <span class="knob" aria-hidden="true"></span>
+            </div>
 
-        <div class="result-actions" id="year-panels">
-          <button class="result-btn" data-mode="mode-per-exam">Moda por Examen</button>
-          <button class="result-btn" data-mode="full-1">Propuesta de Calendario Completo Más Repetida</button>
-        </div>
+            <div class="result-actions" id="year-panels">
+                <button class="result-btn" data-mode="mode-per-exam">Moda por Examen</button>
+                <button class="result-btn" data-mode="full-1">Propuesta de Calendario Completo Más Repetida</button>
+                <!-- NUEVO: botón de propuesta de representantes -->
+                <button id="btn-preset3" class="result-btn" data-mode="preset-3">Propuesta 3</button>
+            </div>
 
-        <div class="similarity-panel hide" id="similarity-panel">
-          <h3 class="sim-title">Similitud de todos los grupos con la propuesta mostrada</h3>
-          <div class="sim-legend"><span id="similarity-legend-90">0</span> grupos tuvieron 90% o más de coincidencia</div>
-          <div id="similarity-list" class="similarity-list"></div>
+            <div class="similarity-panel hide" id="similarity-panel">
+                <h3 class="sim-title">Similitud de todos los grupos con la propuesta mostrada</h3>
+                <div class="sim-legend"><span id="similarity-legend-90">0</span> grupos tuvieron 90% o más de coincidencia</div>
+                <div id="similarity-list" class="similarity-list"></div>
+            </div>
         </div>
-      </div>
     </section>
 
     <section class="ribbon ribbon-results-section">
-      <div class="results-section-header">
-        <h2 id="results-title">Propuesta por Moda por Examen</h2>
-      </div>
+        <div class="results-section-header">
+            <h2 id="results-title">Propuesta por Moda por Examen</h2>
+        </div>
 
-      <!-- Vista Moda: tarjetas + calendario lateral -->
-      <div id="moda-split" class="moda-split">
-        <div id="moda-cards" class="stats-ribbon-cards"></div>
-        <div id="moda-calendar" class="calendar"></div>
-      </div>
+        <!-- Vista Moda: tarjetas + calendario lateral -->
+        <div id="moda-split" class="moda-split">
+            <div id="moda-cards" class="stats-ribbon-cards"></div>
+            <div id="moda-calendar" class="calendar"></div>
+        </div>
 
-      <!-- Vista de propuestas completas -->
-      <div id="calendar-wrap" class="calendar-wrap hide">
-        <div id="results-calendar" class="calendar"></div>
-      </div>
+        <!-- Vista de propuestas completas -->
+        <div id="calendar-wrap" class="calendar-wrap hide">
+            <div id="results-calendar" class="calendar"></div>
+        </div>
     </section>
-  </div>
+</div>
 
-  <footer class="app-footer">
+<footer class="app-footer">
     <div class="footer-text">
-      <p>Realizado por las y los representantes de grupo de Primer y Segundo Año</p>
-      <p>Programado por Mauricio <a href="https://www.instagram.com/mauricioisbl/">@mauricioisbl</a> y Héctor <a href="https://www.instagram.com/jovan.m3d/">@jovan.m3d</a></p>
-      <p>© TAGLE CORPORATION 2025 - Derechos más o menos reservados</p>
+        <p>Realizado por las y los representantes de grupo de Primer y Segundo Año</p>
+        <p>Programado por Mauricio <a href="https://www.instagram.com/mauricioisbl/">@mauricioisbl</a> y Héctor <a href="https://www.instagram.com/jovan.m3d/">@jovan.m3d</a></p>
+        <p>© TAGLE CORPORATION 2025 - Derechos más o menos reservados</p>
     </div>
     <div class="footer-logos">
-      <img src="img/facmed.png" alt="Logo FacMed" />
+        <img src="img/facmed.png" alt="Logo FacMed" />
     </div>
-  </footer>
+</footer>
 
-  <script src="resultados.js" defer></script>
+<script src="resultados.js" defer></script>
 </body>
 </html>
