@@ -1,7 +1,7 @@
 (function(){
     "use strict";
 
-    // ================= CONFIG =================
+    /* ================= CONFIG ================= */
     const YEAR1_RANGE = { min: 1101, max: 1182 };
     const YEAR2_RANGE = { min: 2201, max: 2265 };
 
@@ -27,9 +27,8 @@
         "2025-12-24": "Nochebuena",
         "2025-12-25": "Navidad",
         "2026-01-01": "Año Nuevo",
-        "2026-02-02": "Día de la Constitución"
+        "2026-02-02": "Día de la Constitución",
     };
-    const HOLIDAYS_SET = new Set(Object.keys(SPECIAL_DAY_LABELS));
 
     const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
     const SELECTION_DAY           = "2025-12-02";
@@ -114,7 +113,7 @@
         "2026-04-27": { kind: "blocked" },
         "2026-04-28": { kind: "blocked" },
         "2026-04-29": { kind: "blocked" },
-        "2026-04-30": { kind: "blocked" }
+        "2026-04-30": { kind: "blocked" },
     };
 
     // ===== Ajustes visibles (sin tocar tu UI)
