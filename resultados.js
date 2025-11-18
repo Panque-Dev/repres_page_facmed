@@ -39,10 +39,10 @@
         FIS:"#F44F32", FAR:"#DA74B8", INM:"#A84DDA", MyP:"#A89C1C", ICR:"#1D98A8", PCV:"#8E004F"
     };
 
-    // Catálogo de exámenes por año (fechas fieles al principal)
+    // Catálogo de exámenes por año
     const EXAMS_BY_YEAR = {
         1: [
-            { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "10:30" },
+            { id: "1-ANAT-P1", subject: "Anatomía", type: "Primer parcial", officialDate: "2025-10-25", officialTime: "08:00" },
             { id: "1-ANAT-P2", subject: "Anatomía", type: "Segundo parcial", officialDate: "2025-11-29", officialTime: "08:00" },
             { id: "1-ANAT-P3", subject: "Anatomía", type: "Tercer parcial", officialDate: "2026-02-28", officialTime: "08:00" },
             { id: "1-ANAT-P4", subject: "Anatomía", type: "Cuarto parcial", officialDate: "2026-04-25", officialTime: "08:00" },
@@ -129,7 +129,6 @@
             { id: "2-IBC2-O2", subject: "Integración Básico Clínica II", type: "Segundo ordinario", officialDate: "2026-06-02", officialTime: "08:00" },
             { id: "2-IBC2-EX", subject: "Integración Básico Clínica II", type: "Extraordinario", officialDate: "2026-06-11", officialTime: "08:00" },
 
-            /* ===== Ciru ===== */
             { id: "2-ICR-P1-TEO", subject: "Introducción a la Cirugía", type: "Parcial 1 (TEO)", officialDate: "2026-01-10", officialTime: "08:00" },
             { id: "2-ICR-P1-PRA", subject: "Introducción a la Cirugía", type: "Parcial 1 (PRA)", officialDate: "2026-01-12", officialTime: "08:00" },
             { id: "2-ICR-P2-TEO", subject: "Introducción a la Cirugía", type: "Parcial 2 (TEO)", officialDate: "2026-04-11", officialTime: "08:00" },
@@ -141,7 +140,6 @@
             { id: "2-ICR-EX-TEO", subject: "Introducción a la Cirugía", type: "Extraordinario (TEO)", officialDate: "2026-06-10", officialTime: "08:00" },
             { id: "2-ICR-EX-PRA", subject: "Introducción a la Cirugía", type: "Extraordinario (PRA)", officialDate: "2026-06-12", officialTime: "08:00" },
 
-            /* ===== Promo ===== */
             { id: "2-PCSV-P1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer parcial",   officialDate: "2025-11-18", officialTime: "09:00" },
             { id: "2-PCSV-P2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo parcial",  officialDate: "2026-04-15", officialTime: "15:00" },
             { id: "2-PSCV-O1", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Primer ordinario", officialDate: "2026-05-15", officialTime: "15:00" },
@@ -185,7 +183,7 @@
             const d = parseDate(iso);
             const fmt = d.toLocaleDateString("es-MX", { day:"2-digit", month:"short" });
             return fmt.replace(/\.$/,"");
-        }catch(_){ return iso; }
+        }catch(_){ return iso || "—"; }
     }
 
     function makeSupportBar(n, total, color){
@@ -203,7 +201,7 @@
     }
 
     function createResultCard(exam, opts={}){
-        const { approvedDate, suggestionDate, voters=[] } = opts;
+        const { approvedDate, suggestionDate, voters=[], metrics=null } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
 
         const card=document.createElement("div");
@@ -225,11 +223,22 @@
         const badgeEl=document.createElement("div"); badgeEl.className="exam-badge"; badgeEl.textContent=badge.badge; badgeEl.title=badge.meaning;
         title.appendChild(sigla); title.appendChild(badgeEl); head.appendChild(title); card.appendChild(head);
 
-        const appText = formatShort(approvedDate || exam.officialDate);
-        const sugText = formatShort(suggestionDate || exam.officialDate);
+        const appText = approvedDate || exam.officialDate ? formatShort(approvedDate || exam.officialDate) : "—";
+        const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(exam.officialDate || "");
 
-        card.appendChild(lineStacked("fecha original:", appText));
+        if(approvedDate || exam.officialDate) card.appendChild(lineStacked("fecha original:", appText));
         card.appendChild(lineStacked("propuesta en tendencia:", sugText));
+
+        // métricas de tiempos
+        if(metrics){
+            const { prevAllDays, nextAllDays, nextSameDays } = metrics;
+            if(prevAllDays!=null) card.appendChild(lineStacked("desde último examen:", prevAllDays + " días"));
+            if(nextAllDays!=null) card.appendChild(lineStacked("para el próximo examen:", nextAllDays + " días"));
+            if(nextSameDays!=null){
+                const weeks = Math.round((nextSameDays/7)*10)/10;
+                card.appendChild(lineStacked("días para abordar la unidad:", `${nextSameDays} días · ${weeks} sem`));
+            }
+        }
 
         if(voters && voters.length){
             const box=document.createElement("div");
@@ -309,7 +318,7 @@
         placeCard(iso, card, container);
     }
 
-    // cache de resultados (del endpoint o snapshot local)
+    // cache de resultados
     const cache = new Map();
 
     async function fetchYear(year){
@@ -372,10 +381,61 @@
         for(const id of ids){
             const a = ref[id]; const b = other[id];
             if(!a || !b) continue;
-            total++;
-            if(a===b) same++;
+            total += 1;
+            if(a===b) same += 1;
         }
         return total? Math.round(100 * same / total) : 0;
+    }
+    // calcula gaps de tiempo por examen: anteriores/siguientes globales y por materia
+    function computeScheduleMetrics(year, proposalsMap){
+        const entries = [];
+        for(const ex of EXAMS_BY_YEAR[year]){
+            const d = proposalsMap[ex.id];
+            if(d) entries.push({ id: ex.id, subject: ex.subject, date: d });
+        }
+        entries.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+
+        // prev/next global
+        const prevNextGlobal = new Map(); // id -> {prevDays, nextDays}
+        for(let i=0;i<entries.length;i++){
+            const cur = entries[i];
+            const prev = entries[i-1] || null;
+            const next = entries[i+1] || null;
+            const curDate = new Date(cur.date + "T00:00:00");
+            const prevDays = prev ? Math.round((curDate - new Date(prev.date + "T00:00:00"))/86400000) : null;
+            const nextDays = next ? Math.round((new Date(next.date + "T00:00:00") - curDate)/86400000) : null;
+            prevNextGlobal.set(cur.id, { prevDays, nextDays });
+        }
+
+        // por materia
+        const bySubj = new Map();
+        for(const e of entries){
+            if(!bySubj.has(e.subject)) bySubj.set(e.subject, []);
+            bySubj.get(e.subject).push(e);
+        }
+        const subjNext = new Map(); // id -> { nextSameDays }
+        for(const [subj, arr] of bySubj.entries()){
+            arr.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+            for(let i=0;i<arr.length;i++){
+                const cur = arr[i];
+                const nxt = arr[i+1] || null;
+                const curDate = new Date(cur.date + "T00:00:00");
+                const nextSameDays = nxt ? Math.round((new Date(nxt.date + "T00:00:00") - curDate)/86400000) : null;
+                subjNext.set(cur.id, { nextSameDays });
+            }
+        }
+
+        const out = {};
+        for(const ex of EXAMS_BY_YEAR[year]){
+            const g = prevNextGlobal.get(ex.id) || {};
+            const s = subjNext.get(ex.id) || {};
+            out[ex.id] = {
+                prevAllDays: g.prevDays ?? null,
+                nextAllDays: g.nextDays ?? null,
+                nextSameDays: s.nextSameDays ?? null
+            };
+        }
+        return out;
     }
 
     // ===== Render =====
@@ -408,8 +468,11 @@
 
         // calendario lateral con ganadoras por moda
         buildCalendars(cal);
+        const modaMapCal = {};
+        sortedModes.forEach(r=>{ modaMapCal[r.exam.id] = r.date; });
+        const metricsById = computeScheduleMetrics(year, modaMapCal);
         sortedModes.forEach(r=>{
-            const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date });
+            const card = createResultCard(r.exam, { approvedDate: r.exam.officialDate, suggestionDate: r.date, metrics: metricsById[r.exam.id] });
             placeCard(r.date, card, cal);
         });
 
@@ -425,25 +488,27 @@
         const groupsData = cache.get(year)?.groups || [];
         const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, modaMap, g.proposals||{}) }));
         all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-        legend.textContent = String(all.filter(x=>x.pct>=90).length);
-        all.forEach(({gid,pct})=>{
+        legend.textContent = String(all.filter(x=> x.pct >= 90).length);
+        for(const it of all){
             const row = document.createElement("div");
-            row.className = "sim-row";
-            row.textContent = `${gid}: ${pct}%`;
+            row.className = "sim-item";
+            row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+            row.style.setProperty('--fill', it.pct + '%');
             listSim.appendChild(row);
-        });
+        }
         panel.classList.remove("hide");
     }
 
     function renderFullCalendar(year, cluster, altCluster){
         const calRoot = $id("results-calendar");
         buildCalendars(calRoot);
+        const metricsById = computeScheduleMetrics(year, cluster.proposals||{});
 
         // ganadores sólidos
         for(const ex of EXAMS_BY_YEAR[year]){
             const d = cluster.proposals[ex.id] || ex.officialDate;
             if(!d) continue;
-            const card = createResultCard(ex, { approvedDate: ex.officialDate, suggestionDate: d });
+            const card = createResultCard(ex, { approvedDate: ex.officialDate, suggestionDate: d, metrics: metricsById[ex.id] });
             placeCard(d, card, calRoot);
         }
         // diferencias en fantasma si hay segundo cluster
@@ -467,12 +532,13 @@
         const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, cluster.proposals, g.proposals||{}) }));
         all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
         legend.textContent = String(all.filter(x=>x.pct>=90).length);
-        all.forEach(({gid,pct})=>{
+        for(const it of all){
             const row = document.createElement("div");
-            row.className = "sim-row";
-            row.textContent = `${gid}: ${pct}%`;
+            row.className = "sim-item";
+            row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+            row.style.setProperty('--fill', it.pct + '%');
             list.appendChild(row);
-        });
+        }
         panel.classList.remove("hide");
 
         // resumen de apoyo
@@ -491,7 +557,17 @@
         const count = (cluster && cluster.groups) ? cluster.groups.length : 0;
         const pct = totalGroups ? Math.round(100*count/totalGroups) : 0;
         suppTitle.textContent = `Apoyo total a esta propuesta: ${count} de ${totalGroups} grupos (${pct}%)`;
-        const bar2 = (function(){ const w=document.createElement('div'); w.className="progress"; w.dataset.max=String(totalGroups); w.dataset.target=String(count); const f=document.createElement('div'); f.className="fill"; w.appendChild(f); setTimeout(()=>{ f.style.width = (totalGroups? (100*count/totalGroups):0) + '%'; }); return w; })();
+        const bar2 = (function(){
+            const w=document.createElement('div');
+            w.className="progress";
+            w.dataset.max=String(totalGroups);
+            w.dataset.target=String(count);
+            const f=document.createElement('div');
+            f.className="fill";
+            w.appendChild(f);
+            setTimeout(()=>{ f.style.width = (totalGroups? (100*count/totalGroups):0) + '%'; });
+            return w;
+        })();
         sup.appendChild(suppTitle);
         sup.appendChild(bar2);
 
@@ -574,6 +650,9 @@
 
     // ===== Init =====
     document.addEventListener("DOMContentLoaded", ()=>{
+        // contadores y barras
+        const el = $id("total-counter");
+        if(el) el.classList.add("countup");
         animateCounter();
         animateBars();
         attachUI();
@@ -602,6 +681,7 @@
                 "1-BQBM-P3": "2026-03-21"
             };
         }else{
+            // Nota: si tu catálogo incluye IB II, ajusta los IDs para que coincidan
             return {
                 "2-INF2-P2":    "2025-11-26",
                 "2-INMU-P1":    "2025-11-28",
