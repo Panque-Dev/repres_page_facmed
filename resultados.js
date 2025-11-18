@@ -1,50 +1,49 @@
 (function(){
     "use strict";
 
-    // ===== Ajustes visibles =====
-    const TOTAL_RESPONSES = 202;
-    const BAR_CONFIG = [
-        { max: 82, target: 79 }, // primero
-        { max: 65, target: 58 }  // segundo
-    ];
+    // ================= CONFIG =================
+    const YEAR1_RANGE = { min: 1101, max: 1182 };
+    const YEAR2_RANGE = { min: 2201, max: 2265 };
 
-    // ===== Calendario base =====
-    const DAY_NAMES = ["L","M","X","J","V","S","D"];
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
-
-    // ===== Bloqueos del calendario (idénticos al main) =====
-    const HOLIDAYS_SET = new Set([
-        "2025-11-17",
-        "2025-12-25",
-        "2026-01-01",
-        "2026-02-02",
-        "2026-03-16",
-        "2026-05-01",
-        "2026-05-05"
-    ]);
 
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
     const VACATION_SS_END     = "2026-04-05";
 
+    // PARO
     const STRIKE_START_DATE   = "2025-11-01";
     const STRIKE_END_DATE     = "2025-11-18";
 
+    // CLASES SIN EVALUACIÓN
     const NOEVAL_START_DATE   = "2025-11-19";
     const NOEVAL_END_DATE     = "2025-11-22";
 
     const SPECIAL_DAY_LABELS = {
-        "2025-11-17": "Conmemorativo",
+        "2025-11-17": "Día de la Revolución",
+        "2025-12-12": "Virgen de Guadalupe (ya no asisten los trabajadores)",
+        "2025-12-24": "Nochebuena",
         "2025-12-25": "Navidad",
         "2026-01-01": "Año Nuevo",
-        "2026-02-02": "Constitución",
-        "2026-03-16": "Benito Juárez",
-        "2026-05-01": "Día del Trabajo",
-        "2026-05-05": "Batalla de Puebla"
+        "2026-02-02": "Día de la Constitución"
     };
+    const HOLIDAYS_SET = new Set(Object.keys(SPECIAL_DAY_LABELS));
 
+    const FORCED_REPROGRAM_CUTOFF = "2025-11-23";
+    const SELECTION_DAY           = "2025-12-02";
+
+    const STORAGE_KEY   = "deptScheduler.state.v6_remote";
+    const SNAPSHOT_KEY  = (year)=>`deptScheduler.snapshot.year${year}`;
+
+    // Fantasmas
+    const MAX_GHOSTS_PER_EXAM      = 3;
+    const MAX_ALPHA_MAIN           = 0.38;
+    const MAX_ALPHA_ALT            = 0.26;
+    const MIN_ALPHA_CAP_WHEN_FEW   = 0.18;
+
+    /* ======= Restricciones Fournier ======= */
     const FOURNIER_RESTRICTIONS = {
         "2025-11-24": { kind: "blocked" },
 
@@ -118,13 +117,21 @@
         "2026-04-30": { kind: "blocked" }
     };
 
-    // utilidades
-    function iso(d){ return d.toISOString().slice(0,10); }
-    function parseDate(s){ return new Date(s+"T00:00:00"); }
-    function within(s, a, b){ return s>=a && s<=b; }
-    function isSunday(d){ return d.getDay()===0; }
+    // ===== Ajustes visibles (sin tocar tu UI)
+    const TOTAL_RESPONSES = 202;
+    const BAR_CONFIG = [
+        { max: 82, target: 79 }, // primero
+        { max: 65, target: 58 }  // segundo
+    ];
 
-    // bloques custom opcionales (si existen)
+    // ===== Base calendario y utilidades
+    const DAY_NAMES = ["L","M","X","J","V","S","D"];
+    const iso = (d)=> d.toISOString().slice(0,10);
+    const parseDate = (s)=> new Date(s+"T00:00:00");
+    const isSunday = (d)=> d.getDay()===0; // igual al main
+    const within = (s, a, b)=> s>=a && s<=b;
+
+    // custom blocks opcionales
     function expandRange(a,b){
         const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
         while(d<=e){ out.push(iso(d)); d.setDate(d.getDate()+1); }
@@ -279,6 +286,7 @@
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
             { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
 
+            // IB II para preset de la 3a propuesta
             { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
@@ -287,13 +295,11 @@
         ]
     };
 
-    // ===== helpers UI =====
+    // ===== helpers UI y render (sin mover tu lógica previa)
     const qs = (s, r=document)=> r.querySelector(s);
     const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
     const $id = (id)=> document.getElementById(id);
-    const parseDateISO = (s)=> new Date(s+"T00:00:00");
 
-    // distintivos y colores
     function shortType(t){
         const s = String(t||"");
         const lower = s.toLowerCase();
@@ -318,32 +324,27 @@
         const key = disp.replace(/\s+/g,'');
         return SUBJECT_COLORS[key] || SUBJECT_COLORS[key.toUpperCase()] || SUBJECT_COLORS[key.toLowerCase()] || "#334155";
     }
-
-    // dd-mes-aaaa
     function formatShort(isoStr){
         try{
-            const d = parseDateISO(isoStr);
+            const d = parseDate(isoStr);
             const dd = d.toLocaleDateString("es-MX", { day:"2-digit" });
             const mon = d.toLocaleDateString("es-MX", { month:"short" }).replace(/\.$/,"");
             const yy = d.getFullYear();
             return `${dd}-${mon}-${yy}`;
         }catch(_){ return isoStr || "—"; }
     }
-
     function makeSupportBar(n, total, color){
         const wrap=document.createElement('div'); wrap.className="support-bar";
         const inner=document.createElement('div'); inner.className="fill"; inner.style.background = color;
         inner.style.width = (total? (100*n/total): 0) + "%";
         wrap.appendChild(inner); return wrap;
     }
-
     function lineStacked(label, value){
         const row=document.createElement("div"); row.className="exam-line stacked";
         const l=document.createElement("span"); l.className="line-label"; l.textContent=label;
         const v=document.createElement("span"); v.className="line-value"; v.textContent=value;
         row.appendChild(l); row.appendChild(v); return row;
     }
-
     function createResultCard(exam, opts={}){
         const { approvedDate, suggestionDate, voters=[], metrics=null, support=null } = opts;
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
@@ -408,7 +409,6 @@
 
         return card;
     }
-
     function createGhostCard(exam){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
@@ -438,7 +438,7 @@
         return out;
     }
 
-    // ====== REFORZADO: aplica bloqueos con las MISMAS clases/leyendas que main ======
+    // ===== BLOQUEOS: mismos días y clases que el main; compatible con resultados.css
     function applyCalendarBlocks(section, y, m){
         const custom = getCustomBlocks();
         const grid = section.querySelector(".month-grid");
@@ -451,60 +451,64 @@
             const dt = new Date(y, m, d);
             const ds = iso(dt);
 
-            // asegura contenedor y meta al estilo del main
             const header = cell.querySelector(".day-header");
             let meta = header.querySelector(".day-meta");
-            if(!meta){ meta = document.createElement("span"); meta.className = "day-meta"; header.appendChild(meta); }
+            if(!meta){ meta = document.createElement("span"); meta.className="day-meta"; header.appendChild(meta); }
+            let label = "";
 
-            // domingo = weekend
+            // fin de semana (domingo) → weekend y blocked-weekend
             if(isSunday(dt)){
-                cell.classList.add("weekend");
-                meta.textContent = "Fin de semana";
+                cell.classList.add("weekend","blocked","blocked-weekend");
+                label = label || "Fin de semana";
             }
 
-            // vacaciones e intersemestral = vacation
+            // vacaciones/intersemestral → vacation y blocked-vacation
             if(within(ds, VACATION_START_DATE, VACATION_END_DATE) || within(ds, VACATION_SS_START, VACATION_SS_END)){
-                cell.classList.add("vacation");
-                meta.textContent = "Vacaciones";
+                cell.classList.add("vacation","blocked","blocked-vacation");
+                label = label || "Vacaciones";
             }
 
-            // paro y días sin evaluación: sólo leyenda, igual que main
+            // paro y clases sin evaluación → leyenda, sin bloquear duro
             if(within(ds, STRIKE_START_DATE, STRIKE_END_DATE)){
-                meta.textContent = "Paro";
+                label = label || "Paro";
+                cell.classList.add("blocked-partial");
             }
             if(within(ds, NOEVAL_START_DATE, NOEVAL_END_DATE)){
-                meta.textContent = "Clases sin evaluación";
+                label = label || "Clases sin evaluación";
+                cell.classList.add("blocked-partial");
             }
 
-            // festivos con leyenda
-            if(HOLIDAYS_SET.has(ds) && !meta.textContent){
-                meta.textContent = SPECIAL_DAY_LABELS[ds] || "Festivo";
-            }else if(SPECIAL_DAY_LABELS[ds]){
-                meta.textContent = SPECIAL_DAY_LABELS[ds];
+            // festivos
+            if(HOLIDAYS_SET.has(ds)){
+                cell.classList.add("blocked","blocked-holiday");
+                label = label || (SPECIAL_DAY_LABELS[ds] || "Festivo");
             }
 
-            // restricciones del Fournier
+            // Fournier
             const fr = FOURNIER_RESTRICTIONS[ds] || null;
             if(fr){
-                if(fr.kind === "blocked"){
-                    cell.classList.add("vacation");           // el main usa misma clase visual
-                    meta.textContent = "Fournier ocupado";
-                }else if(fr.kind === "vac"){
-                    cell.classList.add("vacation");
-                    meta.textContent = "Vacaciones";
-                }else if(fr.kind === "partial_after"){
-                    meta.textContent = "Fournier desde " + (fr.freeFrom || "15:00");
-                }else if(fr.kind === "partial_until"){
-                    meta.textContent = "Fournier hasta " + (fr.freeUntil || "16:00");
+                if(fr.kind==="blocked"){
+                    cell.classList.add("vacation","blocked","blocked-fournier");
+                    label = "Fournier ocupado";
+                }else if(fr.kind==="vac"){
+                    cell.classList.add("vacation","blocked","blocked-fournier");
+                    label = "Vacaciones";
+                }else if(fr.kind==="partial_after"){
+                    cell.classList.add("blocked-partial","blocked-fournier-after");
+                    label = `Fournier desde ${fr.freeFrom||"15:00"}`;
+                }else if(fr.kind==="partial_until"){
+                    cell.classList.add("blocked-partial","blocked-fournier-until");
+                    label = `Fournier hasta ${fr.freeUntil||"16:00"}`;
                 }
             }
 
-            // bloques personalizados del HTML (si existen). Los marcamos visualmente como vacation
+            // custom del HTML
             if(custom.dates.has(ds)){
-                cell.classList.add("vacation");
-                const label = custom.labels.get(ds);
-                if(label && !meta.textContent) meta.textContent = label;
+                cell.classList.add("blocked","blocked-custom","vacation");
+                label = label || (custom.labels.get(ds) || "Bloqueado");
             }
+
+            if(label){ meta.textContent = label; header.classList.add("is-blocked"); }
         }
     }
 
@@ -529,7 +533,6 @@
                 const head=document.createElement("div"); head.className="day-header";
                 const num=document.createElement("div"); num.className="day-number"; num.textContent=d;
                 head.appendChild(num);
-                // también creamos .day-meta vacío aquí para que CSS de main.css lo pinte si aplica
                 const meta=document.createElement("span"); meta.className="day-meta"; head.appendChild(meta);
                 cell.appendChild(head);
                 const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
@@ -542,13 +545,15 @@
     }
 
     function placeCard(isoStr, card, container){
-        const d=parseDateISO(isoStr);
-        const month = container.querySelectorAll(".month")[ (d.getFullYear()-parseDate(CAL_START_DATE).getFullYear())*12 + d.getMonth() - parseDate(CAL_START_DATE).getMonth() ];
+        const d=parseDate(isoStr);
+        const start = parseDate(CAL_START_DATE);
+        const idx = (d.getFullYear()-start.getFullYear())*12 + d.getMonth() - start.getMonth();
+        const month = container.querySelectorAll(".month")[ idx ];
         if(!month) return;
         const grid = month.querySelector(".month-grid");
         const first = new Date(d.getFullYear(), d.getMonth(), 1);
-        let start=first.getDay(); if(start===0) start=7;
-        const index = 7 + (d.getDate() + start - 2);
+        let s=first.getDay(); if(s===0) s=7;
+        const index = 7 + (d.getDate() + s - 2);
         const cell = grid.children[index];
         const list = cell.querySelector(".exam-list");
         list.appendChild(card);
@@ -565,10 +570,10 @@
             if(!res.ok) throw new Error("HTTP "+res.status);
             const json = await res.json();
             cache.set(year, json);
-            localStorage.setItem("SNAPSHOT::"+year, JSON.stringify(json));
+            localStorage.setItem(SNAPSHOT_KEY(year), JSON.stringify(json));
             return json;
         }catch(e){
-            const raw = localStorage.getItem("SNAPSHOT::"+year);
+            const raw = localStorage.getItem(SNAPSHOT_KEY(year));
             if(raw){
                 const json = JSON.parse(raw);
                 cache.set(year, json);
@@ -579,7 +584,7 @@
         }
     }
 
-    // ===== Cómputos =====
+    // ===== Cómputos (sin cambios)
     function computeExamModes(year, groups){
         const results = [];
         for(const exam of EXAMS_BY_YEAR[year]){
@@ -673,7 +678,7 @@
         return out;
     }
 
-    // ===== Panel dividido =====
+    // ===== Panel dividido
     function normalizeForSimilarity(map){
         const out={};
         for(const [k,v] of Object.entries(map||{})){
@@ -768,7 +773,7 @@
         panel.classList.remove("hide");
     }
 
-    // ===== Vistas =====
+    // ===== Vistas
     function renderExamModes(year, modes){
         const modaMap = {};
         const supportMap = {};
@@ -783,8 +788,10 @@
     }
     function renderFullAsSplit(title, year, cluster, altCluster){
         const proposals = cluster?.proposals || {};
-        const alt = altCluster?.proposals || null;
-        renderSplit(title, year, proposals, null, alt);
+        theAlt: {
+            const alt = altCluster?.proposals || null;
+            renderSplit(title, year, proposals, null, alt);
+        }
     }
 
     let currentYear = 1;
