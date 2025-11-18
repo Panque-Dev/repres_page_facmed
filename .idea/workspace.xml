@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="detallitos de resultados 7.77">
+    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="fichas primero">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resultados.js" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.js" afterDir="false" />
     </list>
@@ -31,12 +31,12 @@
     &quot;assignee&quot;: &quot;mauriciosvcq&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Panque-Dev/repres_page_facmed.git&quot;,
-    &quot;accountId&quot;: &quot;406e5000-6140-4564-94a2-5df9841f220f&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Panque-Dev/repres_page_facmed.git",
+    "accountId": "e90968e6-7531-4c4d-a723-50e1c9289432"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -48,24 +48,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.renombra_propuestas.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/mauri/WebstormProjects/repres_page_facmed&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/mauri/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/25.2.0/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.renombra_propuestas.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/mauri/WebstormProjects/repres_page_facmed",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/mauri/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/25.2.1/node",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\mauri\WebstormProjects\repres_page_facmed" />
@@ -99,6 +99,7 @@
       <workItem from="1763409220534" duration="1000" />
       <workItem from="1763432511765" duration="3812000" />
       <workItem from="1763437145535" duration="3811000" />
+      <workItem from="1763489667208" duration="722000" />
     </task>
     <task id="LOCAL-00001" summary="micro extra">
       <option name="closed" value="true" />
@@ -468,7 +469,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763440318601</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="embrio p2">
+      <option name="closed" value="true" />
+      <created>1763490041467</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1763490041467</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -486,8 +495,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="resultados" />
-    <MESSAGE value="resultados 2.0" />
     <MESSAGE value="resultados 3.0" />
     <MESSAGE value="resultados 4.0" />
     <MESSAGE value="resultados 5.0" />
@@ -511,7 +518,9 @@
     <MESSAGE value="detallitos de resultados 7" />
     <MESSAGE value="detallitos de resultados 7.7" />
     <MESSAGE value="detallitos de resultados 7.77" />
-    <option name="LAST_COMMIT_MESSAGE" value="detallitos de resultados 7.77" />
+    <MESSAGE value="embrio p2" />
+    <MESSAGE value="fichas primero" />
+    <option name="LAST_COMMIT_MESSAGE" value="fichas primero" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/repres_page_facmed$renombra_propuestas.coverage" NAME="renombra_propuestas Coverage Results" MODIFIED="1763323295020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Sube aquí tu documento realizado por el programa enviado_ (File responses)" />
