@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="detallitos de resultados 3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resultados.js" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resultados.html" beforeDir="false" afterPath="$PROJECT_DIR$/resultados.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,7 @@
       <workItem from="1763351961176" duration="80000" />
       <workItem from="1763352256123" duration="234000" />
       <workItem from="1763409220534" duration="1000" />
-      <workItem from="1763432511765" duration="2618000" />
+      <workItem from="1763432511765" duration="3417000" />
     </task>
     <task id="LOCAL-00001" summary="micro extra">
       <option name="closed" value="true" />
@@ -371,7 +371,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763434736494</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="detallitos de resultados 3">
+      <option name="closed" value="true" />
+      <created>1763435184362</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1763435184362</updated>
+    </task>
+    <task id="LOCAL-00036" summary="detallitos de resultados 3">
+      <option name="closed" value="true" />
+      <created>1763435738435</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1763435738435</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
