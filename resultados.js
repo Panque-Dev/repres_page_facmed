@@ -13,8 +13,7 @@
     const CAL_START_DATE = "2025-11-01";
     const CAL_END_DATE   = "2026-06-30";
 
-    // ===== Bloqueos del calendario (alineados con main.js) =====
-    // Festivos “duros”
+    // ===== Bloqueos del calendario (idénticos al main) =====
     const HOLIDAYS_SET = new Set([
         "2025-11-17",
         "2025-12-25",
@@ -24,7 +23,7 @@
         "2026-05-01",
         "2026-05-05"
     ]);
-    // Vacaciones, paro, días sin evaluación
+
     const VACATION_START_DATE = "2025-12-12";
     const VACATION_END_DATE   = "2026-01-04";
     const VACATION_SS_START   = "2026-03-29";
@@ -37,15 +36,15 @@
     const NOEVAL_END_DATE     = "2025-11-22";
 
     const SPECIAL_DAY_LABELS = {
-        "2025-11-17": "Día de la Revolución",
-        "2025-12-12": "Virgen de Guadalupe (ya no asisten los trabajadores)",
-        "2025-12-24": "Nochebuena",
+        "2025-11-17": "Conmemorativo",
         "2025-12-25": "Navidad",
         "2026-01-01": "Año Nuevo",
-        "2026-02-02": "Día de la Constitución"
+        "2026-02-02": "Constitución",
+        "2026-03-16": "Benito Juárez",
+        "2026-05-01": "Día del Trabajo",
+        "2026-05-05": "Batalla de Puebla"
     };
 
-    // Restricciones detalladas del Fournier
     const FOURNIER_RESTRICTIONS = {
         "2025-11-24": { kind: "blocked" },
 
@@ -119,11 +118,13 @@
         "2026-04-30": { kind: "blocked" }
     };
 
-    // utilidades locales para bloqueos
-    function isSunday(d){ return d.getDay()===0; } // igual que en main: solo domingo
+    // utilidades
     function iso(d){ return d.toISOString().slice(0,10); }
+    function parseDate(s){ return new Date(s+"T00:00:00"); }
     function within(s, a, b){ return s>=a && s<=b; }
+    function isSunday(d){ return d.getDay()===0; }
 
+    // bloques custom opcionales (si existen)
     function expandRange(a,b){
         const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
         while(d<=e){ out.push(iso(d)); d.setDate(d.getDate()+1); }
@@ -278,7 +279,6 @@
             { id: "2-PSCV-O2", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Segundo ordinario", officialDate: "2026-05-29", officialTime: "15:00" },
             { id: "2-PSCV-EX", subject: "Promoción de la Salud en el Ciclo de Vida", type: "Extraordinario",    officialDate: "2026-06-11", officialTime: "15:00" },
 
-            // IB II para la propuesta 3 (sin oficiales; solo para mostrar preset)
             { id: "2-INF2-P1", subject: "Informática Biomédica II", type: "Primer parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-P2", subject: "Informática Biomédica II", type: "Segundo parcial", officialDate: null, officialTime: null },
             { id: "2-INF2-O1", subject: "Informática Biomédica II", type: "Primer ordinario", officialDate: null, officialTime: null },
@@ -287,13 +287,13 @@
         ]
     };
 
-    // ===== helpers =====
+    // ===== helpers UI =====
     const qs = (s, r=document)=> r.querySelector(s);
     const qsa = (s, r=document)=> Array.from(r.querySelectorAll(s));
     const $id = (id)=> document.getElementById(id);
-    const parseDate = (s)=> new Date(s+"T00:00:00");
+    const parseDateISO = (s)=> new Date(s+"T00:00:00");
 
-    // Distintivo PAR, ORD, EXT con número; en ICR conserva (TEO)/(PRA)
+    // distintivos y colores
     function shortType(t){
         const s = String(t||"");
         const lower = s.toLowerCase();
@@ -322,7 +322,7 @@
     // dd-mes-aaaa
     function formatShort(isoStr){
         try{
-            const d = parseDate(isoStr);
+            const d = parseDateISO(isoStr);
             const dd = d.toLocaleDateString("es-MX", { day:"2-digit" });
             const mon = d.toLocaleDateString("es-MX", { month:"short" }).replace(/\.$/,"");
             const yy = d.getFullYear();
@@ -373,7 +373,7 @@
         const sugText = suggestionDate ? formatShort(suggestionDate) : formatShort(exam.officialDate || "");
 
         if(approvedDate || exam.officialDate) card.appendChild(lineStacked("fecha original:", appText));
-        card.appendChild(lineStacked("propuesta:", sugText)); // mantiene dd-mes-aaaa
+        card.appendChild(lineStacked("propuesta:", sugText));
 
         if(metrics){
             const { prevAllDays, nextAllDays, nextSameDays } = metrics;
@@ -408,6 +408,7 @@
 
         return card;
     }
+
     function createGhostCard(exam){
         const sig=getSigla(exam.subject); const badge=shortType(exam.type);
         const card=document.createElement("div"); card.className="exam-card is-ghost ghost-min"; card.draggable=false;
@@ -437,6 +438,7 @@
         return out;
     }
 
+    // ====== REFORZADO: aplica bloqueos con las MISMAS clases/leyendas que main ======
     function applyCalendarBlocks(section, y, m){
         const custom = getCustomBlocks();
         const grid = section.querySelector(".month-grid");
@@ -449,61 +451,59 @@
             const dt = new Date(y, m, d);
             const ds = iso(dt);
 
-            let blocked = false;
+            // asegura contenedor y meta al estilo del main
+            const header = cell.querySelector(".day-header");
+            let meta = header.querySelector(".day-meta");
+            if(!meta){ meta = document.createElement("span"); meta.className = "day-meta"; header.appendChild(meta); }
 
-            // domingo (igual que main.js)
-            if(isSunday(dt)){ blocked = true; cell.classList.add("blocked","blocked-weekend"); }
+            // domingo = weekend
+            if(isSunday(dt)){
+                cell.classList.add("weekend");
+                meta.textContent = "Fin de semana";
+            }
 
-            // vacaciones e intersemestral
+            // vacaciones e intersemestral = vacation
             if(within(ds, VACATION_START_DATE, VACATION_END_DATE) || within(ds, VACATION_SS_START, VACATION_SS_END)){
-                blocked = true; cell.classList.add("blocked","blocked-vacation");
+                cell.classList.add("vacation");
+                meta.textContent = "Vacaciones";
             }
 
-            // paro
+            // paro y días sin evaluación: sólo leyenda, igual que main
             if(within(ds, STRIKE_START_DATE, STRIKE_END_DATE)){
-                blocked = true; cell.classList.add("blocked","blocked-strike");
+                meta.textContent = "Paro";
             }
-
-            // días sin evaluación
             if(within(ds, NOEVAL_START_DATE, NOEVAL_END_DATE)){
-                blocked = true; cell.classList.add("blocked","blocked-noeval");
+                meta.textContent = "Clases sin evaluación";
             }
 
-            // etiquetas “festivo” o especiales
-            if(HOLIDAYS_SET.has(ds) || Object.prototype.hasOwnProperty.call(SPECIAL_DAY_LABELS, ds)){
-                blocked = true; cell.classList.add("blocked","blocked-holiday");
+            // festivos con leyenda
+            if(HOLIDAYS_SET.has(ds) && !meta.textContent){
+                meta.textContent = SPECIAL_DAY_LABELS[ds] || "Festivo";
+            }else if(SPECIAL_DAY_LABELS[ds]){
+                meta.textContent = SPECIAL_DAY_LABELS[ds];
             }
 
             // restricciones del Fournier
             const fr = FOURNIER_RESTRICTIONS[ds] || null;
             if(fr){
                 if(fr.kind === "blocked"){
-                    blocked = true; cell.classList.add("blocked","blocked-fournier");
+                    cell.classList.add("vacation");           // el main usa misma clase visual
+                    meta.textContent = "Fournier ocupado";
                 }else if(fr.kind === "vac"){
-                    blocked = true; cell.classList.add("blocked","blocked-vacation");
+                    cell.classList.add("vacation");
+                    meta.textContent = "Vacaciones";
                 }else if(fr.kind === "partial_after"){
-                    // no bloquea del todo, pero marcamos como “condicionado”
-                    cell.classList.add("blocked-partial","blocked-fournier-after");
-                    cell.dataset.blockLabel = "Fournier desde " + (fr.freeFrom||"15:00");
+                    meta.textContent = "Fournier desde " + (fr.freeFrom || "15:00");
                 }else if(fr.kind === "partial_until"){
-                    cell.classList.add("blocked-partial","blocked-fournier-until");
-                    cell.dataset.blockLabel = "Fournier hasta " + (fr.freeUntil||"16:00");
-                }else if(fr.kind === "free"){
-                    // explícitamente libre
+                    meta.textContent = "Fournier hasta " + (fr.freeUntil || "16:00");
                 }
             }
 
-            // bloques personalizados (si el HTML define window.CALENDAR_BLOCKS)
+            // bloques personalizados del HTML (si existen). Los marcamos visualmente como vacation
             if(custom.dates.has(ds)){
-                blocked = true;
-                const label = custom.labels.get(ds) || "custom";
-                cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
-                cell.dataset.blockLabel = label;
-            }
-
-            if(blocked){
-                const head = cell.querySelector(".day-header");
-                head && head.classList.add("is-blocked");
+                cell.classList.add("vacation");
+                const label = custom.labels.get(ds);
+                if(label && !meta.textContent) meta.textContent = label;
             }
         }
     }
@@ -528,7 +528,10 @@
                 const cell=document.createElement("div"); cell.className="day-cell";
                 const head=document.createElement("div"); head.className="day-header";
                 const num=document.createElement("div"); num.className="day-number"; num.textContent=d;
-                head.appendChild(num); cell.appendChild(head);
+                head.appendChild(num);
+                // también creamos .day-meta vacío aquí para que CSS de main.css lo pinte si aplica
+                const meta=document.createElement("span"); meta.className="day-meta"; head.appendChild(meta);
+                cell.appendChild(head);
                 const list=document.createElement("div"); list.className="exam-list"; cell.appendChild(list);
                 grid.appendChild(cell);
             }
@@ -537,8 +540,9 @@
             container.appendChild(section);
         });
     }
+
     function placeCard(isoStr, card, container){
-        const d=parseDate(isoStr);
+        const d=parseDateISO(isoStr);
         const month = container.querySelectorAll(".month")[ (d.getFullYear()-parseDate(CAL_START_DATE).getFullYear())*12 + d.getMonth() - parseDate(CAL_START_DATE).getMonth() ];
         if(!month) return;
         const grid = month.querySelector(".month-grid");
@@ -669,7 +673,7 @@
         return out;
     }
 
-    // ===== Panel dividido genérico =====
+    // ===== Panel dividido =====
     function normalizeForSimilarity(map){
         const out={};
         for(const [k,v] of Object.entries(map||{})){
@@ -680,90 +684,88 @@
     function renderSplit(title, year, proposalsMap, perExamSupportMap=null, altProposalsMap=null){
         const split = $id("moda-split");
         const list  = $id("moda-cards");
-        theCal: {
-            const cal   = $id("moda-calendar");
+        const cal   = $id("moda-calendar");
 
-            $id("results-title").textContent = title;
-            $id("calendar-wrap").classList.add("hide");
-            split.classList.remove("hide");
+        $id("results-title").textContent = title;
+        $id("calendar-wrap").classList.add("hide");
+        split.classList.remove("hide");
 
-            list.innerHTML="";
-            buildCalendars(cal);
+        list.innerHTML="";
+        buildCalendars(cal);
 
-            const metricsById = computeScheduleMetrics(year, proposalsMap);
+        const metricsById = computeScheduleMetrics(year, proposalsMap);
 
-            const present = EXAMS_BY_YEAR[year]
-                .filter(ex=> proposalsMap[ex.id])
-                .map(ex=>{
-                    const raw = proposalsMap[ex.id];
-                    const arr = Array.isArray(raw) ? raw.slice() : [raw];
-                    return { ex, dates: arr, main: arr[0] };
-                })
-                .sort((a,b)=> a.main.localeCompare(b.main) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
+        const present = EXAMS_BY_YEAR[year]
+            .filter(ex=> proposalsMap[ex.id])
+            .map(ex=>{
+                const raw = proposalsMap[ex.id];
+                const arr = Array.isArray(raw) ? raw.slice() : [raw];
+                return { ex, dates: arr, main: arr[0] };
+            })
+            .sort((a,b)=> a.main.localeCompare(b.main) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
 
-            const totalGroups = (cache.get(year)?.groups || []).length;
+        const totalGroups = (cache.get(year)?.groups || []).length;
 
-            present.forEach(r=>{
-                const support = perExamSupportMap && perExamSupportMap[r.ex.id]
-                    ? { count: perExamSupportMap[r.ex.id].count, total: totalGroups }
-                    : null;
+        present.forEach(r=>{
+            const support = perExamSupportMap && perExamSupportMap[r.ex.id]
+                ? { count: perExamSupportMap[r.ex.id].count, total: totalGroups }
+                : null;
 
-                const card = createResultCard(r.ex, {
-                    approvedDate: r.ex.officialDate,
-                    suggestionDate: r.main,
-                    metrics: metricsById[r.ex.id],
-                    support
-                });
-
-                const holder = document.createElement("div");
-                holder.className="stat-card";
-                holder.style.minHeight = "0";
-                holder.style.height = "auto";
-                holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.ex), .12));
-                holder.appendChild(card);
-                list.appendChild(holder);
-
-                r.dates.forEach(d=>{
-                    const cardCal = createResultCard(r.ex, {
-                        approvedDate: r.ex.officialDate,
-                        suggestionDate: d,
-                        metrics: metricsById[r.ex.id]
-                    });
-                    placeCard(d, cardCal, cal);
-                });
+            const card = createResultCard(r.ex, {
+                approvedDate: r.ex.officialDate,
+                suggestionDate: r.main,
+                metrics: metricsById[r.ex.id],
+                support
             });
 
-            if(altProposalsMap){
-                for(const ex of EXAMS_BY_YEAR[year]){
-                    const raw1 = proposalsMap[ex.id];
-                    const raw2 = altProposalsMap[ex.id];
-                    const d1 = Array.isArray(raw1)? raw1[0] : raw1;
-                    const d2 = Array.isArray(raw2)? raw2[0] : raw2;
-                    if(d1 && d2 && d1!==d2){
-                        const ghost = createGhostCard(ex);
-                        placeGhost(d2, ghost, cal);
-                    }
+            const holder = document.createElement("div");
+            holder.className="stat-card";
+            holder.style.minHeight = "0";
+            holder.style.height = "auto";
+            holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.ex), .12));
+            holder.appendChild(card);
+            list.appendChild(holder);
+
+            r.dates.forEach(d=>{
+                const cardCal = createResultCard(r.ex, {
+                    approvedDate: r.ex.officialDate,
+                    suggestionDate: d,
+                    metrics: metricsById[r.ex.id]
+                });
+                placeCard(d, cardCal, cal);
+            });
+        });
+
+        if(altProposalsMap){
+            for(const ex of EXAMS_BY_YEAR[year]){
+                const raw1 = proposalsMap[ex.id];
+                const raw2 = altProposalsMap[ex.id];
+                const d1 = Array.isArray(raw1)? raw1[0] : raw1;
+                const d2 = Array.isArray(raw2)? raw2[0] : raw2;
+                if(d1 && d2 && d1!==d2){
+                    const ghost = createGhostCard(ex);
+                    placeGhost(d2, ghost, cal);
                 }
             }
-
-            const panel = $id("similarity-panel");
-            const listSim = $id("similarity-list");
-            const legend = $id("similarity-legend-90");
-            listSim.innerHTML="";
-            const groupsData = cache.get(year)?.groups || [];
-            const simpleMap = normalizeForSimilarity(proposalsMap);
-            const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, simpleMap, g.proposals||{}) }));
-            all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-            legend.textContent = String(all.filter(x=> x.pct >= 90).length);
-            for(const it of all){
-                const row = document.createElement("div");
-                row.className = "sim-item";
-                row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
-                row.style.setProperty('--fill', it.pct + '%');
-                listSim.appendChild(row);
-            }
-            panel.classList.remove("hide");
         }
+
+        const panel = $id("similarity-panel");
+        const listSim = $id("similarity-list");
+        const legend = $id("similarity-legend-90");
+        listSim.innerHTML="";
+        const groupsData = cache.get(year)?.groups || [];
+        const simpleMap = normalizeForSimilarity(proposalsMap);
+        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, simpleMap, g.proposals||{}) }));
+        all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
+        legend.textContent = String(all.filter(x=> x.pct >= 90).length);
+        for(const it of all){
+            const row = document.createElement("div");
+            row.className = "sim-item";
+            row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
+            row.style.setProperty('--fill', it.pct + '%');
+            listSim.appendChild(row);
+        }
+        panel.classList.remove("hide");
     }
 
     // ===== Vistas =====
@@ -865,7 +867,7 @@
     });
 
     /* ===========================================================
-       BLOQUE: Propuesta de la Última Mesa de Diálogo (tercer botón)
+       Propuesta de la Última Mesa de Diálogo (tercer botón)
        =========================================================== */
     function __presetProposalsFor(year){
         if(year===1){
