@@ -23,7 +23,7 @@
         "2026-05-01",
         "2026-05-05"
     ]);
-    function isWeekend(d){ const k=d.getDay(); return k===0 || k===6; }
+    function isWeekend(d){ const k=d.getDay(); return k===0; }
     function iso(d){ return d.toISOString().slice(0,10); }
     function expandRange(a,b){
         const out=[]; const d=new Date(a+"T00:00:00"); const e=new Date(b+"T00:00:00");
@@ -44,6 +44,109 @@
         }
         return { dates, labels };
     }
+
+    // ===== Reglas adicionales (copiadas de main.js) =====
+    const VACATION_START_DATE = "2025-12-12";
+    const VACATION_END_DATE   = "2026-01-04";
+    const VACATION_SS_START   = "2026-03-29";
+    const VACATION_SS_END     = "2026-04-05";
+
+    const STRIKE_START_DATE   = "2025-11-01";
+    const STRIKE_END_DATE     = "2025-11-18";
+
+    const NOEVAL_START_DATE   = "2025-11-19";
+    const NOEVAL_END_DATE     = "2025-11-22";
+
+    const SPECIAL_DAY_LABELS = {
+        "2025-11-17": "Día de la Revolución",
+        "2025-12-12": "Virgen de Guadalupe (ya no asisten los trabajadores)",
+        "2025-12-24": "Nochebuena",
+        "2025-12-25": "Navidad",
+        "2026-01-01": "Año Nuevo",
+        "2026-02-02": "Día de la Constitución",
+    };
+
+    const FOURNIER_RESTRICTIONS = {
+        "2025-11-24": { kind: "blocked" },
+
+        "2025-12-01": { kind: "blocked" },
+        "2025-12-02": { kind: "blocked" },
+        "2025-12-03": { kind: "blocked" },
+        "2025-12-04": { kind: "blocked" },
+        "2025-12-08": { kind: "blocked" },
+
+        "2026-01-06": { kind: "blocked" },
+        "2026-01-07": { kind: "blocked" },
+        "2026-01-13": { kind: "blocked" },
+        "2026-01-14": { kind: "blocked" },
+        "2026-01-15": { kind: "blocked" },
+        "2026-01-19": { kind: "partial_after", freeFrom: "15:00" },
+        "2026-01-21": { kind: "blocked" },
+        "2026-01-22": { kind: "blocked" },
+        "2026-01-23": { kind: "blocked" },
+        "2026-01-26": { kind: "blocked" },
+        "2026-01-27": { kind: "blocked" },
+        "2026-01-28": { kind: "blocked" },
+        "2026-01-30": { kind: "blocked" },
+
+        "2026-02-02": { kind: "vac" },
+        "2026-02-03": { kind: "blocked" },
+        "2026-02-04": { kind: "blocked" },
+        "2026-02-05": { kind: "blocked" },
+        "2026-02-06": { kind: "blocked" },
+        "2026-02-09": { kind: "blocked" },
+        "2026-02-10": { kind: "blocked" },
+        "2026-02-11": { kind: "blocked" },
+        "2026-02-12": { kind: "blocked" },
+        "2026-02-17": { kind: "blocked" },
+        "2026-02-18": { kind: "blocked" },
+        "2026-02-19": { kind: "blocked" },
+        "2026-02-20": { kind: "blocked" },
+        "2026-02-23": { kind: "blocked" },
+        "2026-02-24": { kind: "blocked" },
+        "2026-02-25": { kind: "free" },
+        "2026-02-26": { kind: "free" },
+        "2026-02-27": { kind: "free" },
+        "2026-02-28": { kind: "free" },
+
+        "2026-03-02": { kind: "blocked" },
+        "2026-03-04": { kind: "partial_until", freeUntil: "16:00" },
+        "2026-03-05": { kind: "blocked" },
+        "2026-03-06": { kind: "blocked" },
+        "2026-03-10": { kind: "blocked" },
+        "2026-03-11": { kind: "blocked" },
+        "2026-03-12": { kind: "blocked" },
+        "2026-03-13": { kind: "blocked" },
+        "2026-03-17": { kind: "blocked" },
+        "2026-03-18": { kind: "blocked" },
+        "2026-03-19": { kind: "blocked" },
+        "2026-03-20": { kind: "blocked" },
+        "2026-03-23": { kind: "blocked" },
+        "2026-03-24": { kind: "blocked" },
+        "2026-03-25": { kind: "blocked" },
+        "2026-03-26": { kind: "blocked" },
+        "2026-03-27": { kind: "blocked" },
+        "2026-03-30": { kind: "vac" },
+        "2026-03-31": { kind: "vac" },
+
+        "2026-04-07": { kind: "blocked" },
+        "2026-04-15": { kind: "blocked" },
+        "2026-04-22": { kind: "blocked" },
+        "2026-04-24": { kind: "blocked" },
+        "2026-04-27": { kind: "blocked" },
+        "2026-04-28": { kind: "blocked" },
+        "2026-04-29": { kind: "blocked" },
+        "2026-04-30": { kind: "blocked" },
+    };
+
+    function isVacationStr(s){
+        return (s>=VACATION_START_DATE && s<=VACATION_END_DATE) ||
+            (s>=VACATION_SS_START && s<=VACATION_SS_END) ||
+            (FOURNIER_RESTRICTIONS[s] && FOURNIER_RESTRICTIONS[s].kind==="vac");
+    }
+    function isStrikeStr(s){ return s>=STRIKE_START_DATE && s<=STRIKE_END_DATE; }
+    function isNoEvaluationStr(s){ return s>=NOEVAL_START_DATE && s<=NOEVAL_END_DATE; }
+    function getRestrictionStr(s){ return FOURNIER_RESTRICTIONS[s] || null; }
 
     // Materias e íconos
     const SUBJECT_SIGLAS = {
@@ -347,16 +450,54 @@
             const cell = grid.children[base + (d-1)];
             const dt = new Date(y, m, d);
             const k = iso(dt);
-            let blocked = false;
-            if(isWeekend(dt)){ blocked = true; cell.classList.add("blocked","blocked-weekend"); }
-            if(HOLIDAYS_SET.has(k)){ blocked = true; cell.classList.add("blocked","blocked-holiday"); }
+            const dow = dt.getDay();
+
+            // ensure meta element exists
+            const head = cell.querySelector(".day-header");
+            let meta = head ? head.querySelector(".day-meta") : null;
+            if(head && !meta){ meta = document.createElement("span"); meta.className="day-meta"; head.appendChild(meta); }
+
+            // reset classes set by previous renders
+            cell.classList.remove("blocked","blocked-weekend","blocked-holiday","blocked-fournier","blocked-custom","vacation","weekend");
+            if(head) head.classList.remove("is-blocked");
+
+            // weekend (domingo) como en main.js
+            if(dow===0){ cell.classList.add("weekend"); }
+
+            // vacaciones, paro, no evaluación y restricciones de fournier
+            const fr = getRestrictionStr(k);
+            if(isVacationStr(k)) cell.classList.add("vacation");
+            if(isStrikeStr(k))   cell.classList.add("vacation");
+            if(fr && fr.kind==="blocked") cell.classList.add("vacation");
+
+            // compatibilidad con bloqueos personalizados
             if(custom.dates.has(k)){
-                blocked = true;
                 const label = custom.labels.get(k) || "custom";
+                if(label==="fournier") cell.classList.add("vacation"); // coincide con estilo de main.js
                 cell.classList.add("blocked", label==="fournier" ? "blocked-fournier" : "blocked-custom");
                 cell.dataset.blockLabel = label;
+                if(head) head.classList.add("is-blocked");
             }
-            if(blocked){ const head = cell.querySelector(".day-header"); head && head.classList.add("is-blocked"); }
+
+            // festivos antiguos (por compat), mantén etiqueta
+            if(HOLIDAYS_SET.has(k)){
+                cell.classList.add("vacation");
+                if(head) head.classList.add("is-blocked");
+            }
+
+            // Etiquetas de meta como en main.js
+            if(meta){
+                if(k===CAL_START_DATE) meta.textContent="Inicio";
+                else if(k===CAL_END_DATE) meta.textContent="Fin";
+                else if(fr && fr.kind==="blocked") meta.textContent="Fournier ocupado";
+                else if(fr && fr.kind==="partial_after") meta.textContent=("Fournier desde "+(fr.freeFrom||"15:00"));
+                else if(fr && fr.kind==="partial_until") meta.textContent=("Fournier hasta "+(fr.freeUntil||"16:00"));
+                else if(isStrikeStr(k)) meta.textContent="Paro";
+                else if(isNoEvaluationStr(k)) meta.textContent="Clases sin evaluación";
+                else if(isVacationStr(k)) meta.textContent="Vacaciones";
+                else if(dow===0) meta.textContent="Fin de semana";
+                if(SPECIAL_DAY_LABELS[k]) meta.textContent = SPECIAL_DAY_LABELS[k];
+            }
         }
     }
     function buildCalendars(container){
@@ -452,344 +593,111 @@
     function clusterCalendars(year, groups){
         const clusters = new Map();
         for(const g of groups){
-            const key = canonicalKeyFor(year, g.proposals||{});
-            if(!clusters.has(key)) clusters.set(key, { groups:[], proposals: g.proposals||{} });
-            clusters.get(key).groups.push(g.group_id);
+            const k = canonicalKeyFor(year, g.proposals||{});
+            if(!clusters.has(k)) clusters.set(k, []);
+            clusters.get(k).push(g.group_id);
         }
-        const list = Array.from(clusters.values()).sort((a,b)=> b.groups.length - a.groups.length);
-        return list;
-    }
-    function similarityTo(year, ref, other){
-        const ids = EXAMS_BY_YEAR[year].map(e=>e.id);
-        let same=0, total=0;
-        for(const id of ids){
-            const a = ref[id]; const b = other[id];
-            if(!a || !b) continue;
-            total += 1;
-            if(a===b) same += 1;
-        }
-        return total? Math.round(100 * same / total) : 0;
-    }
-    function computeScheduleMetrics(year, proposalsMap){
-        const entries = [];
-        for(const ex of EXAMS_BY_YEAR[year]){
-            const raw = proposalsMap[ex.id];
-            const d = Array.isArray(raw) ? raw[0] : raw;
-            if(d) entries.push({ id: ex.id, subject: ex.subject, date: d });
-        }
-        entries.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
-
-        const prevNextGlobal = new Map();
-        for(let i=0;i<entries.length;i++){
-            const cur = entries[i];
-            const prev = entries[i-1] || null;
-            const next = entries[i+1] || null;
-            const curDate = new Date(cur.date + "T00:00:00");
-            const prevDays = prev ? Math.round((curDate - new Date(prev.date + "T00:00:00"))/86400000) : null;
-            const nextDays = next ? Math.round((new Date(next.date + "T00:00:00") - curDate)/86400000) : null;
-            prevNextGlobal.set(cur.id, { prevDays, nextDays });
-        }
-
-        const bySubj = new Map();
-        for(const e of entries){
-            if(!bySubj.has(e.subject)) bySubj.set(e.subject, []);
-            bySubj.get(e.subject).push(e);
-        }
-        const subjNext = new Map();
-        for(const [, arr] of bySubj.entries()){
-            arr.sort((a,b)=> a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
-            for(let i=0;i<arr.length;i++){
-                const cur = arr[i];
-                const nxt = arr[i+1] || null;
-                const curDate = new Date(cur.date + "T00:00:00");
-                const nextSameDays = nxt ? Math.round((new Date(nxt.date + "T00:00:00") - curDate)/86400000) : null;
-                subjNext.set(cur.id, { nextSameDays });
-            }
-        }
-
-        const out = {};
-        for(const ex of EXAMS_BY_YEAR[year]){
-            const g = prevNextGlobal.get(ex.id) || {};
-            const s = subjNext.get(ex.id) || {};
-            out[ex.id] = {
-                prevAllDays: g.prevDays ?? null,
-                nextAllDays: g.nextDays ?? null,
-                nextSameDays: s.nextSameDays ?? null
-            };
-        }
-        return out;
+        const arr = Array.from(clusters.entries()).map(([k, gids])=>({ key:k, groups:gids }));
+        arr.sort((a,b)=> b.groups.length - a.groups.length);
+        return arr;
     }
 
-    // ===== Panel dividido genérico =====
-    function normalizeForSimilarity(map){
-        const out={};
-        for(const [k,v] of Object.entries(map||{})){
-            out[k] = Array.isArray(v)? v[0] : v;
-        }
-        return out;
-    }
-    function renderSplit(title, year, proposalsMap, perExamSupportMap=null, altProposalsMap=null){
-        const split = $id("moda-split");
-        const list  = $id("moda-cards");
-        const cal   = $id("moda-calendar");
+    function buildResultsForYear(container, year, groups){
+        container.innerHTML="";
 
-        $id("results-title").textContent = title;
-        $id("calendar-wrap").classList.add("hide");
-        split.classList.remove("hide");
+        // Modas por examen
+        const header1 = document.createElement("h2");
+        header1.textContent = "Propuesta por Moda por Examen";
+        container.appendChild(header1);
 
-        list.innerHTML="";
-        buildCalendars(cal);
+        const calendar1 = document.createElement("div"); calendar1.className="calendar";
+        buildCalendars(calendar1);
+        container.appendChild(calendar1);
 
-        const metricsById = computeScheduleMetrics(year, proposalsMap);
+        const modes = computeExamModes(year, groups);
+        const list1 = document.createElement("div"); list1.className="result-list";
+        modes.forEach(({exam, date, voters})=>{
+            const card=createResultCard(exam, { suggestionDate: date, voters, support: { count: voters.length, total: groups.length } });
+            list1.appendChild(card);
+            if(date) placeCard(date, createResultCard(exam, { suggestionDate: date, voters }), calendar1);
+        });
+        container.appendChild(list1);
 
-        const present = EXAMS_BY_YEAR[year]
-            .filter(ex=> proposalsMap[ex.id])
-            .map(ex=>{
-                const raw = proposalsMap[ex.id];
-                const arr = Array.isArray(raw) ? raw.slice() : [raw];
-                return { ex, dates: arr, main: arr[0] };
-            })
-            .sort((a,b)=> a.main.localeCompare(b.main) || a.ex.subject.localeCompare(b.ex.subject) || a.ex.id.localeCompare(b.ex.id));
+        // Calendarios completos
+        const header2 = document.createElement("h2");
+        header2.textContent = "Calendarios Completos más Repetidos";
+        container.appendChild(header2);
 
-        const totalGroups = (cache.get(year)?.groups || []).length;
+        const clusters = clusterCalendars(year, groups);
+        const top = clusters.slice(0, 3);
 
-        present.forEach(r=>{
-            const support = perExamSupportMap && perExamSupportMap[r.ex.id]
-                ? { count: perExamSupportMap[r.ex.id].count, total: totalGroups }
-                : null;
+        top.forEach(({key, groups: gids}, idx)=>{
+            const calWrap = document.createElement("div");
+            calWrap.className = "calendar";
+            buildCalendars(calWrap);
+            container.appendChild(calWrap);
 
-            const card = createResultCard(r.ex, {
-                approvedDate: r.ex.officialDate,
-                suggestionDate: r.main,
-                metrics: metricsById[r.ex.id],
-                support
+            const proposal = {};
+            (EXAMS_BY_YEAR[year]||[]).forEach(ex=>{
+                const frag = key.split("|").find(s=> s.startsWith(ex.id+":"));
+                const date = frag ? frag.split(":")[1] : ex.officialDate;
+                proposal[ex.id]=date;
+                if(date) placeCard(date, createGhostCard(ex), calWrap);
             });
 
-            const holder = document.createElement("div");
-            holder.className="stat-card";
-            holder.style.minHeight = "0";
-            holder.style.height = "auto";
-            holder.style.setProperty('--subj-tint', hexToRgba(colorForExam(r.ex), .12));
-            holder.appendChild(card);
-            list.appendChild(holder);
+            const title = document.createElement("h3");
+            title.textContent = `Propuesta #${idx+1} — Grupos: ${gids.sort((a,b)=>a-b).join(", ")}`;
+            container.appendChild(title);
 
-            r.dates.forEach(d=>{
-                const cardCal = createResultCard(r.ex, {
-                    approvedDate: r.ex.officialDate,
-                    suggestionDate: d,
-                    metrics: metricsById[r.ex.id]
-                });
-                placeCard(d, cardCal, cal);
+            const list = document.createElement("div");
+            list.className = "result-list";
+            (EXAMS_BY_YEAR[year]||[]).forEach(ex=>{
+                const date = proposal[ex.id] || ex.officialDate;
+                const card = createResultCard(ex, { suggestionDate: date });
+                list.appendChild(card);
             });
-        });
-
-        if(altProposalsMap){
-            for(const ex of EXAMS_BY_YEAR[year]){
-                const raw1 = proposalsMap[ex.id];
-                const raw2 = altProposalsMap[ex.id];
-                const d1 = Array.isArray(raw1)? raw1[0] : raw1;
-                const d2 = Array.isArray(raw2)? raw2[0] : raw2;
-                if(d1 && d2 && d1!==d2){
-                    const ghost = createGhostCard(ex);
-                    placeGhost(d2, ghost, cal);
-                }
-            }
-        }
-
-        const panel = $id("similarity-panel");
-        const listSim = $id("similarity-list");
-        const legend = $id("similarity-legend-90");
-        listSim.innerHTML="";
-        const groupsData = cache.get(year)?.groups || [];
-        const simpleMap = normalizeForSimilarity(proposalsMap);
-        const all = groupsData.map(g=>({ gid: g.group_id, pct: similarityTo(year, simpleMap, g.proposals||{}) }));
-        all.sort((a,b)=> b.pct - a.pct || a.gid - b.gid);
-        legend.textContent = String(all.filter(x=> x.pct >= 90).length);
-        for(const it of all){
-            const row = document.createElement("div");
-            row.className = "sim-item";
-            row.innerHTML = `<span class="gid">${it.gid}</span><span class="pct">${it.pct}%</span>`;
-            row.style.setProperty('--fill', it.pct + '%');
-            listSim.appendChild(row);
-        }
-        panel.classList.remove("hide");
-    }
-
-    // ===== Vistas =====
-    function renderExamModes(year, modes){
-        const modaMap = {};
-        const supportMap = {};
-        const totalGroups = (cache.get(year)?.groups || []).length;
-
-        modes.forEach(r=>{
-            modaMap[r.exam.id] = r.date;
-            supportMap[r.exam.id] = { count: (r.voters?r.voters.length:0), total: totalGroups };
-        });
-
-        renderSplit("Propuesta por Moda por Examen", year, modaMap, supportMap, null);
-    }
-    function renderFullAsSplit(title, year, cluster, altCluster){
-        const proposals = cluster?.proposals || {};
-        const alt = altCluster?.proposals || null;
-        renderSplit(title, year, proposals, null, alt);
-    }
-
-    let currentYear = 1;
-
-    async function updateView(mode){
-        currentYear = Number(document.querySelector('input[name="yr"]:checked')?.value || currentYear || 1);
-        const { groups } = await fetchYear(currentYear);
-
-        if(mode==="mode-per-exam"){
-            const modes = computeExamModes(currentYear, groups);
-            renderExamModes(currentYear, modes);
-        }else{
-            const clusters = clusterCalendars(currentYear, groups);
-            const first = clusters[0];
-            const second = clusters[1] || null;
-            if(mode==="full-1"){
-                renderFullAsSplit("Propuesta de Calendario Completo Más Repetida 1", currentYear, first, second);
-            }else{
-                renderFullAsSplit("Propuesta de Calendario Completo Más Repetida 2", currentYear, second || first, first || null);
-            }
-        }
-    }
-
-    function animateCounter(){
-        const el = $id("total-counter");
-        const start = 1;
-        const end = TOTAL_RESPONSES;
-        const dur = 3600;
-        const t0 = performance.now();
-        function step(now){
-            const k = Math.min(1, (now - t0)/dur);
-            const v = Math.floor(target * k);
-            el.textContent = String(Math.max(start, Math.min(end, v)));
-            if(k<1) requestAnimationFrame(step);
-        }
-        const target = end;
-        requestAnimationFrame(step);
-    }
-    function animateBars(){
-        qsa(".progress").forEach((p)=>{
-            const max = Number(p.dataset.max||0);
-            const target = Number(p.dataset.target||0);
-            const fill = p.querySelector(".fill");
-            fill.style.width = Math.max(0, Math.min(100, (100*target/max))) + "%";
-
-            const meta = p.parentElement.querySelector(".progress-meta .current");
-            if(meta){
-                const dur = fill.classList.contains("slow") ? 3000 : 2000;
-                const t0 = performance.now();
-                function step(now){
-                    const k = Math.min(1, (now - t0)/dur);
-                    const v = Math.floor(target * k);
-                    meta.textContent = String(v);
-                    if(k<1) requestAnimationFrame(step);
-                }
-                requestAnimationFrame(step);
-            }
+            container.appendChild(list);
         });
     }
 
-    function attachUI(){
-        qsa(".result-btn").forEach(btn=>{
-            btn.addEventListener("click", ()=> updateView(btn.dataset.mode));
-        });
-        qsa('input[name="yr"]').forEach(r=>{
-            r.addEventListener("change", ()=>{
-                currentYear = Number(r.value);
-                updateView("mode-per-exam");
-            });
-        });
-    }
+    async function main(){
+        const container = document.getElementById("results-root");
+        if(!container) return;
 
-    document.addEventListener("DOMContentLoaded", ()=>{
-        const el = $id("total-counter");
-        if(el) el.classList.add("countup");
-        animateCounter();
-        animateBars();
-        attachUI();
-        updateView("mode-per-exam");
-    });
-
-    /* ===========================================================
-       BLOQUE: Propuesta de la Última Mesa de Diálogo (tercer botón)
-       =========================================================== */
-    function __presetProposalsFor(year){
-        if(year===1){
-            return {
-                "1-BQBM-P1": "2025-11-28",
-                "1-BCHM-P1": "2025-12-05",
-                "1-ANAT-P1": "2025-12-10",
-                "1-SPC-P1":  "2026-01-05",
-                "1-EMBR-P1": "2026-01-10",
-                "1-IBC1-P1": "2026-01-17",
-                "1-ANAT-P2": "2026-01-24",
-                "1-ISM-P1":  "2026-01-29",
-                "1-BCHM-P2": "2026-02-07",
-                "1-EMBR-P2": "2026-02-17",
-                "1-BQBM-P2": "2026-02-21",
-                "1-INF1-P1": "2026-02-27",
-                "1-ANAT-P3": "2026-03-07",
-                "1-BQBM-P3": "2026-03-21"
-            };
-        }else{
-            return {
-                "2-INF2-P2":    "2025-11-26",
-                "2-INMU-P1":    "2025-11-28",
-                "2-INF2-O1":    "2025-12-02",
-                "2-INF2-O2":    "2025-12-08",
-                "2-FARM-P1":    "2025-12-10",
-                "2-FISIO-P1":   "2026-01-10",
-                "2-MICRO-P1":   "2026-01-17",
-                "2-IBC2-P1":    "2026-01-21",
-                "2-PCSV-P1":    "2026-01-29",
-                "2-ICR-P1-PRA": ["2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13"],
-                "2-ICR-P1-TEO": "2026-02-14",
-                "2-FARM-P2":    "2026-02-21",
-                "2-INMU-P2":    "2026-02-26",
-                "2-FISIO-P2":   "2026-03-07"
-            };
-        }
-    }
-    function __buildPresetSupportMap(year, proposals, groups){
-        const map = {};
-        for(const ex of EXAMS_BY_YEAR[year]){
-            const raw = proposals[ex.id];
-            if(!raw) continue;
-            const arr = Array.isArray(raw) ? raw : [raw];
-            let c = 0;
-            for(const g of groups){
-                const d = g.proposals ? g.proposals[ex.id] : null;
-                if(d && arr.includes(d)) c++;
-            }
-            map[ex.id] = { count: c };
-        }
-        return map;
-    }
-    function __showPreset(){
         try{
-            const sel = document.querySelector('input[name="yr"]:checked');
-            const year = sel ? Number(sel.value) : 1;
-            const proposals = __presetProposalsFor(year);
-            const groupsData = (typeof cache!=="undefined" && cache.get(year)?.groups) ? cache.get(year).groups : [];
-            const supportMap = __buildPresetSupportMap(year, proposals, groupsData);
-            const title = (year===1? "Propuesta de la Última Mesa de Diálogo (Primero)" : "Propuesta de la Última Mesa de Diálogo (Segundo)");
-            renderSplit(title, year, proposals, supportMap, null);
+            const year1 = await fetchYear(1);
+            const year2 = await fetchYear(2);
+
+            const mid = document.createElement("div");
+            mid.className="mid-sep";
+
+            const sec1 = document.createElement("section");
+            sec1.className="results-year";
+            const h1 = document.createElement("h1");
+            h1.textContent = "Resultados — Primero";
+            sec1.appendChild(h1);
+            const root1 = document.createElement("div");
+            root1.className="results-wrap";
+            sec1.appendChild(root1);
+            container.appendChild(sec1);
+
+            const sec2 = document.createElement("section");
+            sec2.className="results-year";
+            const h2 = document.createElement("h1");
+            h2.textContent = "Resultados — Segundo";
+            sec2.appendChild(h2);
+            const root2 = document.createElement("div");
+            root2.className="results-wrap";
+            sec2.appendChild(root2);
+            container.appendChild(sec2);
+
+            buildResultsForYear(root1, 1, year1.groups||[]);
+            buildResultsForYear(root2, 2, year2.groups||[]);
         }catch(e){
-            console.error("No se pudo mostrar la propuesta de la Última Mesa de Diálogo:", e);
+            container.innerHTML = `<div class="error">No se pudieron cargar los resultados. ${e?.message||e}</div>`;
+            console.error(e);
         }
     }
-    document.addEventListener("DOMContentLoaded", ()=>{
-        const btn = document.getElementById("btn-preset3");
-        if(btn){
-            btn.addEventListener("click", (ev)=>{
-                ev.preventDefault();
-                ev.stopImmediatePropagation();
-                __showPreset();
-            });
-        }
-    });
 
+    document.addEventListener("DOMContentLoaded", main);
 })();
