@@ -1983,6 +1983,44 @@ body.desktop-snapshot .exam-card.is-ghost .exam-line.upper .line-value{
   .calendar-page .calendar-now { font-size: .8rem; }
   .calendar-page .calendar .exam-card .exam-icon-fallback { width: 36px; height: 36px; font-size: .66rem; }
 }
+
+.months-collapse{
+  margin-bottom: 12px;
+  border-radius: var(--radius-xl);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
+  overflow: hidden;
+}
+.months-collapse > summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  font-weight: 900;
+  background: rgba(255,255,255,.05);
+  user-select: none;
+}
+.months-collapse > summary::-webkit-details-marker{ display:none; }
+.months-collapse > summary::after{
+  content: "▸";
+  font-size: 1rem;
+  opacity: .9;
+  transition: transform .18s ease;
+}
+.months-collapse[open] > summary::after{ transform: rotate(90deg); }
+.months-collapse .collapse-label{ color:#f8fbff; }
+.months-collapse .collapse-hint{ color: var(--muted); font-weight:700; font-size:.86rem; }
+.months-collapse-content{ padding: 12px; display:grid; gap: 12px; }
+@media (max-width: 800px){
+  .months-collapse > summary{ padding: 10px 12px; flex-direction:column; align-items:flex-start; }
+  .months-collapse .collapse-hint{ font-size:.78rem; }
+  .months-collapse-content{ padding: 8px; gap: 8px; }
+}
+
 </style></head>
 <body class="calendar-page">
 <!-- build-stamp: 2026-04-01T22:22:05Z -->
@@ -3896,6 +3934,77 @@ body.desktop-snapshot .exam-card.is-ghost .exam-line.upper .line-value{
       targetMs: Number(card.getAttribute('data-target-ms') || 0)
     })).filter((item) => item.targetMs > 0);
   }
+
+  function monthKeyFromTitle(title) {
+    const names = {enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
+    const clean = (title || '').trim().toLowerCase();
+    const m = clean.match(/^([a-záéíóúñ]+)\s+(\d{4})$/i);
+    if (!m) return null;
+    const month = names[m[1]];
+    const year = Number(m[2]);
+    if (!month || !year) return null;
+    return year * 100 + month;
+  }
+  function collapseMonthsBeforeApril() {
+    const calendar = document.querySelector('.calendar');
+    if (!calendar || calendar.querySelector('.months-collapse')) return;
+    const months = Array.from(calendar.children).filter((el) => el.classList && el.classList.contains('month'));
+    const toCollapse = months.filter((section) => {
+      const title = section.querySelector('.month-header h3')?.textContent || '';
+      const key = monthKeyFromTitle(title);
+      return key !== null && key < 202604;
+    });
+    if (!toCollapse.length) return;
+    const details = document.createElement('details');
+    details.className = 'months-collapse';
+    const summary = document.createElement('summary');
+    summary.innerHTML = '<span class="collapse-label">Meses anteriores a abril</span><span class="collapse-hint">Haz clic para mostrar u ocultar noviembre–marzo</span>';
+    const content = document.createElement('div');
+    content.className = 'months-collapse-content';
+    details.appendChild(summary);
+    details.appendChild(content);
+    calendar.insertBefore(details, toCollapse[0]);
+    toCollapse.forEach((section) => content.appendChild(section));
+  }
+
+  function formatSpanShort(ms) {
+    const signSafe = Math.max(0, ms);
+    const totalHours = Math.floor(signSafe / 3600000);
+    const days = Math.floor(totalHours / 24);
+    const hours = totalHours % 24;
+    if (days > 0 && hours > 0) return days + ' días, ' + hours + ' h';
+    if (days > 0) return days + (days === 1 ? ' día' : ' días');
+    return hours + ' h';
+  }
+
+  function updateCardSpacingLabels() {
+    const cards = Array.from(document.querySelectorAll('.calendar .exam-card[data-target-ms][data-sigla]'));
+    const bySigla = new Map();
+    cards.forEach((card) => {
+      const sigla = card.getAttribute('data-sigla') || '';
+      if (!bySigla.has(sigla)) bySigla.set(sigla, []);
+      bySigla.get(sigla).push(card);
+    });
+    bySigla.forEach((list) => {
+      list.sort((a, b) => Number(a.getAttribute('data-target-ms') || 0) - Number(b.getAttribute('data-target-ms') || 0));
+      list.forEach((card, index) => {
+        const lines = card.querySelectorAll('.exam-line.stacked');
+        if (lines.length < 2) return;
+        const currentMs = Number(card.getAttribute('data-target-ms') || 0);
+        const prevMs = index > 0 ? Number(list[index - 1].getAttribute('data-target-ms') || 0) : null;
+        const nextMs = index < list.length - 1 ? Number(list[index + 1].getAttribute('data-target-ms') || 0) : null;
+        const prevLabel = lines[0].querySelector('.line-label');
+        const prevValue = lines[0].querySelector('.line-value');
+        const nextLabel = lines[1].querySelector('.line-label');
+        const nextValue = lines[1].querySelector('.line-value');
+        if (prevLabel) prevLabel.textContent = 'desde el último examen:';
+        if (nextLabel) nextLabel.textContent = 'para el próximo examen:';
+        if (prevValue) prevValue.textContent = prevMs ? formatSpanShort(currentMs - prevMs) : 'primer examen';
+        if (nextValue) nextValue.textContent = nextMs ? formatSpanShort(nextMs - currentMs) : 'último examen';
+      });
+    });
+  }
+
   function renderUpcomingSummary() {
     const box = document.getElementById('upcoming-exams-summary');
     const nowEl = document.getElementById('calendar-current-date');
@@ -3916,7 +4025,13 @@ body.desktop-snapshot .exam-card.is-ghost .exam-line.upper .line-value{
       if (img.complete && img.naturalWidth === 0) { img.classList.add('is-hidden'); img.hidden = true; }
     });
   }
-  function boot() { patchIconFallbacks(); renderUpcomingSummary(); window.setInterval(renderUpcomingSummary, 60000); }
+  function boot() {
+    patchIconFallbacks();
+    collapseMonthsBeforeApril();
+    updateCardSpacingLabels();
+    renderUpcomingSummary();
+    window.setInterval(renderUpcomingSummary, 60000);
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 </script></body>
