@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="propuesta de Ale" />
+    <list default="true" id="cc30e594-795d-4e2e-a4db-4fd0115d9629" name="Changes" comment="propuesta de Ale y contador para el próximo depa">
+      <change afterPath="$PROJECT_DIR$/calendario_resumen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/calendarios_propuesta_actualizada_v2.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calendario_primero.html" beforeDir="false" afterPath="$PROJECT_DIR$/calendario_primero.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calendario_segundo.html" beforeDir="false" afterPath="$PROJECT_DIR$/calendario_segundo.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,14 +103,7 @@
       <workItem from="1763432511765" duration="3812000" />
       <workItem from="1763437145535" duration="3811000" />
       <workItem from="1775078186177" duration="1657000" />
-    </task>
-    <task id="LOCAL-00002" summary="tendencias">
-      <option name="closed" value="true" />
-      <created>1763325821338</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1763325821338</updated>
+      <workItem from="1775081297989" duration="727000" />
     </task>
     <task id="LOCAL-00003" summary="resultados">
       <option name="closed" value="true" />
@@ -491,7 +489,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775080394001</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="propuesta de Ale y contador para el próximo depa">
+      <option name="closed" value="true" />
+      <created>1775081408153</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1775081408153</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -509,7 +515,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="resultados 2.0" />
     <MESSAGE value="resultados 3.0" />
     <MESSAGE value="resultados 4.0" />
     <MESSAGE value="resultados 5.0" />
@@ -534,7 +539,8 @@
     <MESSAGE value="detallitos de resultados 7.7" />
     <MESSAGE value="detallitos de resultados 7.77" />
     <MESSAGE value="propuesta de Ale" />
-    <option name="LAST_COMMIT_MESSAGE" value="propuesta de Ale" />
+    <MESSAGE value="propuesta de Ale y contador para el próximo depa" />
+    <option name="LAST_COMMIT_MESSAGE" value="propuesta de Ale y contador para el próximo depa" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/repres_page_facmed$renombra_propuestas.coverage" NAME="renombra_propuestas Coverage Results" MODIFIED="1763323295020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Sube aquí tu documento realizado por el programa enviado_ (File responses)" />
