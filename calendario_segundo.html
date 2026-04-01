@@ -3,2445 +3,1165 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Calendario segundo</title>
+    <title>Calendario · Segundo Año</title>
     <link rel="icon" href="ico/DEPARTAMENTALES.ico" type="image/x-icon" />
     <link rel="stylesheet" href="main.css" />
     <link rel="stylesheet" href="resultados.css" />
     <style>
-        .calendar-page .app {
-            max-width: 1639px;
-        }
-        .calendar-page .single-calendar-ribbon {
-            margin-bottom: 12px;
-        }
-        .calendar-page .calendar-only-card {
-            cursor: default;
-            min-height: 0;
-            height: auto;
-            gap: 0;
-        }
-        .calendar-page .calendar-only-card:hover {
-            transform: none;
-            box-shadow: 0 6px 14px rgba(0,0,0,.4);
-        }
-        .calendar-page .calendar-only-head {
-            grid-template-columns: 1fr auto;
-            gap: 8px;
-            align-items: center;
-        }
-        .calendar-page .calendar-only-sigla {
-            font-size: .96rem;
-            line-height: 1;
-        }
-        .calendar-page .calendar-shell {
-            padding: 12px 14px;
-        }
-        .calendar-page .calendar-note {
-            margin: 4px 0 0;
-            color: var(--muted);
-            font-size: .88rem;
-        }
-        .calendar-page .calendar-meta {
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: .84rem;
-        }
-        .calendar-page .top-banner {
-            position: static;
-        }
-        .calendar-page .top-banner-close {
-            display: none;
-        }
-        @media (max-width: 800px) {
-            .calendar-page .calendar-only-sigla {
-                font-size: .86rem;
-            }
-        }
+        .calendar-page .app { max-width: 1639px; }
+        .calendar-page .single-calendar-ribbon { margin-bottom: 12px; }
+        .calendar-page .calendar-shell { padding: 12px 14px; }
+        .calendar-page .calendar-meta { margin-top: 6px; color: var(--muted); font-size: .84rem; }
+        .calendar-page .top-banner { position: static; }
+        .calendar-page .top-banner-close { display: none; }
+        .calendar-page .calendar .exam-card { cursor: default; }
+        .calendar-page .calendar .exam-card:hover { transform: none; box-shadow: 0 6px 14px rgba(0,0,0,.4); }
     </style>
 </head>
 <body class="calendar-page">
-
     <div class="top-banner warn" role="status" aria-live="polite">
         <span class="top-banner-text">PROPUESTA ACTUALIZADA EL 18-NOV-2026 · SEGUNDO AÑO</span>
         <button class="top-banner-close" aria-hidden="true">×</button>
     </div>
-
     <div class="app">
         <header class="app-header single-ribbon single-calendar-ribbon">
             <div class="ribbon ribbon-header">
                 <div class="header-inner">
                     <div class="app-title-block">
                         <h1>Calendario · Segundo Año</h1>
-                        <p class="app-subtitle">Vista fija de la Propuesta Actualizada el 18-nov-2026.</p>
+                        <p class="app-subtitle">Vista fija del calendario con la propuesta actualizada.</p>
                         <p class="calendar-meta">43 exámenes visibles en esta propuesta fija.</p>
                     </div>
                 </div>
             </div>
         </header>
-
         <section class="ribbon ribbon-results-section calendar-shell">
             <div class="calendar">
-                
-    <section class="month">
-        <header class="month-header">
-            <h3>Noviembre 2025</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            <div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div>
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend blocked-partial">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend blocked-partial">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend blocked-partial">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-holiday blocked-partial">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta">Día de la Revolución</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta">Paro</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta">Clases sin evaluación</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta">Clases sin evaluación</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta">Clases sin evaluación</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell blocked-partial">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta">Clases sin evaluación</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Informática Biomédica II · Segundo parcial" style="--subj-tint: rgba(0, 114, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IB2</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Inmunología · Primer parcial" style="--subj-tint: rgba(168, 77, 218, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">INM</div>
-            <div class="exam-badge">PAR 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Diciembre 2025</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Informática Biomédica II · Primer ordinario" style="--subj-tint: rgba(0, 114, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IB2</div>
-            <div class="exam-badge">ORD 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Informática Biomédica II · Segundo ordinario" style="--subj-tint: rgba(0, 114, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IB2</div>
-            <div class="exam-badge">ORD 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Farmacología · Primer parcial" style="--subj-tint: rgba(218, 116, 184, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FAR</div>
-            <div class="exam-badge">PAR 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation blocked-holiday">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta">Virgen de Guadalupe</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend vacation">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend vacation">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation blocked-holiday">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta">Nochebuena</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation blocked-holiday">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta">Navidad</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend vacation">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">31</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Enero 2026</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            <div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div>
-        <div class="day-cell vacation blocked-holiday">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta">Año Nuevo</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend vacation">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Fisiología · Primer parcial" style="--subj-tint: rgba(244, 79, 50, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FIS</div>
-            <div class="exam-badge">PAR 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Microbiología y Parasitología · Primer parcial" style="--subj-tint: rgba(168, 156, 28, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">MyP</div>
-            <div class="exam-badge">PAR 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta">Fournier desde 15:00</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Integración Básico Clínica II · Primer parcial" style="--subj-tint: rgba(6, 182, 212, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IBC 2</div>
-            <div class="exam-badge">PAR 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Promoción de la Salud en el Ciclo de Vida · Primer parcial" style="--subj-tint: rgba(142, 0, 79, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">PCV</div>
-            <div class="exam-badge">PAR 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">31</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Febrero 2026</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            <div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div>
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation blocked-holiday">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta">Día de la Constitución</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Parcial 1 (PRA)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">PAR (PRA)</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Parcial 1 (TEO)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">PAR (TEO)</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Farmacología · Segundo parcial" style="--subj-tint: rgba(218, 116, 184, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FAR</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Inmunología · Segundo parcial" style="--subj-tint: rgba(168, 77, 218, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">INM</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Marzo 2026</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            <div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div>
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta">Fournier hasta 16:00</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Fisiología · Segundo parcial" style="--subj-tint: rgba(244, 79, 50, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FIS</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend vacation">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">31</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Abril 2026</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            <div class="day-cell empty"></div><div class="day-cell empty"></div>
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend vacation">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta">Vacaciones</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Parcial 2 (PRA)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">PAR (PRA)</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Parcial 2 (TEO)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">PAR (TEO)</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Microbiología y Parasitología · Segundo parcial" style="--subj-tint: rgba(168, 156, 28, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">MyP</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Promoción de la Salud en el Ciclo de Vida · Segundo parcial" style="--subj-tint: rgba(142, 0, 79, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">PCV</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Inmunología · Tercer parcial" style="--subj-tint: rgba(168, 77, 218, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">INM</div>
-            <div class="exam-badge">PAR 3</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Farmacología · Tercer parcial" style="--subj-tint: rgba(218, 116, 184, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FAR</div>
-            <div class="exam-badge">PAR 3</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Fisiología · Tercer parcial" style="--subj-tint: rgba(244, 79, 50, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FIS</div>
-            <div class="exam-badge">PAR 3</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Integración Básico Clínica II · Segundo parcial" style="--subj-tint: rgba(6, 182, 212, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IBC 2</div>
-            <div class="exam-badge">PAR 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Ordinario 1 (PRA)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Ordinario 1 (TEO)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell vacation">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta">Fournier ocupado</span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Inmunología · Primer ordinario" style="--subj-tint: rgba(168, 77, 218, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">INM</div>
-            <div class="exam-badge">ORD 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Mayo 2026</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            <div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div>
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Microbiología y Parasitología · Segundo ordinario" style="--subj-tint: rgba(168, 156, 28, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">MyP</div>
-            <div class="exam-badge">ORD 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Farmacología · Primer ordinario" style="--subj-tint: rgba(218, 116, 184, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FAR</div>
-            <div class="exam-badge">ORD 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Integración Básico Clínica II · Primer ordinario" style="--subj-tint: rgba(6, 182, 212, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IBC 2</div>
-            <div class="exam-badge">ORD 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Fisiología · Primer ordinario" style="--subj-tint: rgba(244, 79, 50, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FIS</div>
-            <div class="exam-badge">ORD 1</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Microbiología y Parasitología · Extraordinario" style="--subj-tint: rgba(168, 156, 28, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">MyP</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Farmacología · Segundo ordinario" style="--subj-tint: rgba(218, 116, 184, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FAR</div>
-            <div class="exam-badge">ORD 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Fisiología · Segundo ordinario" style="--subj-tint: rgba(244, 79, 50, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FIS</div>
-            <div class="exam-badge">ORD 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Ordinario 2 (PRA)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Ordinario 2 (TEO)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Inmunología · Segundo ordinario" style="--subj-tint: rgba(168, 77, 218, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">INM</div>
-            <div class="exam-badge">ORD 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Integración Básico Clínica II · Segundo ordinario" style="--subj-tint: rgba(6, 182, 212, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IBC 2</div>
-            <div class="exam-badge">ORD 2</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Extraordinario (PRA)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    
-    <article class="exam-card status-valid calendar-only-card" title="Introducción a la Cirugía · Extraordinario (TEO)" style="--subj-tint: rgba(29, 152, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">ICR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">31</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        </div>
-    </section>
-    
-    <section class="month">
-        <header class="month-header">
-            <h3>Junio 2026</h3>
-        </header>
-        <div class="month-grid">
-            <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-            
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">1</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Inmunología · Extraordinario" style="--subj-tint: rgba(168, 77, 218, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">INM</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">2</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Informática Biomédica II · Extraordinario" style="--subj-tint: rgba(0, 114, 168, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IB2</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">3</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">4</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Farmacología · Extraordinario" style="--subj-tint: rgba(218, 116, 184, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FAR</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">5</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">6</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">7</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">8</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Integración Básico Clínica II · Extraordinario" style="--subj-tint: rgba(6, 182, 212, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">IBC 2</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">9</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list">
-    <article class="exam-card status-valid calendar-only-card" title="Fisiología · Extraordinario" style="--subj-tint: rgba(244, 79, 50, 0.12);">
-        <div class="exam-status-strip"></div>
-        <div class="exam-head2 calendar-only-head">
-            <div class="exam-sigla calendar-only-sigla">FIS</div>
-            <div class="exam-badge">ORD</div>
-        </div>
-    </article>
-    </div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">10</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">11</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">12</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">13</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">14</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">15</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">16</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">17</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">18</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">19</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">20</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">21</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">22</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">23</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">24</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">25</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">26</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">27</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell weekend">
-            <div class="day-header">
-                <div class="day-number">28</div>
-                <span class="day-meta">Fin de semana</span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">29</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        <div class="day-cell">
-            <div class="day-header">
-                <div class="day-number">30</div>
-                <span class="day-meta"></span>
-            </div>
-            <div class="exam-list"></div>
-        </div>
-        
-        </div>
-    </section>
-    
+<section class="month">
+<header class="month-header"><h3>Noviembre 2025</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">1</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">2</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">3</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">4</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">5</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">6</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">7</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">8</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">9</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">10</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">11</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">12</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">13</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">14</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">15</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">16</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked blocked-holiday blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">17</div><span class="day-meta">Día de la Revolución</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">18</div><span class="day-meta">Paro</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">19</div><span class="day-meta">Clases sin evaluación</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">20</div><span class="day-meta">Clases sin evaluación</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">21</div><span class="day-meta">Clases sin evaluación</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial">
+<div class="day-header is-blocked"><div class="day-number">22</div><span class="day-meta">Clases sin evaluación</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">23</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">24</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">25</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">26</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Informática Biomédica II · Segundo parcial" style="--card-bg: rgba(0, 114, 168, 0.3); --card-strip: rgba(0, 114, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IB2" src="img/IB2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Informática Biomédica II">IB2</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">26-nov-2025</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">9 días · 1.3 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">27</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">28</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Inmunología · Primer parcial" style="--card-bg: rgba(168, 77, 218, 0.3); --card-strip: rgba(168, 77, 218, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="INM" src="img/INM.png" /></div><div class="exam-title"><div class="exam-sigla" title="Inmunología">INM</div><div class="exam-badge" title="Primer parcial">PAR 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">28-nov-2025</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">28-nov-2025</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">92 días · 13.1 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">29</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">30</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Diciembre 2025</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">1</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">2</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">3</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">4</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">5</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Informática Biomédica II · Primer ordinario" style="--card-bg: rgba(0, 114, 168, 0.3); --card-strip: rgba(0, 114, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IB2" src="img/IB2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Informática Biomédica II">IB2</div><div class="exam-badge" title="Primer ordinario">ORD 1</div></div></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">05-dic-2025</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">3 días · 0.4 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">6</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">7</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">8</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Informática Biomédica II · Segundo ordinario" style="--card-bg: rgba(0, 114, 168, 0.3); --card-strip: rgba(0, 114, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IB2" src="img/IB2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Informática Biomédica II">IB2</div><div class="exam-badge" title="Segundo ordinario">ORD 2</div></div></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">08-dic-2025</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">176 días · 25.1 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">9</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">10</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Farmacología · Primer parcial" style="--card-bg: rgba(218, 116, 184, 0.3); --card-strip: rgba(218, 116, 184, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FAR" src="img/FAR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Farmacología">FAR</div><div class="exam-badge" title="Primer parcial">PAR 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">21-nov-2025</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">10-dic-2025</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">31 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">73 días · 10.4 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">11</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation blocked blocked-holiday">
+<div class="day-header is-blocked"><div class="day-number">12</div><span class="day-meta">Virgen de Guadalupe (ya no asisten los trabajadores)</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">13</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">14</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">15</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">16</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">17</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">18</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">19</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">20</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">21</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">22</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">23</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation blocked blocked-holiday">
+<div class="day-header is-blocked"><div class="day-number">24</div><span class="day-meta">Nochebuena</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation blocked blocked-holiday">
+<div class="day-header is-blocked"><div class="day-number">25</div><span class="day-meta">Navidad</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">26</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">27</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">28</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">29</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">30</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">31</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Enero 2026</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell vacation blocked blocked-vacation blocked blocked-holiday">
+<div class="day-header is-blocked"><div class="day-number">1</div><span class="day-meta">Año Nuevo</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">2</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">3</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">4</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">5</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">6</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">7</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">8</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">9</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">10</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Fisiología · Primer parcial" style="--card-bg: rgba(244, 79, 50, 0.3); --card-strip: rgba(244, 79, 50, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FIS" src="img/FIS.png" /></div><div class="exam-title"><div class="exam-sigla" title="Fisiología">FIS</div><div class="exam-badge" title="Primer parcial">PAR 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">07-nov-2025</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">10-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">31 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">56 días · 8 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">11</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">12</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">13</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">14</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">15</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">16</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">17</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Microbiología y Parasitología · Primer parcial" style="--card-bg: rgba(168, 156, 28, 0.3); --card-strip: rgba(168, 156, 28, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="MyP" src="img/MyP.png" /></div><div class="exam-title"><div class="exam-sigla" title="Microbiología y Parasitología">MyP</div><div class="exam-badge" title="Primer parcial">PAR 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">24-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">17-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">86 días · 12.3 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">18</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial blocked-fournier-after">
+<div class="day-header is-blocked"><div class="day-number">19</div><span class="day-meta">Fournier desde 15:00</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">20</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Integración Básico Clínica II · Primer parcial" style="--card-bg: rgba(6, 182, 212, 0.3); --card-strip: rgba(6, 182, 212, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IBC 2" src="img/IBC2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Integración Básico Clínica II">IBC 2</div><div class="exam-badge" title="Primer parcial">PAR 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">11-dic-2025</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">20-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">9 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">95 días · 13.6 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">21</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">22</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">23</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">24</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">25</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">26</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">27</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">28</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">29</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Promoción de la Salud en el Ciclo de Vida · Primer parcial" style="--card-bg: rgba(142, 0, 79, 0.3); --card-strip: rgba(142, 0, 79, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="PCV" src="img/PCV.png" /></div><div class="exam-title"><div class="exam-sigla" title="Promoción de la Salud en el Ciclo de Vida">PCV</div><div class="exam-badge" title="Primer parcial">PAR 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">18-nov-2025</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">29-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">9 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">11 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">76 días · 10.9 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">30</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">31</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Febrero 2026</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">1</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked blocked-holiday vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">2</div><span class="day-meta">Día de la Constitución</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">3</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">4</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">5</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">6</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">7</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">8</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">9</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Parcial 1 (PRA)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Parcial 1 (PRA)">PAR (PRA)</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">12-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">09-feb-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">11 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">5 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">5 días · 0.7 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">10</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">11</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">12</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">13</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">14</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Parcial 1 (TEO)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Parcial 1 (TEO)">PAR (TEO)</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">10-ene-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">14-feb-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">5 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">51 días · 7.3 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">15</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">16</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">17</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">18</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">19</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">20</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">21</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Farmacología · Segundo parcial" style="--card-bg: rgba(218, 116, 184, 0.3); --card-strip: rgba(218, 116, 184, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FAR" src="img/FAR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Farmacología">FAR</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">27-feb-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">21-feb-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">58 días · 8.3 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">22</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">23</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">24</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">25</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">26</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">27</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">28</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Inmunología · Segundo parcial" style="--card-bg: rgba(168, 77, 218, 0.3); --card-strip: rgba(168, 77, 218, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="INM" src="img/INM.png" /></div><div class="exam-title"><div class="exam-sigla" title="Inmunología">INM</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">06-mar-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">28-feb-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">48 días · 6.9 sem</span></div></article>
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Marzo 2026</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">1</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">2</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">3</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell blocked-partial blocked-fournier-until">
+<div class="day-header is-blocked"><div class="day-number">4</div><span class="day-meta">Fournier hasta 16:00</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">5</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">6</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">7</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Fisiología · Segundo parcial" style="--card-bg: rgba(244, 79, 50, 0.3); --card-strip: rgba(244, 79, 50, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FIS" src="img/FIS.png" /></div><div class="exam-title"><div class="exam-sigla" title="Fisiología">FIS</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">20-feb-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">07-mar-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">7 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">30 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">47 días · 6.7 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">8</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">9</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">10</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">11</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">12</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">13</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">14</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">15</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">16</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">17</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">18</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">19</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">20</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">21</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">22</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">23</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">24</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">25</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">26</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">27</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">28</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">29</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">30</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">31</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Abril 2026</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">1</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">2</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">3</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">4</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend vacation blocked blocked-vacation">
+<div class="day-header is-blocked"><div class="day-number">5</div><span class="day-meta">Vacaciones</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">6</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Parcial 2 (PRA)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Parcial 2 (PRA)">PAR (PRA)</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">13-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">06-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">30 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">5 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">5 días · 0.7 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">7</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">8</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">9</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">10</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">11</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Parcial 2 (TEO)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Parcial 2 (TEO)">PAR (TEO)</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">11-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">11-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">5 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">16 días · 2.3 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">12</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">13</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Microbiología y Parasitología · Segundo parcial" style="--card-bg: rgba(168, 156, 28, 0.3); --card-strip: rgba(168, 156, 28, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="MyP" src="img/MyP.png" /></div><div class="exam-title"><div class="exam-sigla" title="Microbiología y Parasitología">MyP</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">20-mar-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">13-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">19 días · 2.7 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">14</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">15</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Promoción de la Salud en el Ciclo de Vida · Segundo parcial" style="--card-bg: rgba(142, 0, 79, 0.3); --card-strip: rgba(142, 0, 79, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="PCV" src="img/PCV.png" /></div><div class="exam-title"><div class="exam-sigla" title="Promoción de la Salud en el Ciclo de Vida">PCV</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">15-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">15-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">16</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">17</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Inmunología · Tercer parcial" style="--card-bg: rgba(168, 77, 218, 0.3); --card-strip: rgba(168, 77, 218, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="INM" src="img/INM.png" /></div><div class="exam-title"><div class="exam-sigla" title="Inmunología">INM</div><div class="exam-badge" title="Tercer parcial">PAR 3</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">24-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">17-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">13 días · 1.9 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">18</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">19</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">20</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Farmacología · Tercer parcial" style="--card-bg: rgba(218, 116, 184, 0.3); --card-strip: rgba(218, 116, 184, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FAR" src="img/FAR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Farmacología">FAR</div><div class="exam-badge" title="Tercer parcial">PAR 3</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">17-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">20-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">16 días · 2.3 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">21</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">22</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">23</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Fisiología · Tercer parcial" style="--card-bg: rgba(244, 79, 50, 0.3); --card-strip: rgba(244, 79, 50, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FIS" src="img/FIS.png" /></div><div class="exam-title"><div class="exam-sigla" title="Fisiología">FIS</div><div class="exam-badge" title="Tercer parcial">PAR 3</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">24-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">23-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">16 días · 2.3 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">24</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">25</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Integración Básico Clínica II · Segundo parcial" style="--card-bg: rgba(6, 182, 212, 0.3); --card-strip: rgba(6, 182, 212, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IBC 2" src="img/IBC2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Integración Básico Clínica II">IBC 2</div><div class="exam-badge" title="Segundo parcial">PAR 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">25-abr-2025</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">25-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">13 días · 1.9 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">26</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">27</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Ordinario 1 (PRA)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Ordinario 1 (PRA)">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">22-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">27-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">1 días · 0.1 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">28</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Ordinario 1 (TEO)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Ordinario 1 (TEO)">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">20-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">28-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">23 días · 3.3 sem</span></div></article>
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">29</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell vacation blocked blocked-fournier">
+<div class="day-header is-blocked"><div class="day-number">30</div><span class="day-meta">Fournier ocupado</span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Inmunología · Primer ordinario" style="--card-bg: rgba(168, 77, 218, 0.3); --card-strip: rgba(168, 77, 218, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="INM" src="img/INM.png" /></div><div class="exam-title"><div class="exam-sigla" title="Inmunología">INM</div><div class="exam-badge" title="Primer ordinario">ORD 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">14-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">30-abr-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">25 días · 3.6 sem</span></div></article>
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Mayo 2026</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell empty"></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">1</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">2</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Microbiología y Parasitología · Segundo ordinario" style="--card-bg: rgba(168, 156, 28, 0.3); --card-strip: rgba(168, 156, 28, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="MyP" src="img/MyP.png" /></div><div class="exam-title"><div class="exam-sigla" title="Microbiología y Parasitología">MyP</div><div class="exam-badge" title="Segundo ordinario">ORD 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">20-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">02-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">11 días · 1.6 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">3</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">4</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">5</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">6</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Farmacología · Primer ordinario" style="--card-bg: rgba(218, 116, 184, 0.3); --card-strip: rgba(218, 116, 184, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FAR" src="img/FAR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Farmacología">FAR</div><div class="exam-badge" title="Primer ordinario">ORD 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">13-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">06-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">10 días · 1.4 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">7</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">8</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Integración Básico Clínica II · Primer ordinario" style="--card-bg: rgba(6, 182, 212, 0.3); --card-strip: rgba(6, 182, 212, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IBC 2" src="img/IBC2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Integración Básico Clínica II">IBC 2</div><div class="exam-badge" title="Primer ordinario">ORD 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">08-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">08-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">18 días · 2.6 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">9</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Fisiología · Primer ordinario" style="--card-bg: rgba(244, 79, 50, 0.3); --card-strip: rgba(244, 79, 50, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FIS" src="img/FIS.png" /></div><div class="exam-title"><div class="exam-sigla" title="Fisiología">FIS</div><div class="exam-badge" title="Primer ordinario">ORD 1</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">09-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">09-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">11 días · 1.6 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">10</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">11</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">12</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">13</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Microbiología y Parasitología · Extraordinario" style="--card-bg: rgba(168, 156, 28, 0.3); --card-strip: rgba(168, 156, 28, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="MyP" src="img/MyP.png" /></div><div class="exam-title"><div class="exam-sigla" title="Microbiología y Parasitología">MyP</div><div class="exam-badge" title="Extraordinario">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">03-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">13-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">14</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">15</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">16</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Farmacología · Segundo ordinario" style="--card-bg: rgba(218, 116, 184, 0.3); --card-strip: rgba(218, 116, 184, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FAR" src="img/FAR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Farmacología">FAR</div><div class="exam-badge" title="Segundo ordinario">ORD 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">28-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">16-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">19 días · 2.7 sem</span></div></article>
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">17</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">18</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">19</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">20</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Fisiología · Segundo ordinario" style="--card-bg: rgba(244, 79, 50, 0.3); --card-strip: rgba(244, 79, 50, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FIS" src="img/FIS.png" /></div><div class="exam-title"><div class="exam-sigla" title="Fisiología">FIS</div><div class="exam-badge" title="Segundo ordinario">ORD 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">26-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">20-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">20 días · 2.9 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">21</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Ordinario 2 (PRA)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Ordinario 2 (PRA)">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">05-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">21-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">0 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">0 días · 0 sem</span></div></article>
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Ordinario 2 (TEO)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Ordinario 2 (TEO)">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">03-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">21-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">0 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">8 días · 1.1 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">22</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">23</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">24</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">25</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Inmunología · Segundo ordinario" style="--card-bg: rgba(168, 77, 218, 0.3); --card-strip: rgba(168, 77, 218, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="INM" src="img/INM.png" /></div><div class="exam-title"><div class="exam-sigla" title="Inmunología">INM</div><div class="exam-badge" title="Segundo ordinario">ORD 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">27-may-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">25-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">7 días · 1 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">26</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Integración Básico Clínica II · Segundo ordinario" style="--card-bg: rgba(6, 182, 212, 0.3); --card-strip: rgba(6, 182, 212, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IBC 2" src="img/IBC2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Integración Básico Clínica II">IBC 2</div><div class="exam-badge" title="Segundo ordinario">ORD 2</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">02-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">26-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">13 días · 1.9 sem</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">27</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">28</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">29</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Extraordinario (PRA)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Extraordinario (PRA)">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">12-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">29-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">0 días</span></div><div class="exam-line stacked"><span class="line-label">días para abordar la unidad:</span><span class="line-value">0 días · 0 sem</span></div></article>
+<article class="exam-card status-valid" title="Introducción a la Cirugía · Extraordinario (TEO)" style="--card-bg: rgba(29, 152, 168, 0.3); --card-strip: rgba(29, 152, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="ICR" src="img/ICR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Introducción a la Cirugía">ICR</div><div class="exam-badge" title="Extraordinario (TEO)">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">10-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">29-may-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">0 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">3 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">30</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">31</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+</div></section>
+<section class="month">
+<header class="month-header"><h3>Junio 2026</h3></header>
+<div class="month-grid">
+<div class="day-name">L</div>
+<div class="day-name">M</div>
+<div class="day-name">X</div>
+<div class="day-name">J</div>
+<div class="day-name">V</div>
+<div class="day-name">S</div>
+<div class="day-name">D</div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">1</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Inmunología · Extraordinario" style="--card-bg: rgba(168, 77, 218, 0.3); --card-strip: rgba(168, 77, 218, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="INM" src="img/INM.png" /></div><div class="exam-title"><div class="exam-sigla" title="Inmunología">INM</div><div class="exam-badge" title="Extraordinario">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">10-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">01-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">3 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">1 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">2</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Informática Biomédica II · Extraordinario" style="--card-bg: rgba(0, 114, 168, 0.3); --card-strip: rgba(0, 114, 168, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IB2" src="img/IB2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Informática Biomédica II">IB2</div><div class="exam-badge" title="Extraordinario">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">02-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">1 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">2 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">3</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">4</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Farmacología · Extraordinario" style="--card-bg: rgba(218, 116, 184, 0.3); --card-strip: rgba(218, 116, 184, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FAR" src="img/FAR.png" /></div><div class="exam-title"><div class="exam-sigla" title="Farmacología">FAR</div><div class="exam-badge" title="Extraordinario">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">09-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">04-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">2 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">4 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">5</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">6</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">7</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">8</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Integración Básico Clínica II · Extraordinario" style="--card-bg: rgba(6, 182, 212, 0.3); --card-strip: rgba(6, 182, 212, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="IBC 2" src="img/IBC2.png" /></div><div class="exam-title"><div class="exam-sigla" title="Integración Básico Clínica II">IBC 2</div><div class="exam-badge" title="Extraordinario">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">11-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">08-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">4 días</span></div><div class="exam-line stacked"><span class="line-label">para el próximo examen:</span><span class="line-value">1 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">9</div><span class="day-meta"></span></div>
+<div class="exam-list">
+<article class="exam-card status-valid" title="Fisiología · Extraordinario" style="--card-bg: rgba(244, 79, 50, 0.3); --card-strip: rgba(244, 79, 50, 0.95); min-height:0; height:auto;"><div class="exam-status-strip"></div><div class="exam-head2"><div class="exam-icon-vert"><img alt="FIS" src="img/FIS.png" /></div><div class="exam-title"><div class="exam-sigla" title="Fisiología">FIS</div><div class="exam-badge" title="Extraordinario">ORD</div></div></div><div class="exam-line stacked"><span class="line-label">fecha original:</span><span class="line-value">10-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">propuesta:</span><span class="line-value">09-jun-2026</span></div><div class="exam-line stacked"><span class="line-label">desde último examen:</span><span class="line-value">1 días</span></div></article>
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">10</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">11</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">12</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">13</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">14</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">15</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">16</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">17</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">18</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">19</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">20</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">21</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">22</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">23</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">24</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">25</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">26</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">27</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell weekend blocked blocked-weekend">
+<div class="day-header is-blocked"><div class="day-number">28</div><span class="day-meta">Fin de semana</span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">29</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+<div class="day-cell">
+<div class="day-header"><div class="day-number">30</div><span class="day-meta"></span></div>
+<div class="exam-list">
+</div></div>
+</div></section>
             </div>
         </section>
     </div>
